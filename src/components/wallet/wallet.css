@@ -1,0 +1,29 @@
+.wallet {
+  display: block;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  padding: .5em 1em;
+  width: 100%;
+  margin: 1em 0;
+  border-radius: 5px;
+}
+
+.wallet img {
+  height: 1.4em;
+  margin-right: 1em;
+}
+
+.wallet .indicator-connected {
+  display: inline-block;
+  float: right;
+  height: 14px;
+  width: 14px;
+  border-radius: 7px;
+  background: #388E3C;
+  margin: 6px 0;
+}
+
+.wallet a {
+  text-decoration: underline;
+  color: #448AFF;
+}

@@ -1,0 +1,98 @@
+.app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+/* Common Styles */
+.app h1 {
+  background: #22996e;
+  font-size: 2em;
+  color: white;
+  padding: .5em;
+  margin-bottom: 0;
+}
+.app h2 {
+  border-bottom: 3px solid #22996e;
+  font-size: 1.5em;
+  padding: .33em 0;
+}
+.app h3 {
+  border-bottom: 1px solid #22996e;
+  font-size: 1.3em;
+  padding: .33em 0;
+}
+
+.btn {
+  color: #fff;
+  background-color: #22996e;
+  border-color: #22996e;
+}
+.btn:hover {
+  color: #fff;
+  background-color: #218460;
+  border-color: #218460;
+}
+.btn.disabled, .btn-primary:disabled {
+  color: #fff;
+  background-color: #218460;
+  border-color: #218460;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: 3px 3px 3px rgb(0 0 0 / 10%);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+table.table tr.odd {
+  background: #f3f3f3;
+}
+
+.error {
+  color: #F44336;
+}
+
+/* Atomic CSS rules */
+.hide { display: none }
+.p1 { padding: 1em }
+.noselect { user-select: none }
+.cpointer { cursor: pointer }
+.tellipsis { text-overflow: ellipsis }
+.nowrap { white-space: nowrap }
+.preline { white-space: pre-line }
+.dblock { display: block }
+@media print { .hide-on-print { display: none } }
+.fadehover { opacity: .3 }
+*:hover > .fadehover { opacity: 1 }
+.highlight { background:#f5eb7e; border-radius: 3px; padding: 2px; }
+.danger { color: #D32F2F }
+
+/* Textareas */
+textarea { min-height: 250px }
+
+/* Checkboxes */
+input[type="checkbox"] {
+  display: none;
+}
+input[type="checkbox"]+label {
+  cursor: pointer;
+  user-select: none;
+}
+input[type="checkbox"]+label:before {
+  /*content: '❌';*/
+  content: '❎';
+  filter: hue-rotate(-120deg) brightness(0.85) contrast(2);
+}
+input[type="checkbox"]:checked+label:before {
+  /*content: '✔️';*/
+  content: '✅';
+  filter: none;
+}
