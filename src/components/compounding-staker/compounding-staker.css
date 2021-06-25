@@ -1,0 +1,35 @@
+.compounding-staker {
+  padding: 1em;
+}
+
+.compounding-staker .input-group-text.prefix img {
+  height: 24px;
+}
+
+.compounding-staker .balance img {
+  height: 24px;
+  vertical-align: -6px;
+  margin-right: 5px;
+}
+
+.compounding-staker .info img {
+  height: 24px;
+  vertical-align: -6px;
+}
+
+.compounding-staker .overlay {
+  position: fixed;
+  top: 0;
+  left: 400px;
+  height: 100%;
+  width: calc(100% - 400px);
+  background: white;
+  font-size: 28px;
+  text-align: center;
+  padding: 200px 50px 0;
+}
+.compounding-staker .overlay .progress-wrapper {
+  display: inline-block;
+  max-width: 400px;
+  margin-top: 1em;
+}

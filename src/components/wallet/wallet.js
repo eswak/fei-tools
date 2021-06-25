@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './wallet.css';
 import metamaskLogo from './metamask-logo.png';
 import { ethers } from 'ethers';
+import EventEmitter from '../../modules/event-emitter';
 
 var intervalRefresh = null;
 var account = null;
@@ -26,22 +27,18 @@ class Wallet extends Component {
   }
 
   async componentDidMount() {
-    /*const transactionHash = await ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [
-        {
-          to: '0x...',
-          'from': '0x...',
-          value: '0x...',
-          // And so on...
-        },
-      ],
-    });*/
-
     intervalRefresh = setInterval(async () => {
       this.state.block = await provider.getBlockNumber();
       this.state.accounts = await provider.listAccounts();
+      var previousAccount = account;
       account = this.state.accounts[0];
+      if (previousAccount !== account && account !== undefined) {
+        EventEmitter.dispatch('AccountChange', {
+          old: previousAccount,
+          new: account
+        });
+        previousAccount = account;
+      }
       this.setState(this.state);
       this.forceUpdate();
     }, 1000);

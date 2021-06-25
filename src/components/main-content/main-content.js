@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import CompoundingStakerDeposit from '../compounding-staker/deposit';
+import CompoundingStaker from '../compounding-staker/compounding-staker';
+import TxToasts from '../tx-toasts/tx-toasts';
 import './main-content.css';
 
 class MainContent extends Component {
@@ -11,6 +12,7 @@ class MainContent extends Component {
     return (
       <div className="main-content">
         {this.renderSwitch()}
+        <TxToasts />
       </div>
     );
   }
@@ -18,10 +20,20 @@ class MainContent extends Component {
   renderSwitch(props) {
     switch(this.props.content.type) {
       case '/CompoundingStaker':
-        return <CompoundingStakerDeposit />;
+        return <CompoundingStaker />;
       default:
         return (
-          <pre className="p1">{JSON.stringify(this.props, null, 2)}</pre>
+          <div className="p1">
+            <h1>Fei Tools</h1>
+            <p className="mt-3">
+              This website hosts third-party tools to interact with <a href="https://fei.money/">Fei Protocol</a>.
+            </p>
+            <p>These tools are created by <a href="https://tribe.fei.money/u/eswak/summary">Eswak</a>, a member of the TRIBE community that also contributes to the <a href="https://github.com/fei-protocol/fei-protocol-core/pull/100">core protocol</a>.</p>
+            <p>More tools will be added over time, but for now, there is only one. You can use it and find its documentation here :</p>
+            <p>
+              <a className="btn" href="#/CompoundingStaker">CompoundingStaker</a>
+            </p>
+          </div>
         );
     }
   }

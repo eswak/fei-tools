@@ -74,6 +74,7 @@ table.table tr.odd {
 *:hover > .fadehover { opacity: 1 }
 .highlight { background:#f5eb7e; border-radius: 3px; padding: 2px; }
 .danger { color: #D32F2F }
+.text-small { font-size: .7em }
 
 /* Textareas */
 textarea { min-height: 250px }

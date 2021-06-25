@@ -1,0 +1,38 @@
+.tx-toasts {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 1em 2em;
+}
+
+.tx-toasts .tx {
+  border: 1px solid #ccc;
+  margin-bottom: .5em;
+  padding: 1em;
+  color: inherit;
+}
+.tx-toasts .tx:hover {
+  text-decoration: none;
+}
+
+.tx-toasts .tx .label {
+  font-weight: bold;
+}
+
+.tx-toasts .tx .status::before {
+  display: inline-block;
+  margin-right: 5px;
+}
+.tx-toasts .tx .status.status-pending::before {
+  content: '⏳';
+}
+.tx-toasts .tx .status.status-mined::before {
+  content: '✅';
+}
+
+.tx-toasts .tx .hash {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
