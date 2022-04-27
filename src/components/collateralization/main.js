@@ -310,12 +310,12 @@ class c extends Component {
     if (address == '0xec54148CbC47bFF8FCc5e04e5E8083aDb8aF9aD9') return 'Float Protocol\'s Fuse pool was hacked due to a Uni-v3 Oracle manipulation.';
     if (address == '0x5ae217dE26f6Ff5F481C6e10ec48b2cf2fc857C8') return 'Stake LP tokens in Convex & earn CRV & CVX rewards.';
     if (address == '0x0961d2a545e0c1201B313d14C57023682a546b9D') return 'Deposit tokens in reactor & earn TOKE rewards.';
-    if (address == '0x0735e14D28eD395048d5Fa4a8dbe6e6EB9fc0470') return 'Deposit tokens lending market & earn interests + COMP rewards.';
-    if (address == '0xfDe7077AAEcDaf2C4B85261Aa858c96A7E737a61') return 'Deposit tokens lending market & earn interests + COMP rewards.';
-    if (address == '0xB80B3dc4F8B30589477b2bA0e4EF2b8224bDf0a5') return 'Deposit tokens lending market & earn interests.';
-    if (address == '0x43Ef03755991056681F01EE2182234eF6aF1f658') return 'Deposit tokens lending market & earn interests + stkAAVE rewards.';
-    if (address == '0x1267B39c93711Dd374DEAB15e0127e4adB259BE0') return 'Deposit tokens lending market & earn interests + stkAAVE rewards.';
-    if (address == '0xFAc571b6054619053ac311dA8112939C9a374A85') return 'Deposit tokens lending market & earn interests.';
+    if (address == '0x0735e14D28eD395048d5Fa4a8dbe6e6EB9fc0470') return 'Deposit tokens in lending market & earn interests + COMP rewards.';
+    if (address == '0xfDe7077AAEcDaf2C4B85261Aa858c96A7E737a61') return 'Deposit tokens in lending market & earn interests + COMP rewards.';
+    if (address == '0xB80B3dc4F8B30589477b2bA0e4EF2b8224bDf0a5') return 'Deposit tokens in lending market & earn interests.';
+    if (address == '0x43Ef03755991056681F01EE2182234eF6aF1f658') return 'Deposit tokens in lending market & earn interests + stkAAVE rewards.';
+    if (address == '0x1267B39c93711Dd374DEAB15e0127e4adB259BE0') return 'Deposit tokens in lending market & earn interests + stkAAVE rewards.';
+    if (address == '0xFAc571b6054619053ac311dA8112939C9a374A85') return 'Deposit tokens in lending market & earn interests.';
     if (address == '0x98E5F5706897074a4664DD3a32eB80242d6E694B') return 'The Peg Stability Modules are used to defend a 1$ peg for FEI by allowing users to mint new FEI by providing assets, or redeem FEI for assets.';
     if (address == '0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2') return 'The Peg Stability Modules are used to defend a 1$ peg for FEI by allowing users to mint new FEI by providing assets, or redeem FEI for assets.';
     if (address == '0xb0e731F036AdfDeC12da77c15aaB0F90E8e45A0e') return 'The Peg Stability Modules are used to defend a 1$ peg for FEI by allowing users to mint new FEI by providing assets, or redeem FEI for assets.';
