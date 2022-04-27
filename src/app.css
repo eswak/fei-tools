@@ -11,9 +11,12 @@
 .app h1 {
   background: #22996e;
   font-size: 2em;
+  margin: -1em;
   color: white;
-  padding: .5em;
+  padding: .5em 1em;
   margin-bottom: 0;
+  border-top-right-radius: 24px;
+  border-top-left-radius: 24px;
 }
 .app h2 {
   border-bottom: 3px solid #22996e;
@@ -43,9 +46,16 @@
 }
 
 .card {
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  box-shadow: 3px 3px 3px rgb(0 0 0 / 10%);
+  position: relative;
+  background: rgb(255, 255, 255);
+  box-shadow: rgb(0 0 0 / 1%) 0px 0px 1px, rgb(0 0 0 / 4%) 0px 4px 8px, rgb(0 0 0 / 4%) 0px 16px 24px, rgb(0 0 0 / 1%) 0px 24px 32px;
+  border-radius: 24px;
+  border: 0;
+}
+
+.section {
+  margin: 2em;
+  padding: 2em;
 }
 
 table {
@@ -61,6 +71,11 @@ table.table tr.odd {
 }
 
 /* Atomic CSS rules */
+.cf::after {
+  content: "";
+  clear: both;
+  display: table;
+}
 .hide { display: none }
 .p1 { padding: 1em }
 .noselect { user-select: none }

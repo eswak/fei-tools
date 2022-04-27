@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './compounding-staker.css';
+import './old.css';
 import { ethers } from 'ethers';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
@@ -10,10 +10,10 @@ import TribeTokenAbi from '../../abi/Tribe.json';
 import UniswapRouterV2Abi from '../../abi/UniswapRouterV2.json';
 import StakingRewardsV2 from '../../abi/StakingRewardsV2.json';
 import { getProvider, getSigner, getAccount } from '../wallet/wallet';
-import feiImg from './fei-token-v1-32.png';
-import tribeImg from './tribe-token-v1-32.png';
-import feiTribeImg from './fei-tribe-lp-token-64-96.png';
-import stakerShareImg from './stonks-smol.png';
+import feiImg from './img/fei-token-v1-32.png';
+import tribeImg from './img/tribe-token-v1-32.png';
+import feiTribeImg from './img/fei-tribe-lp-token-64-96.png';
+import stakerShareImg from './img/stonks-smol.png';
 import EventEmitter from '../../modules/event-emitter';
 import Wallet from '../wallet/wallet';
 
@@ -57,7 +57,7 @@ var UniswapRouterV2 = new ethers.Contract(
 );
 var intervalRefresh = null;
 
-class CompoundingStakerDeposit extends Component {
+class CompoundingStakerOld extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -108,7 +108,6 @@ class CompoundingStakerDeposit extends Component {
       };
     }).reverse().slice(0, 5);
     this.state.pastDeposits = history.filter((tx) => tx.data.indexOf('0xb6b55f25') === 0).map((tx) => {
-      console.log('tx', tx);
       return {
         hash: tx.hash,
         timestamp: tx.timestamp * 1000,
@@ -393,7 +392,7 @@ class CompoundingStakerDeposit extends Component {
 
   render() {
     return (
-      <div className="compounding-staker">
+      <div className="card section compounding-staker-old">
         <h1 className="mb-3">CompoundingStaker</h1>
         <div className="info">
           <p><strong>Tl;dr</strong>: this tool has only 5-6% performance fees on <img src={tribeImg}/> TRIBE rewards, and it can boost your APY by ~60% 😊</p>
@@ -643,4 +642,4 @@ class CompoundingStakerDeposit extends Component {
   }
 }
 
-export default CompoundingStakerDeposit;
+export default CompoundingStakerOld;

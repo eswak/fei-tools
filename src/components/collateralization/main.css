@@ -1,0 +1,41 @@
+.collateralization {
+  
+}
+.collateralization img.token {
+  height: 24px;
+  vertical-align: -5px;
+  border-radius: 12px;
+}
+.collateralization table {
+  width: 100%;
+}
+.collateralization table th {
+  padding: 3px 10px;
+  color: white;
+  background: #333;
+}
+.collateralization table td {
+  padding: 3px 10px;
+}
+.collateralization table tr.odd td {
+  background: rgba(0, 0, 0, 0.05);
+}
+.collateralization h1 {
+  background: none;
+  color: #333;
+  font-weight: bold;
+  font-size: 18px;
+}
+.collateralization img {
+  height: 24px;
+  vertical-align: -5px;
+}
+.collateralization .positive:before {
+  content: '+';
+}
+.collateralization .positive {
+  color: #4CAF50;
+}
+.collateralization .negative {
+  color: #E64A19;
+}

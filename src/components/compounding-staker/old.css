@@ -1,34 +1,34 @@
-.compounding-staker {
+.compounding-staker-old {
   padding: 1em;
 }
 
-.compounding-staker .input-group-text.prefix img {
+.compounding-staker-old .input-group-text.prefix img {
   height: 24px;
 }
 
-.compounding-staker .balance img {
+.compounding-staker-old .balance img {
   height: 24px;
   vertical-align: -6px;
   margin-right: 5px;
 }
 
-.compounding-staker .info img {
+.compounding-staker-old .info img {
   height: 24px;
   vertical-align: -6px;
 }
 
-.compounding-staker .overlay {
+.compounding-staker-old .overlay {
   position: fixed;
   top: 0;
   left: 400px;
   height: 100%;
   width: calc(100% - 400px);
-  background: white;
+  background: #f3f4f7;
   font-size: 28px;
   text-align: center;
   padding: 200px 50px 0;
 }
-.compounding-staker .overlay .progress-wrapper {
+.compounding-staker-old .overlay .progress-wrapper {
   display: inline-block;
   max-width: 400px;
   margin-top: 1em;

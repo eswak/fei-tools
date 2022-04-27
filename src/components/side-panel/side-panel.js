@@ -25,8 +25,8 @@ class SidePanel extends Component {
         <a href="#" className={'menu-item' + (document.location.hash == '' ? ' active' : '')}>
           <span className="ml-1">About</span>
         </a>
-        <a href="#/CompoundingStaker" className={'menu-item' + (document.location.hash == '#/CompoundingStaker' ? ' active' : '')}>
-          <span className="ml-1">Compound staking rewards</span>
+        <a href="#/CollateralizationOracle" className={'menu-item' + (document.location.hash == '#/CollateralizationOracle' ? ' active' : '')}>
+          <span className="ml-1">Collateralization Oracle</span>
         </a>
       </div>
     );
