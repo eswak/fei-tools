@@ -19,7 +19,7 @@ class SidePanel extends Component {
           <img className="logo" src={logo} />
         </div>
         <div className="version mb-2">
-          Made with 💚 by <a href="https://github.com/eswak">eswak</a>.
+          Made with 💚 by La Tribu.
         </div>
         <Wallet />
         <a href="#" className={'menu-item' + (document.location.hash == '' ? ' active' : '')}>
