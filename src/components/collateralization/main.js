@@ -543,6 +543,8 @@ class c extends Component {
           <div className="info">
             <p>This page is a simple web tool that reads the <a href="https://etherscan.io/address/0xFF6f59333cfD8f4Ebc14aD0a0E181a83e655d257#code" target="_blank">Collateralization Oracle</a> of Fei Protocol, a smart contract that details where all the PCV assets that back the FEI stablecoin are deployed.</p>
             <p>Additional metadata are hard-coded in the front-end, such as the PCV Deposit label, description, protocol, and rules for revenue calculations.</p>
+            <p>Revenue calculations are made since PCV deployments, so it has been higher in the recent months (when more strategies existed) than at the protocol genesis.</p>
+            <p>Revenue calculations are made only on PCV deployments, and other revenue streams from the DAO (like the <a href="https://metrics.rari.capital/d/NlUs6DwGk/fuse-overview?orgId=1&refresh=5m" target="_blank">~1.9M$ Fuse platform fees</a>) are not accounted here.</p>
             <p><strong>For global stats, scroll below the big table.</strong></p>
           </div>
           { this.state.getTokensInPcv.length == 0 ? <div className="info">
