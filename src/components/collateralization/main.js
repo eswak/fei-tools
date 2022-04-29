@@ -194,6 +194,16 @@ class c extends Component {
       });
     }
     this.state.pcvComposition.sort((a, b) => a.balanceUSD < b.balanceUSD ? 1 :-1);
+
+    // persist an history in localStorage
+    var comp = JSON.parse(localStorage.getItem('comp') || '{}');
+    var today = new Date().toISOString().split('T')[0];
+    comp[today] = comp[today] || this.state.pcvComposition.reduce((acc, cur) => {
+      acc[cur.token] = [cur.balance, cur.balanceUSD/cur.balance];
+      return acc;
+    }, {});
+    localStorage.setItem('comp', JSON.stringify(comp));
+
     // Protocols
     var protocolsMap = this.state.deposits.reduce(function(acc, cur) {
       acc[cur.protocol] = acc[cur.protocol] || 0;
