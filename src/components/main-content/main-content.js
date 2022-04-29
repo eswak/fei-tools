@@ -38,9 +38,9 @@ class MainContent extends Component {
             </p>
             <hr/>
             <p className="mb-0">
-              <div>Deprecated tools :</div>
-              <a className="btn" href="#/CompoundingStaker">CompoundingStaker</a>
-              <div style={{color:'#D32F2F'}}>DO NOT DEPOSIT FUNDS IN THIS TOOL, REWARDS ARE NOT ACCRUING ANYMORE, USE ONLY FOR WITHDRAWAL.</div>
+              Deprecated tools :<br/>
+              <a className="btn" href="#/CompoundingStaker">CompoundingStaker</a><br/>
+              <span style={{color:'#D32F2F'}}>DO NOT DEPOSIT FUNDS IN THIS TOOL, REWARDS ARE NOT ACCRUING ANYMORE, USE ONLY FOR WITHDRAWAL.</span>
             </p>
           </div>
         );
