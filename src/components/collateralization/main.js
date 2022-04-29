@@ -20,6 +20,7 @@ import imgDpi from './img/dpi.jpg';
 import imgUsd from './img/usd.jpg';
 import imgRai from './img/rai.jpg';
 import imgSteth from './img/wsteth.jpg';
+import label from '../../modules/label';
 
 const collateralizationOracle = '0xFF6f59333cfD8f4Ebc14aD0a0E181a83e655d257';
 const fei = '0x956F47F50A910163D8BF957Cf5846D573E7f87CA';
@@ -146,7 +147,7 @@ class c extends Component {
         var fei = resistantBalanceAndFei[1].toString() / 1e18;
         this.state.deposits.push({
           address: depositAddress,
-          label: await this.getDepositLabel(depositAddress),
+          label: await label(depositAddress),
           description: await this.getDepositDescription(depositAddress),
           protocol: await this.getDepositProtocol(depositAddress),
           token: this.state.tokens[tokenAddress].symbol,
@@ -255,62 +256,6 @@ class c extends Component {
       getProvider()
     );
     return await token.symbol();
-  }
-
-  async getDepositLabel(address) {
-    if (address == '0x5ae217dE26f6Ff5F481C6e10ec48b2cf2fc857C8') return 'Convex D3pool';
-    if (address == '0x24F663c69Cd4B263cf5685A49013Ff5f1C898D24') return 'Curve D3pool';
-    if (address == '0x06dAcca04e201AD31393754E68dA04Dc14778Fa6') return 'Static (Constant) PCV Deposit';
-    if (address == '0x0961d2a545e0c1201B313d14C57023682a546b9D') return 'Tokemak ETH Reactor';
-    if (address == '0xA271fF86426c7fdAaAE72603e6Ce68c892d69ED7') return 'Staked ETH - Lido';
-    if (address == '0x0735e14D28eD395048d5Fa4a8dbe6e6EB9fc0470') return 'Compound ETH Lending';
-    if (address == '0xfDe7077AAEcDaf2C4B85261Aa858c96A7E737a61') return 'Compound DAI Lending';
-    if (address == '0xB80B3dc4F8B30589477b2bA0e4EF2b8224bDf0a5') return 'Compound FEI Lending';
-    if (address == '0x43Ef03755991056681F01EE2182234eF6aF1f658') return 'Aave ETH Lending';
-    if (address == '0x1267B39c93711Dd374DEAB15e0127e4adB259BE0') return 'Aave RAI Lending';
-    if (address == '0xFAc571b6054619053ac311dA8112939C9a374A85') return 'Aave FEI Lending';
-    if (address == '0x15958381E9E6dc98bD49655e36f524D2203a28bD') return 'Uniswap v2 ETH/FEI';
-    if (address == '0x98E5F5706897074a4664DD3a32eB80242d6E694B') return 'PSM - ETH';
-    if (address == '0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2') return 'PSM - DAI';
-    if (address == '0xb0e731F036AdfDeC12da77c15aaB0F90E8e45A0e') return 'PSM - LUSD';
-    if (address == '0x7Eb88140af813294aEDce981b6aC08fcd139d408') return 'OA Timelock';
-    if (address == '0xCCe230c087F31032fc17621a2CF5E425A0b80C96') return 'Fuse pool 9 (Frax & Reflexer) RAI Lending';
-    if (address == '0xD6598a23418c7FEf7c0Dc863265515B623B720F9') return 'Fuse pool 8 (FeiRari) FEI Lending';
-    if (address == '0x9CC46aB5A714f7cd24C59f33C5769039B5872491') return 'Fuse pool 8 (FeiRari) DAI Lending';
-    if (address == '0xF846eE6E8EE9A6fbf51c7c65105CAbc041c048ad') return 'Fuse pool 8 (FeiRari) LUSD Lending';
-    if (address == '0xec54148CbC47bFF8FCc5e04e5E8083aDb8aF9aD9') return 'Fuse pool 90 (Float Protocol) FEI Lending';
-    if (address == '0xb3A026B830796E43bfC8b135553A7573538aB341') return 'Fuse pool 79 (Fox and Frens) FEI Lending';
-    if (address == '0x7aA4b1558C3e219cFFFd6a356421C071F71966e7') return 'Fuse pool 6 (Tetranode\'s locker) FEI Lending';
-    if (address == '0xC68412B72e68c30D4E6c0854b439CBBe957146e4') return 'Fuse pool 146 (Tribe ETH Pool) ETH Lending';
-    if (address == '0x9a774a1B1208C323EDeD05E6Daf592E6E59cAa55') return 'Fuse pool 19 (Index Coop) DPI Lending';
-    if (address == '0x7e39bBA9D0d967Ee55524fAe9e54900B02d9889a') return 'Fuse pool 19 (Index Coop) FEI Lending';
-    if (address == '0x508f6fbd78B6569C29E9D75986a51558dE9E5865') return 'Fuse pool 24 (Harvest) FEI Lending';
-    if (address == '0xB4FFD10C4C290Dc13E8e30BF186F1509001515fD') return 'Fuse pool 25 (Barnbridge) FEI Lending';
-    if (address == '0xe2e35097638F0Ff2EeCA2EF70F352Be37431945f') return 'Fuse pool 27 (StakeDAO) FEI Lending';
-    if (address == '0x07F2DD7E6A78D96c08D0a8212f4097dCC129d629') return 'Fuse pool 18 (Olympus) FEI Lending';
-    if (address == '0x05E2e93CFb0B53D36A3151ee727Bb581D4B918Ce') return 'Fuse pool 31 (NFTX) FEI Lending';
-    if (address == '0xA62ddde8F799873E6FcdbB3aCBbA75da85D9dcdE') return 'Fuse pool 128 (UMA) FEI Lending';
-    if (address == '0xa2BdbCb95d31C85BAE6f0FA42D55F65d609D94eE') return 'Fuse pool 22 (Badger) FEI Lending';
-    if (address == '0x395B1Bc1800fa0ad48ae3876E66d4C10d297650c') return 'Fuse pool 72 (Forex) FEI Lending';
-    if (address == '0x1370CA8655C255948d6c6110066d78680601B7c2') return 'Fuse pool 156 (Tribe Convex Pool) FEI Lending';
-    if (address == '0x8C51E4532CC745cF3DFec5CEBd835D07E7BA1002') return 'Fuse pool 91 (Liquity) LUSD Lending';
-    if (address == '0x6026a1559CDd44a63C5CA9A078CC996a9eb68ABB') return 'Fuse pool 7 (ChainLinkGod / Tetranode Up Only) LUSD Lending';
-    if (address == '0x5E9fA7d783A7F7d4626cE450C8Bd2EbBB26dfdB2') return 'DAO Timelock : ETH';
-    if (address == '0x7339cA4Ac94020b83A34f5edFA6e0F26986c434b') return 'DAO Timelock : RAI';
-    if (address == '0xB250926E75b1CC6c53E77bb9426Baac14aB1e24c') return 'DAO Timelock : DPI';
-    if (address == '0x3a1838Ac9EcA864054bebB82C32455Dd7d7Fc89c') return 'DAO Timelock : CREAM';
-    if (address == '0x485d23ce5725ecdE46ca9033012984D90b514FFd') return 'DAO Timelock : agEUR';
-    if (address == '0xc5bb8F0253776beC6FF450c2B40f092f7e7f5b57') return 'Balancer 70% WETH 30% FEI';
-    if (address == '0xcd1Ac0014E2ebd972f40f24dF1694e6F528B2fD4') return 'Balancer 80% BAL 20% WETH';
-    if (address == '0x89DfBC12001b41985eFAbd7dFCae6a77B22E4Ec3') return 'Balancer Buyback Pool';
-    if (address == '0xb31F75550e97A2C4c7AC8d4355032B8AE8b9584D') return 'Balancer 70% WETH 30% FEI Staked in Gauge';
-    if (address == '0xD8Eb546726d449fC1dEd06DFeCa800A2fa8bB930') return 'Balancer veBAL : WETH';
-    if (address == '0x8cbA3149b95084A61bBAb9e01110b0fB92C9a289') return 'Balancer veBAL : BAL';
-    if (address == '0x2c47Fef515d2C70F2427706999E158533F7cF090') return 'Turbo FEI Lending';
-    if (address == '0x374628EBE7Ef6AcA0574e750B618097531A26Ff8') return 'B.AMM Liquity Stability Pool';
-    if (address == '0xE8633C49AcE655EB4A8B720e6b12F09Bd3a97812') return 'Uniswap v2 agEUR/FEI';
-    if (address == '0xD2554839c2e8a87Dd2CddD013EF828B6534aBC26') return 'Uniswap v2 agEUR/FEI LP tokens staked in Gauge';
-    return address.slice(0, 10);
   }
 
   async getDepositDescription(address) {
@@ -542,7 +487,7 @@ class c extends Component {
           <h1 className="mb-3">Collateralization Oracle</h1>
           <div className="info">
             <p>This page is a simple web tool that reads the <a href="https://etherscan.io/address/0xFF6f59333cfD8f4Ebc14aD0a0E181a83e655d257#code" target="_blank">Collateralization Oracle</a> of Fei Protocol, a smart contract that details where all the PCV assets that back the FEI stablecoin are deployed.</p>
-            <p>Additional metadata are hard-coded in the front-end, such as the PCV Deposit label, description, protocol, and rules for revenue calculations.</p>
+            <p>Additional metadata are hard-coded in the front-end, such as the PCV Deposit description, protocol, and rules for revenue calculations. Contract labels are fetched from <a href="https://github.com/fei-protocol/fei-protocol-core/blob/develop/protocol-configuration/mainnetAddresses.ts" target="_blank">Github</a>.</p>
             <p>Revenue calculations are made since PCV deployments, so it has been higher in the recent months (when more strategies existed) than at the protocol genesis.</p>
             <p>Revenue calculations are made only on PCV deployments, and other revenue streams from the DAO (like the <a href="https://metrics.rari.capital/d/NlUs6DwGk/fuse-overview?orgId=1&refresh=5m" target="_blank">~1.9M$ Fuse platform fees</a>) are not accounted here.</p>
             <p><strong>For global stats, scroll below the big table.</strong></p>
