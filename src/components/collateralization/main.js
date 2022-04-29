@@ -69,17 +69,17 @@ class c extends Component {
     if (depositAddress === '0x5ae217dE26f6Ff5F481C6e10ec48b2cf2fc857C8') return <img className="token" src={imgd3}></img>;
     if (depositAddress === '0x24F663c69Cd4B263cf5685A49013Ff5f1C898D24') return <img className="token" src={imgd3}></img>;
     if (depositAddress === '0xA271fF86426c7fdAaAE72603e6Ce68c892d69ED7') return <img className="token" src={imgSteth}></img>;
-    if (symbol === 'FEI') return <img className="token" src={imgFei}></img>;
-    if (symbol === 'agEUR') return <img className="token" src={imgAgeur}></img>;
-    if (symbol === 'BAL') return <img className="token" src={imgBal}></img>;
-    if (symbol === 'CREAM') return <img className="token" src={imgCream}></img>;
-    if (symbol === 'ETH') return <img className="token" src={imgEth}></img>;
-    if (symbol === 'WETH') return <img className="token" src={imgEth}></img>;
-    if (symbol === 'LUSD') return <img className="token" src={imgLusd}></img>;
-    if (symbol === 'DAI') return <img className="token" src={imgDai}></img>;
-    if (symbol === 'DPI') return <img className="token" src={imgDpi}></img>;
-    if (symbol === 'USD') return <img className="token" src={imgUsd}></img>;
-    if (symbol === 'RAI') return <img className="token" src={imgRai}></img>;
+    if (symbol === 'FEI') return <img className="token" src={imgFei} title="FEI"></img>;
+    if (symbol === 'agEUR') return <img className="token" src={imgAgeur} title="agEUR"></img>;
+    if (symbol === 'BAL') return <img className="token" src={imgBal} title="BAL"></img>;
+    if (symbol === 'CREAM') return <img className="token" src={imgCream} title="CREAM"></img>;
+    if (symbol === 'ETH') return <img className="token" src={imgEth} title="ETH"></img>;
+    if (symbol === 'WETH') return <img className="token" src={imgEth} title="WETH"></img>;
+    if (symbol === 'LUSD') return <img className="token" src={imgLusd} title="LUSD"></img>;
+    if (symbol === 'DAI') return <img className="token" src={imgDai} title="DAI"></img>;
+    if (symbol === 'DPI') return <img className="token" src={imgDpi} title="DPI"></img>;
+    if (symbol === 'USD') return <img className="token" src={imgUsd} title="USD"></img>;
+    if (symbol === 'RAI') return <img className="token" src={imgRai} title="RAI"></img>;
     return symbol;
   }
 
