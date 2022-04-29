@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 //import CompoundingStaker from '../compounding-staker/main';
 import Collateralization from '../collateralization/main';
+import SafeAddresses from '../safeaddresses/main';
 import CompoundingStakerOld from '../compounding-staker/old';
 import TxToasts from '../tx-toasts/tx-toasts';
 import './main-content.css';
@@ -25,6 +26,8 @@ class MainContent extends Component {
         return <CompoundingStakerOld />;
       case '/CollateralizationOracle':
         return <Collateralization />;
+      case '/SafeAddresses':
+        return <SafeAddresses />;
       default:
         return (
           <div className="card section">
@@ -34,7 +37,9 @@ class MainContent extends Component {
             </p>
             <p>These tools are created by TRIBE community members, get in touch with Eswak if you want to suggest changes or add a tool to this website.</p>
             <p className="mb-0">
-              <a className="btn" href="#/CollateralizationOracle">Collateralization Oracle</a>
+              <a className="btn" href="#/CollateralizationOracle">Fei Collateralization Oracle</a>
+              &nbsp;
+              <a className="btn" href="#/SafeAddresses">Fei Safe Addresses</a>
             </p>
             <hr/>
             <p className="mb-0">
