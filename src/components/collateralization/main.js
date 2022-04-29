@@ -547,7 +547,7 @@ class c extends Component {
           </div>
           { this.state.getTokensInPcv.length == 0 ? <div className="info">
             <hr/>
-            <div className="text-center">Reading latest on-chain data (this can take several seconds)...</div>
+            <div className="text-center">Reading latest on-chain data (this can take several seconds / a minute)...</div>
           </div> : null }
           { this.state.getTokensInPcv.length != 0 ? <div>
             <table className="mb-3">
@@ -659,7 +659,11 @@ class c extends Component {
                   <td><strong>{formatNumber(this.state.equity, '$ ')}</strong></td>
                 </tr>
                 <tr>
-                  <td>TRIBE Book Value (Equity / Circulating TRIBE)</td>
+                  <td>TRIBE Circulating Market Cap</td>
+                  <td><strong>{formatNumber(this.state.cgko['TRIBE'] * this.state.tribeCirculating, '$ ')}</strong></td>
+                </tr>
+                <tr>
+                  <td>TRIBE Book Value (Equity / Circ. MCap)</td>
                   <td><strong>$ {Math.round(10000 * this.state.equity / this.state.tribeCirculating)/10000}</strong></td>
                 </tr>
                 <tr>
@@ -667,24 +671,20 @@ class c extends Component {
                   <td><strong>$ {Math.round(10000 * this.state.cgko['TRIBE'])/10000}</strong></td>
                 </tr>
                 <tr>
-                  <td>TRIBE Premium (Market - Book)</td>
-                  <td><strong>$ {Math.round(10000 * this.state.tribeSpeculativePremium)/10000}</strong></td>
+                  <td>TRIBE P/BV</td>
+                  <td><strong>{Math.round(100 * (this.state.cgko['TRIBE'] * this.state.tribeCirculating / this.state.equity))/100}</strong></td>
                 </tr>
                 <tr>
-                  <td>Total Tracked Revenue (PCV Growth)</td>
+                  <td>PCV Growth since Genesis</td>
                   <td><strong>{formatNumber(this.state.pl, '$ ')}</strong></td>
                 </tr>
                 <tr>
-                  <td>Years since Genesis (protocol start)</td>
-                  <td><strong>{Math.floor(10000 * this.state.yearsSinceGenesis)/10000}</strong></td>
-                </tr>
-                <tr>
-                  <td>Protocol Revenue / Year</td>
+                  <td>Average PCV Growth per Year</td>
                   <td><strong>{formatNumber(this.state.pl / this.state.yearsSinceGenesis, '$ ')}</strong></td>
                 </tr>
                 <tr>
-                  <td>P/E of TRIBE Premium</td>
-                  <td><strong>{Math.round(100 * this.state.tribeCirculating * this.state.tribeSpeculativePremium / (this.state.pl / this.state.yearsSinceGenesis))/100}</strong></td>
+                  <td>TRIBE P/E</td>
+                  <td><strong>{Math.round(100 * this.state.cgko['TRIBE'] * this.state.tribeCirculating / (this.state.pl / this.state.yearsSinceGenesis))/100}</strong></td>
                 </tr>
               </tbody>
             </table>
