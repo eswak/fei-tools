@@ -414,7 +414,7 @@ class c extends Component {
     // Liquity B.AMM
     if (address == '0x374628EBE7Ef6AcA0574e750B618097531A26Ff8') {
       const lqty = (await ERC20('0x6DEA81C8171D0bA574754EF6F8b412F2Ed88c54D').balanceOf(address)).toString() / 1e18;
-      return 80e6 - balance + lqty * this.state.cgko['LQTY'];
+      return lqty * this.state.cgko['LQTY'];
     }
     // DAI PSM
     if (address == '0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2') {
