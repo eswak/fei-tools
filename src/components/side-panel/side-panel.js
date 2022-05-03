@@ -31,6 +31,9 @@ class SidePanel extends Component {
         <a href="#/SafeAddresses" className={'menu-item' + (document.location.hash == '#/SafeAddresses' ? ' active' : '')}>
           <span className="ml-1">Fei Safe Addresses</span>
         </a>
+        <a href="#/TimelockTransactions" className={'menu-item' + (document.location.hash == '#/TimelockTransactions' ? ' active' : '')}>
+          <span className="ml-1">OA Timelock Transactions</span>
+        </a>
       </div>
     );
   }

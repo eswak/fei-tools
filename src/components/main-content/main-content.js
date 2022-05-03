@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 //import CompoundingStaker from '../compounding-staker/main';
 import Collateralization from '../collateralization/main';
 import SafeAddresses from '../safeaddresses/main';
+import TimelockTransactions from '../timelock/main';
 import CompoundingStakerOld from '../compounding-staker/old';
 import TxToasts from '../tx-toasts/tx-toasts';
 import './main-content.css';
@@ -28,6 +29,8 @@ class MainContent extends Component {
         return <Collateralization />;
       case '/SafeAddresses':
         return <SafeAddresses />;
+      case '/TimelockTransactions':
+        return <TimelockTransactions />;
       default:
         return (
           <div className="card section">
@@ -40,6 +43,8 @@ class MainContent extends Component {
               <a className="btn" href="#/CollateralizationOracle">Fei Collateralization Oracle</a>
               &nbsp;
               <a className="btn" href="#/SafeAddresses">Fei Safe Addresses</a>
+              &nbsp;
+              <a className="btn" href="#/TimelockTransactions">OA Timelock Transactions</a>
             </p>
             <hr/>
             <p className="mb-0">

@@ -1,0 +1,21 @@
+.timelock {
+  
+}
+.timelock .transactions {
+  
+}
+.timelock .transactions .transaction {
+  border-top: 1px solid #ccc;
+  font-family: monospace;
+  font-size: 12px;
+}
+.timelock .transactions .transaction .date {
+  float: right;
+}
+.timelock .transactions .transaction .fn {
+  font-weight: bold;
+  background: #f0f0f0;
+}
+.timelock .transactions .transaction .args td {
+  vertical-align: top;
+}
