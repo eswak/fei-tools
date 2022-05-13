@@ -22,6 +22,7 @@ staticLabels['0x6A42c1F4dd8d9FCF3bD7Bbcda396d12dDA35ee9b'.toLowerCase()] = 'Coze
 staticLabels['0x33AD909b6713Dd839F46a798A12D2Fd68b26D328'.toLowerCase()] = 'Face Shaver';
 staticLabels['0x512A964844b2AB7Bc5b8bcAA77688Cb8931a15a8'.toLowerCase()] = 'Pavel';
 staticLabels['0xb81cf4981ef648aaa73f07a18b03970f04d5d8bf'.toLowerCase()] = 'klob';
+staticLabels['0x3308Fe7f84245134dAF735cdf1B8188bfC41Df7D'.toLowerCase()] = 'Tom';
 staticLabels['0xB6B9E9e56AB5a4AF927faa802ac93786352f3af9'.toLowerCase()] = 'Spearbit';
 staticLabels['0xB1e7cC3fa5924518530b6efA0Ca484e71343c0E5'.toLowerCase()] = 'Immunefi 1';
 staticLabels['0x20cA5E93Db3cfec02407467945b991f544e8f7A5'.toLowerCase()] = 'Immunefi 2';

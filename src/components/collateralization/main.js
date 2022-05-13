@@ -5,7 +5,7 @@ import IERC20Abi from '../../abi/IERC20.json';
 import IOracleAbi from '../../abi/IOracle.json';
 import IPCVDepositAbi from '../../abi/IPCVDeposit.json';
 import FixedPricePSMAbi from '../../abi/FixedPricePSM.json';
-import { getProvider, getSigner, getAccount } from '../wallet/wallet';
+import { getSigner, getAccount } from '../wallet/wallet';
 import $ from 'jquery';
 import './main.css';
 import imgAgeur from './img/ageur.png';
@@ -22,6 +22,8 @@ import imgRai from './img/rai.jpg';
 import imgSteth from './img/wsteth.jpg';
 import label from '../../modules/label';
 
+const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT');
+
 const collateralizationOracle = '0xFF6f59333cfD8f4Ebc14aD0a0E181a83e655d257';
 const fei = '0x956F47F50A910163D8BF957Cf5846D573E7f87CA';
 
@@ -35,25 +37,25 @@ function ERC20(address) {
   return new ethers.Contract(
     address,
     IERC20Abi,
-    getProvider()
+    provider
   );
 }
 function IPCVDeposit(address) {
   return new ethers.Contract(
     address,
     IPCVDepositAbi,
-    getProvider()
+    provider
   );
 }
 var CollateralizationOracle = new ethers.Contract(
   collateralizationOracle,
   CollateralizationOracleAbi,
-  getProvider()
+  provider
 );
 var Fei = new ethers.Contract(
   fei,
   IERC20Abi,
-  getProvider()
+  provider
 );
 
 class c extends Component {
@@ -123,7 +125,7 @@ class c extends Component {
       var oracle = new ethers.Contract(
         this.state.tokenToOracle[tokenAddress],
         IOracleAbi,
-        getProvider()
+        provider
       );
       
       this.state.tokens[tokenAddress] = {
@@ -139,7 +141,7 @@ class c extends Component {
         var deposit = new ethers.Contract(
           depositAddress,
           IPCVDepositAbi,
-          getProvider()
+          provider
         );
         var resistantBalanceAndFei = await deposit.resistantBalanceAndFei();
         var balance = resistantBalanceAndFei[0].toString() / 1e18;
@@ -253,7 +255,7 @@ class c extends Component {
     var token = new ethers.Contract(
       address,
       IERC20Abi,
-      getProvider()
+      provider
     );
     return await token.symbol();
   }
@@ -421,7 +423,7 @@ class c extends Component {
       var contract = new ethers.Contract(
         address,
         FixedPricePSMAbi,
-        getProvider()
+        provider
       );
       let redeems = await contract.queryFilter(contract.filters.Redeem());
       const redeemProfits = redeems.reduce((acc, cur) => {
@@ -436,7 +438,7 @@ class c extends Component {
       var contract = new ethers.Contract(
         address,
         FixedPricePSMAbi,
-        getProvider()
+        provider
       );
       let redeems = await contract.queryFilter(contract.filters.Redeem());
       const redeemProfits = redeems.reduce((acc, cur) => {

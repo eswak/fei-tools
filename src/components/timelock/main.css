@@ -9,6 +9,9 @@
   font-family: monospace;
   font-size: 12px;
 }
+.timelock .transactions .transaction.pending {
+  background: #f9fdb9;
+}
 .timelock .transactions .transaction .date {
   float: right;
 }

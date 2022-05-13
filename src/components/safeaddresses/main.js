@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { ethers } from 'ethers';
 import PCVGuardianAbi from '../../abi/PCVGuardian.json';
-import { getProvider, getSigner, getAccount } from '../wallet/wallet';
 import './main.css';
 import label from '../../modules/label';
+
+const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT');
 
 const pcvGuardianAddress = '0x2D1b1b509B6432A73e3d798572f0648f6453a5D9';
 var pcvGuardian = new ethers.Contract(
   pcvGuardianAddress,
   PCVGuardianAbi,
-  getProvider()
+  provider
 );
 
 class c extends Component {

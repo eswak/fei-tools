@@ -7,6 +7,8 @@ import moment from 'moment';
 import './main.css';
 import label from '../../modules/label';
 
+const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT');
+
 const $getJSON = (url) => {
   return new Promise((resolve) => {
     $.getJSON(url, resolve);
@@ -16,9 +18,8 @@ const $getJSON = (url) => {
 var timelock = new ethers.Contract(
   '0xbC9C084a12678ef5B516561df902fdc426d95483', // OA Timelock
   TimelockAbi,
-  getProvider()
+  provider
 );
-window.provider = getProvider();
 
 class c extends Component {
   constructor(props) {
@@ -41,25 +42,57 @@ class c extends Component {
     this.state.calls = [];
 
     // read timelock events
-    let calls = await timelock.queryFilter(timelock.filters.CallExecuted());
-    for (var i = 0; i < calls.length; i++) {
-      var call = calls[i];
-      var from = (await call.getTransaction()).from;
+    // cancelled
+    var cancels= [];
+    let cancelCalls = await timelock.queryFilter(timelock.filters.Cancelled());
+    cancelCalls.forEach(function(call) {
+      cancels.push({
+        id: call.args.id,
+        blockNumber: call.blockNumber,
+        transactionHash: call.transactionHash
+      });
+    });
+    // executed
+    let executedCalls = await timelock.queryFilter(timelock.filters.CallExecuted());
+    console.log('executedCalls', executedCalls);
+    for (var i = 0; i < executedCalls.length; i++) {
+      var call = executedCalls[i];
       this.state.calls.unshift({
         loading: true,
+        getTransaction: call.getTransaction,
         id: call.args.id,
         blockNumber: call.blockNumber,
         blockHash: call.blockHash,
-        executedBy: from,
-        //executedByLabel: await label(from),
         txHash: call.transactionHash,
-        //timestamp: (await call.getBlock()).timestamp * 1000,
-        //date: moment((await call.getBlock()).timestamp * 1000).format('DD MMMM YY, HH:mm'),
         index: call.args.index.toString(),
         target: call.args.target,
-        //targetLabel: await label(call.args.target),
         value: call.args.value.toString(),
-        data: call.args.data
+        data: call.args.data,
+        delay: 0
+      });
+    }
+    // queued
+    let queuedCalls = await timelock.queryFilter(timelock.filters.CallScheduled());
+    console.log('queuedCalls', queuedCalls);
+    for (var i = 0; i < queuedCalls.length; i++) {
+      var call = queuedCalls[i];
+      var found = false;
+      for (var j = 0; j < this.state.calls.length; j++) {
+        if (this.state.calls[j].id == call.args.id && !this.state.calls[j].delay) found = true;
+      }
+      if (found) continue;
+      this.state.calls.unshift({
+        loading: true,
+        getTransaction: call.getTransaction,
+        id: call.args.id,
+        blockNumber: call.blockNumber,
+        blockHash: call.blockHash,
+        txHash: call.transactionHash,
+        index: call.args.index.toString(),
+        target: call.args.target,
+        value: call.args.value.toString(),
+        data: call.args.data,
+        delay: call.args.delay.toString() / 1
       });
     }
 
@@ -69,13 +102,26 @@ class c extends Component {
       that.forceUpdate();
     }, 100);
 
+    this.state.calls = this.state.calls.filter(function(call) {
+      var cancelled = false;
+      cancels.forEach(function(cancel) {
+        if (cancel.id == call.id && cancel.blockNumber > call.blockNumber) {
+          cancelled = true;
+        }
+      });
+      return !cancelled;
+    });
+
     for (var i = 0; i < this.state.calls.length; i++) {
       var call = this.state.calls[i];
-      
+      var from = (await call.getTransaction()).from;
+      delete call['getTransaction'];
+      call.executedBy = from;
       call.executedByLabel = await label(call.executedBy);
-      var block = await getProvider().getBlock(call.blockHash);
+      var block = await provider.getBlock(call.blockHash);
       call.timestamp = block.timestamp * 1000;
       call.date = moment(block.timestamp * 1000).format('DD MMMM YY, HH:mm');
+      call.execDate = moment((block.timestamp + call.delay) * 1000).format('DD MMMM YY, HH:mm');
       call.targetLabel = await label(call.target);
 
       var data = await $getJSON('https://api.etherscan.io/api?module=contract&apikey=Q1SN85UMI8HDCDREN123VZK2M6UCBMIMD4&action=getabi&address=' + call.target);
@@ -91,9 +137,9 @@ class c extends Component {
         
         // contract is likely a proxy, fetch the implementation's ABI
         if (iface.functions['implementation()'] && iface.functions['upgradeTo(address)']) {
-          var eip1967 = await getProvider().getStorageAt(call.target, '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc');
+          var eip1967 = await provider.getStorageAt(call.target, '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc');
           var ozProxy = null;
-          if (!Number(eip1967)) ozProxy = await getProvider().getStorageAt(call.target, '0x7050c9e0f4ca769c69bd3a8ef740bc37934f8e2c036e5a723fd8ee048ed3f8c3');
+          if (!Number(eip1967)) ozProxy = await provider.getStorageAt(call.target, '0x7050c9e0f4ca769c69bd3a8ef740bc37934f8e2c036e5a723fd8ee048ed3f8c3');
           var implementationAddressStorageSlotValue = ozProxy || eip1967 || null;
 
           if (Number(implementationAddressStorageSlotValue) != 0) {
@@ -172,7 +218,7 @@ class c extends Component {
             <div className="text-center">Reading latest on-chain data...</div>
           </div> : null }
           { this.state.calls.length != 0 ? <div className="transactions">
-            { (this.state.calls || []).map((call, i) => <div key={i} className={'transaction ' + (i%2?'odd':'even')}>
+            { (this.state.calls || []).map((call, i) => <div key={i} className={'transaction ' + (i%2?'odd':'even') + (call.delay ? ' pending' : '')}>
               { call.loading ? <div>
                 Loading...
               </div> : 
@@ -183,8 +229,14 @@ class c extends Component {
                 <div className="fn">
                   <a href={'https://etherscan.io/address/' + call.target} target="_blank">{call.targetLabel}</a>.{call.fnName}
                 </div>
+                { call.delay ? <div>
+                  <div style={{'float':'right'}}>Exec after {call.execDate}</div>
+                  <strong>Transaction id</strong> {call.id}
+                </div> : null}
                 <div>
-                  <strong>Executed by</strong> <a href={'https://etherscan.io/address/' + call.executedBy} target="_blank">{call.executedByLabel}</a>
+                  <strong>{ call.delay ? 'Queued by' : 'Executed by'}</strong>
+                  &nbsp;
+                  <a href={'https://etherscan.io/address/' + call.executedBy} target="_blank">{call.executedByLabel}</a>
                 </div>
                 <div>
                   <strong>Value</strong> {call.value / 1e18} ether
