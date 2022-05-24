@@ -15,31 +15,74 @@ const $getJSON = (url) => {
   });
 }
 
-var timelock = new ethers.Contract(
-  '0xbC9C084a12678ef5B516561df902fdc426d95483', // OA Timelock
-  TimelockAbi,
-  provider
-);
+var timelock;
+var intervalDraw;
 
 class c extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      timelocks: {
+        'Optimistic Aproval Timelock': '0xbC9C084a12678ef5B516561df902fdc426d95483',
+        'Ops Optimistic Aproval Timelock': '0x7DC26A320a9f70Db617e24B77aCA1D3DC48C5721',
+        'Tribal Council Timelock': '0xe0C7DE94395B629860Cbb3c42995F300F56e6d7a'
+      },
+      timelock: null,
       calls: []
     };
   }
 
   async componentWillMount() {
-    await this.refreshData();
+    var that = this;
+    intervalDraw = setInterval(function() {
+      that.setState(that.state);
+      that.forceUpdate();
+    }, 100);
   }
 
-  /*componentWillUnmount() {
-    clearInterval(intervalRefresh);
-    clearTimeout(setProgressTimeout);
-  }*/
+  componentWillUnmount() {
+    clearInterval(intervalDraw);
+  }
+
+  async setTimelock(addr) {
+    this.state.timelock = addr;
+    this.state.minDelay = null;
+    this.state.calls = [];
+    this.state.roles = {};
+    if (addr) {
+      timelock = new ethers.Contract(
+        addr,
+        TimelockAbi,
+        provider
+      );
+      this.state.minDelay = await timelock.getMinDelay();
+    }
+    this.setState(this.state);
+    if (addr) {
+      await this.refreshData();
+    }
+  }
 
   async refreshData() {
     this.state.calls = [];
+
+    let roleGrantedCalls = await timelock.queryFilter(timelock.filters.RoleGranted());
+    let roleRevokedCalls = await timelock.queryFilter(timelock.filters.RoleRevoked());
+    var roles = {};
+    roleGrantedCalls.forEach(function(call) {
+      roles[call.args.role] = roles[call.args.role] || {};
+      roles[call.args.role][call.args.account] = true;
+    });
+    roleRevokedCalls.forEach(function(call) {
+      delete roles[call.args.role][call.args.account];
+    });
+    this.state.roles = roles;
+    // add address labels
+    for (var role in this.state.roles) {
+      for (var address in this.state.roles[role]) {
+        this.state.roles[role][address] = await label(address);
+      }
+    }
 
     // read timelock events
     // cancelled
@@ -95,12 +138,6 @@ class c extends Component {
         delay: call.args.delay.toString() / 1
       });
     }
-
-    var that = this;
-    var interval = setInterval(function() {
-      that.setState(that.state);
-      that.forceUpdate();
-    }, 100);
 
     this.state.calls = this.state.calls.filter(function(call) {
       var cancelled = false;
@@ -193,8 +230,6 @@ class c extends Component {
       call.loading = false;
     }
 
-    clearInterval(interval);
-
     // set state & redraw
     this.setState(this.state);
     this.forceUpdate();
@@ -208,14 +243,50 @@ class c extends Component {
     return (
       <div className="timelock">
         <div className="card section">
-          <h1 className="mb-3">OA Timelock Transactions</h1>
-          <div className="info">
-            <p>This page shows the latest transactions executed on the <a href="https://etherscan.io/address/0xbC9C084a12678ef5B516561df902fdc426d95483" target="_blank">Optimistic Approval Timelock</a>.</p>
-            <p>See also the <a href="https://docs.google.com/spreadsheets/d/1Nvd96BeqKqW_muiIeq2xc7cqma27a2qf4_xaSZgL-Rg/edit#gid=0" target="_blank">OA Execution spreadsheet</a>.</p>
-          </div>
-          { this.state.calls.length == 0 ? <div className="info">
-            <hr/>
+          <h1 className="mb-3">Tribe DAO Timelocks</h1>
+          { this.state.timelock == null ? <div className="info">
+            <p>This page shows the latest transactions executed on the Tribe DAO timelocks, and their current configuration.</p>
+            <p>Select one of the timelocks below :</p>
+            <ul>
+              { Object.keys(this.state.timelocks).map((label) => <li>
+                <a href="javascript:void(0)" onClick={(e)=>this.setTimelock(this.state.timelocks[label])}>{label}</a>
+              </li>)}
+            </ul>
+          </div> : null }
+          { this.state.calls.length == 0 && this.state.timelock ? <div className="info">
             <div className="text-center">Reading latest on-chain data...</div>
+          </div> : null }
+          { this.state.calls.length != 0 ? <div className="info">
+            <p>
+              <strong>Link to the timelock: </strong> <a target="_blank" href={'https://etherscan.io/address/' + this.state.timelock}>
+                {this.state.timelock}
+              </a>
+              &nbsp;
+              (<a href="javascript:void(0)" onClick={(e)=>this.setTimelock(null)}>back to timelock list</a>)
+            </p>
+            <p>
+              <strong>Minimum execution delay: </strong> {Math.round(this.state.minDelay/3600)} hours
+            </p>
+          </div> : null }
+          { this.state.calls.length != 0 ? <div className="roles">
+            <p>
+              <strong>Admins: </strong>
+              { Object.keys(this.state.roles['0x5f58e3a2316349923ce3780f8d587db2d72378aed66a8261c916544fa6846ca5']).map((address) => <a target="_blank" href={'https://etherscan.io/address/' + address} className="address">
+                {this.state.roles['0x5f58e3a2316349923ce3780f8d587db2d72378aed66a8261c916544fa6846ca5'][address]}
+              </a>)}
+            </p>
+            <p>
+              <strong>Proposers: </strong>
+              { Object.keys(this.state.roles['0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1']).map((address) => <a target="_blank" href={'https://etherscan.io/address/' + address} className="address">
+                {this.state.roles['0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1'][address]}
+              </a>)}
+            </p>
+            <p>
+              <strong>Executors: </strong>
+              { Object.keys(this.state.roles['0xd8aa0f3194971a2a116679f7c2090f6939c8d4e01a2a8d7e41d55e5351469e63']).map((address) => <a target="_blank" href={'https://etherscan.io/address/' + address} className="address">
+                {this.state.roles['0xd8aa0f3194971a2a116679f7c2090f6939c8d4e01a2a8d7e41d55e5351469e63'][address]}
+              </a>)}
+            </p>
           </div> : null }
           { this.state.calls.length != 0 ? <div className="transactions">
             { (this.state.calls || []).map((call, i) => <div key={i} className={'transaction ' + (i%2?'odd':'even') + (call.delay ? ' pending' : '')}>

@@ -15,6 +15,10 @@ var ensNames = {};
 var staticLabels = {};
 staticLabels['0x001509564e1a6dbad921feea38735c2491c8a7d4'.toLowerCase()] = 'DioDionysos';
 staticLabels['0x40b12d200404c0d082b6d088ab24ceded6bcf8c2'.toLowerCase()] = 'Joey';
+staticLabels['0xE2388f22cf5e328C197D6530663809cc0408a510'.toLowerCase()] = 'Joey';
+staticLabels['0xc8eefb8b3d50ca87Da7F99a661720148acf97EfA'.toLowerCase()] = 'Brianna';
+staticLabels['0x6ef71cA9cD708883E129559F5edBFb9d9D5C6148'.toLowerCase()] = 'Eswak';
+staticLabels['0xcE96fE7Eb7186E9F894DE7703B4DF8ea60E2dD77'.toLowerCase()] = 'Eswak';
 staticLabels['0xefe96f4dfed2f47362be86d936f3d7b9f553585d'.toLowerCase()] = 'Meertitan';
 staticLabels['0xA6D08774604d6Da7C96684ca6c4f61f89c4e5b96'.toLowerCase()] = 'Bruno';
 staticLabels['0x51300B7a9E75376ABaB7B3d4F9Fd505bB314BE43'.toLowerCase()] = 'Count Vidal';
@@ -32,6 +36,13 @@ staticLabels['0x2974Ec195D9b7e9B012769B890106885C165D6f5'.toLowerCase()] = 'Zell
 staticLabels['0x192bDD30D272AabC2B1c3c719c518F0f2d10cc60'.toLowerCase()] = 'WatchPug (Code4rena warden)';
 staticLabels['0xe1F2a7342459b54fBFea9F40695cdD46EFadEEeE'.toLowerCase()] = 'Compound FEI PCVDeposit';
 staticLabels['0x525eA5983A2e02abA8aA0BE7D15Cd73150812379'.toLowerCase()] = 'Fuse pool 156 (Convex) FEI PCVDeposit';
+staticLabels['0xB8f482539F2d3Ae2C9ea6076894df36D1f632775'.toLowerCase()] = 'Fei Guardian Multisig';
+staticLabels['0xbC9C084a12678ef5B516561df902fdc426d95483'.toLowerCase()] = 'Tribe OA Timelock';
+staticLabels['0x7DC26A320a9f70Db617e24B77aCA1D3DC48C5721'.toLowerCase()] = 'Tribe OPS OA Timelock';
+staticLabels['0xd51dbA7a94e1adEa403553A8235C302cEbF41a3c'.toLowerCase()] = 'Tribe DAO Timelock';
+staticLabels['0x35ED000468f397AA943009bD60cc6d2d9a7d32fF'.toLowerCase()] = 'Tribe OA Multisig';
+staticLabels['0xe0C7DE94395B629860Cbb3c42995F300F56e6d7a'.toLowerCase()] = 'Tribal Council Timelock';
+staticLabels['0x2EC598d8e3DF35E5D6F13AE2f05a7bB2704e92Ea'.toLowerCase()] = 'Tribal Coulcil Multisig';
 
 async function label(address) {
   if (staticLabels[(address || '').toLowerCase()]) return staticLabels[(address || '').toLowerCase()];

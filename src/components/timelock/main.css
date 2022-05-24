@@ -1,6 +1,18 @@
 .timelock {
   
 }
+.timelock .roles .address {
+  border: 1px solid #007bff;
+  color: #007bff;
+  margin-right: 5px;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-family: monospace;
+  white-space: nowrap;
+}
+.timelock .roles .address:hover {
+  text-decoration:none;
+}
 .timelock .transactions {
   
 }
