@@ -506,8 +506,8 @@ class c extends Component {
                   <th>PCV Deposit</th>
                   <th className="text-center">Protocol</th>
                   <th className="text-right">Balance</th>
-                  <th className="text-right">Balance (USD)</th>
                   <th className="text-right">Protocol FEI</th>
+                  <th className="text-right">Balance + FEI (USD)</th>
                   <th className="text-right">Revenue</th>
                 </tr>
               </thead>
@@ -522,8 +522,8 @@ class c extends Component {
                   </td>
                   <td className="text-center">{deposit.protocol || '-'}</td>
                   <td className="text-right nowrap">{formatNumber(deposit.balance)}</td>
-                  <td className="text-right nowrap">{formatNumber(deposit.balanceUSD, '$ ')}</td>
                   <td className="text-right nowrap">{formatNumber(deposit.fei)}</td>
+                  <td className="text-right nowrap">{formatNumber(deposit.balanceUSD + deposit.fei, '$ ')}</td>
                   <td className="text-right nowrap">
                     {deposit.pl ? <span className={deposit.pl>0?'positive':'negative'}>
                       {formatNumber(deposit.pl, '$ ')}
