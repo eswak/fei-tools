@@ -203,6 +203,7 @@ class c extends Component {
           var value = tx.args[j].toString();
           var valueLabel = value;
           if (type == 'address') valueLabel = await label(value);
+          if (type == 'bytes32') valueLabel = await label(value);
           if (type == 'uint256') valueLabel = formatNumber(value);
           if (type == 'address[]') {
             valueLabel = [];
@@ -248,7 +249,7 @@ class c extends Component {
             <p>This page shows the latest transactions executed on the Tribe DAO timelocks, and their current configuration.</p>
             <p>Select one of the timelocks below :</p>
             <ul>
-              { Object.keys(this.state.timelocks).map((label) => <li>
+              { Object.keys(this.state.timelocks).map((label, i) => <li key={i}>
                 <a href="javascript:void(0)" onClick={(e)=>this.setTimelock(this.state.timelocks[label])}>{label}</a>
               </li>)}
             </ul>
@@ -271,19 +272,19 @@ class c extends Component {
           { this.state.calls.length != 0 ? <div className="roles">
             <p>
               <strong>Admins: </strong>
-              { Object.keys(this.state.roles['0x5f58e3a2316349923ce3780f8d587db2d72378aed66a8261c916544fa6846ca5']).map((address) => <a target="_blank" href={'https://etherscan.io/address/' + address} className="address">
+              { Object.keys(this.state.roles['0x5f58e3a2316349923ce3780f8d587db2d72378aed66a8261c916544fa6846ca5']).map((address, i) => <a key={i} target="_blank" href={'https://etherscan.io/address/' + address} className="address">
                 {this.state.roles['0x5f58e3a2316349923ce3780f8d587db2d72378aed66a8261c916544fa6846ca5'][address]}
               </a>)}
             </p>
             <p>
               <strong>Proposers: </strong>
-              { Object.keys(this.state.roles['0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1']).map((address) => <a target="_blank" href={'https://etherscan.io/address/' + address} className="address">
+              { Object.keys(this.state.roles['0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1']).map((address, i) => <a key={i} target="_blank" href={'https://etherscan.io/address/' + address} className="address">
                 {this.state.roles['0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1'][address]}
               </a>)}
             </p>
             <p>
               <strong>Executors: </strong>
-              { Object.keys(this.state.roles['0xd8aa0f3194971a2a116679f7c2090f6939c8d4e01a2a8d7e41d55e5351469e63']).map((address) => <a target="_blank" href={'https://etherscan.io/address/' + address} className="address">
+              { Object.keys(this.state.roles['0xd8aa0f3194971a2a116679f7c2090f6939c8d4e01a2a8d7e41d55e5351469e63']).map((address, i) => <a key={i} target="_blank" href={'https://etherscan.io/address/' + address} className="address">
                 {this.state.roles['0xd8aa0f3194971a2a116679f7c2090f6939c8d4e01a2a8d7e41d55e5351469e63'][address]}
               </a>)}
             </p>
