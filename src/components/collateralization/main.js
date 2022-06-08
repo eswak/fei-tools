@@ -63,9 +63,11 @@ class c extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
       getTokensInPcv: [],
       getDepositsForToken: {},
-      tokenToOracle: {}
+      tokenToOracle: {},
+      logs: []
     };
   }
 
@@ -92,6 +94,18 @@ class c extends Component {
     await this.refreshData();
   }
 
+  log(...args) {
+    this.state.logs.push(args.join(' '));
+    this.state.nLogs = this.state.logs.length;
+    this.setState(this.state);
+    this.forceUpdate();
+    console.log.apply(console, args);
+    setTimeout(function() {
+      var el = document.querySelector('.collateralization .logs');
+      if (el) el.scroll(0, el.scrollHeight);
+    }, 10);
+  }
+
   /*componentWillUnmount() {
     clearInterval(intervalRefresh);
     clearTimeout(setProgressTimeout);
@@ -99,6 +113,7 @@ class c extends Component {
 
   async refreshData() {
     // fetch Coingecko data
+    this.log('Fetching price data on Coingecko...');
     const cgko = (await $getJSON('https://api.coingecko.com/api/v3/simple/price?ids=angle-protocol,balancer,curve-dao-token,tribe-2,convex-finance,tokemak,aave,compound-governance-token,liquity&vs_currencies=usd'));
     this.state.cgko = {};
     this.state.cgko['AAVE'] = cgko['aave'].usd;
@@ -112,16 +127,23 @@ class c extends Component {
     this.state.cgko['TRIBE'] = cgko['tribe-2'].usd;
 
     // read CR oracle
+    this.log('Reading CR Oracle...');
+    this.log('  collateralizationOracle.getTokensInPcv() // List tokens in PCV...');
     this.state.getTokensInPcv = await CollateralizationOracle.getTokensInPcv();
+    this.log('  Get PCVDeposits for each tokens...');
     for (var i = 0; i < this.state.getTokensInPcv.length; i++) {
       var tokenAddress = this.state.getTokensInPcv[i];
+      this.log('    collateralizationOracle.getDepositsForToken(' + await label(tokenAddress) + ')');
       this.state.getDepositsForToken[tokenAddress] = await CollateralizationOracle.getDepositsForToken(tokenAddress);
     }
+    this.log('  Get Oracle for each tokens...');
     for (var i = 0; i < this.state.getTokensInPcv.length; i++) {
       var tokenAddress = this.state.getTokensInPcv[i];
+      this.log('    collateralizationOracle.tokenToOracle(' + await label(tokenAddress) + ')');
       this.state.tokenToOracle[tokenAddress] = await CollateralizationOracle.tokenToOracle(tokenAddress);
     }
     this.state.tokens = {};
+    this.log('  Read Oracle values...');
     for (var i = 0; i < this.state.getTokensInPcv.length; i++) {
       var tokenAddress = this.state.getTokensInPcv[i];
       var oracle = new ethers.Contract(
@@ -130,6 +152,7 @@ class c extends Component {
         provider
       );
       
+      this.log('    ' + await label(oracle.address) + '.read()');
       this.state.tokens[tokenAddress] = {
         symbol: await this.getTokenSymbol(tokenAddress),
         value: (await oracle.read())[0].toString() / 1e18
@@ -137,9 +160,12 @@ class c extends Component {
     }
     this.state.deposits = [];
     for (var i = 0; i < this.state.getTokensInPcv.length; i++) {
+      this.log('Token', i+1, '/', this.state.getTokensInPcv.length, '[' + this.state.tokens[tokenAddress].symbol + ']');
       var tokenAddress = this.state.getTokensInPcv[i];
       for (var j = 0; j < this.state.getDepositsForToken[tokenAddress].length; j++) {
         var depositAddress = this.state.getDepositsForToken[tokenAddress][j];
+        var depositLabel = await label(depositAddress);
+        this.log('  ' + depositLabel + '.resistantBalanceAndFei() // Loading data for deposit', j+1, '/', this.state.getDepositsForToken[tokenAddress].length, '...');
         var deposit = new ethers.Contract(
           depositAddress,
           IPCVDepositAbi,
@@ -151,7 +177,7 @@ class c extends Component {
         var fei = resistantBalanceAndFei[1].toString() / 1e18;
         this.state.deposits.push({
           address: depositAddress,
-          label: await label(depositAddress),
+          label: depositLabel,
           description: await this.getDepositDescription(depositAddress),
           protocol: await this.getDepositProtocol(depositAddress),
           token: this.state.tokens[tokenAddress].symbol,
@@ -162,12 +188,14 @@ class c extends Component {
         });
       }
     }
+    this.log('Chain state reading done. Get data for global stats...');
 
     // Compute global stats
     this.state.pcv = this.state.deposits.reduce(function(acc, cur) {
       acc += cur.balanceUSD;
       return acc;
     }, 0);
+    this.log('  fei.totalSupply() // get FEI totalSupply...');
     this.state.totalFei = (await Fei.totalSupply()).toString() / 1e18;
     this.state.protocolFei = this.state.deposits.reduce(function(acc, cur) {
       acc += cur.fei;
@@ -226,6 +254,8 @@ class c extends Component {
 
     // TRIBE
     var tribe = ERC20('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B');
+    this.log('  tribe.totalSupply() // get TRIBE totalSupply...');
+    this.log('  tribe.balanceOf(core) // get TRIBE in treasury...');
     this.state.tribeTotalSupply = (await tribe.totalSupply()).toString() / 1e18;
     this.state.tribeInTreasury = (await tribe.balanceOf('0x8d5ED43dCa8C2F7dFB20CF7b53CC7E593635d7b9')).toString() / 1e18;
     this.state.tribeCirculating = this.state.tribeTotalSupply - this.state.tribeInTreasury;
@@ -235,6 +265,9 @@ class c extends Component {
     // sort deposits
     //this.state.deposits.sort(function(a,b) { return a.label > b.label ? 1 : -1 });
     this.state.deposits.sort(function(a,b) { return (a.balanceUSD + a.fei) < (b.balanceUSD + b.fei) ? 1 : -1 });
+
+    this.log('Done.');
+    this.state.loading = false;
 
     // set state & redraw
     this.setState(this.state);
@@ -496,11 +529,11 @@ class c extends Component {
             <p>Revenue calculations are made only on PCV deployments, and other revenue streams from the DAO (like the <a href="https://metrics.rari.capital/d/NlUs6DwGk/fuse-overview?orgId=1&refresh=5m" target="_blank">~1.9M$ Fuse platform fees</a>) are not accounted here.</p>
             <p><strong>For global stats, scroll below the big table.</strong></p>
           </div>
-          { this.state.getTokensInPcv.length == 0 ? <div className="info">
+          { this.state.loading ? <div className="info">
             <hr/>
-            <div className="text-center">Reading latest on-chain data (this can take several seconds / a minute)...</div>
+            <div className="text-center loading">Reading latest on-chain data (this can take several seconds / a minute)...</div>
           </div> : null }
-          { this.state.getTokensInPcv.length != 0 ? <div>
+          { !this.state.loading ? <div>
             <table className="mb-3">
               <thead>
                 <tr>
@@ -640,6 +673,9 @@ class c extends Component {
               </tbody>
             </table>
           </div> : null }
+          <div className="logs">
+            {this.state.logs.map((log, i) => <div key={i} className="log">{log}</div>)}
+          </div>
         </div>
       </div>
     );
