@@ -72,13 +72,14 @@ async function label(address) {
       'PROPOSER_ROLE',
       'EXECUTOR_ROLE',
       'DEFAULT_ADMIN_ROLE',
-      'CANCELLER_ROLE'
+      'CANCELLER_ROLE',
+      'AUTO_REWARDS_DISTRIBUTOR_ROLE'
     ].forEach((role) => {
       staticLabels[ethers.utils.id(role)] = role;
     });
     
     var str = (
-      ('{' + mainnetAddresses.split('MainnetAddresses = {')[1].split('};')[0] + '}')
+      ('{' + mainnetAddresses.split('MainnetContractsConfig = {')[1].split('};')[0] + '}')
         .replace('artifactName: AddressCategory.Core', 'artifactName:\'Core\'')
         .replace(/category:.*/g, '')
         .replace(/\/\/.*/g, '')

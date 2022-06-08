@@ -19,6 +19,7 @@ import imgDai from './img/dai.jpg';
 import imgDpi from './img/dpi.jpg';
 import imgUsd from './img/usd.jpg';
 import imgRai from './img/rai.jpg';
+import imgVolt from './img/volt.ico';
 import imgSteth from './img/wsteth.jpg';
 import label from '../../modules/label';
 
@@ -83,6 +84,7 @@ class c extends Component {
     if (symbol === 'DPI') return <img className="token" src={imgDpi} title="DPI"></img>;
     if (symbol === 'USD') return <img className="token" src={imgUsd} title="USD"></img>;
     if (symbol === 'RAI') return <img className="token" src={imgRai} title="RAI"></img>;
+    if (symbol === 'VOLT') return <img className="token" src={imgVolt} title="VOLT"></img>;
     return symbol;
   }
 
