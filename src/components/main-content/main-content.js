@@ -44,7 +44,7 @@ class MainContent extends Component {
               &nbsp;
               <a className="btn" href="#/SafeAddresses">Fei Safe Addresses</a>
               &nbsp;
-              <a className="btn" href="#/TimelockTransactions">OA Timelock Transactions</a>
+              <a className="btn" href="#/TimelockTransactions">Tribe DAO Timelocks</a>
             </p>
             <hr/>
             <p className="mb-0">

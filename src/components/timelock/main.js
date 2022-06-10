@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Contract, ethers } from 'ethers';
 import TimelockAbi from '../../abi/Timelock.json';
+import GovernanceMetadataRegistryAbi from '../../abi/GovernanceMetadataRegistry.json';
 import { getProvider, getSigner, getAccount } from '../wallet/wallet';
 import $ from 'jquery';
 import moment from 'moment';
@@ -16,6 +17,7 @@ const $getJSON = (url) => {
 }
 
 var timelock;
+var metadataRegistry;
 var intervalDraw;
 
 class c extends Component {
@@ -55,6 +57,11 @@ class c extends Component {
         TimelockAbi,
         provider
       );
+      metadataRegistry = new ethers.Contract(
+        '0xd78Cd3AaE6168BE43B548877aAc68312B9df9AFb',
+        GovernanceMetadataRegistryAbi,
+        provider
+      );
       this.state.minDelay = await timelock.getMinDelay();
     }
     this.setState(this.state);
@@ -65,6 +72,13 @@ class c extends Component {
 
   async refreshData() {
     this.state.calls = [];
+
+    let registerProposalEvents = await metadataRegistry.queryFilter(metadataRegistry.filters.RegisterProposal());
+    var metadataMap = {};
+    registerProposalEvents.forEach(function(event) {
+      metadataMap[event.args.proposalId.toHexString()] = event.args.metadata;
+    });
+    this.state.metadata = metadataMap;
 
     let roleGrantedCalls = await timelock.queryFilter(timelock.filters.RoleGranted());
     let roleRevokedCalls = await timelock.queryFilter(timelock.filters.RoleRevoked());
@@ -149,16 +163,31 @@ class c extends Component {
       return !cancelled;
     });
 
+    this.state.groupedCalls = this.state.calls.reduce(function(acc, cur, i) {
+      acc[cur.id] = acc[cur.id] || [];
+      acc[cur.id].push(i);
+      acc[cur.id].loading = true;
+      return acc;
+    }, {});
+
     for (var i = 0; i < this.state.calls.length; i++) {
       var call = this.state.calls[i];
-      var from = (await call.getTransaction()).from;
-      delete call['getTransaction'];
-      call.executedBy = from;
-      call.executedByLabel = await label(call.executedBy);
-      var block = await provider.getBlock(call.blockHash);
-      call.timestamp = block.timestamp * 1000;
-      call.date = moment(block.timestamp * 1000).format('DD MMMM YY, HH:mm');
-      call.execDate = moment((block.timestamp + call.delay) * 1000).format('DD MMMM YY, HH:mm');
+
+      if (!this.state.groupedCalls[call.id].timestamp) {
+        var from = (await call.getTransaction()).from;
+        var block = await provider.getBlock(call.blockHash);
+        var fromLabel = await label(from);
+
+        this.state.groupedCalls[call.id].loading = false;
+        this.state.groupedCalls[call.id].txHash = call.txHash;
+        this.state.groupedCalls[call.id].delay = call.delay;
+        this.state.groupedCalls[call.id].executedBy = from;
+        this.state.groupedCalls[call.id].executedByLabel = fromLabel;
+        this.state.groupedCalls[call.id].timestamp = block.timestamp * 1000;
+        this.state.groupedCalls[call.id].date = moment(block.timestamp * 1000).format('DD MMMM YY, HH:mm');
+        this.state.groupedCalls[call.id].execDate = moment((block.timestamp + call.delay) * 1000).format('DD MMMM YY, HH:mm');
+      }
+
       call.targetLabel = await label(call.target);
 
       var data = await $getJSON('https://api.etherscan.io/api?module=contract&apikey=Q1SN85UMI8HDCDREN123VZK2M6UCBMIMD4&action=getabi&address=' + call.target);
@@ -255,7 +284,7 @@ class c extends Component {
             </ul>
           </div> : null }
           { this.state.calls.length == 0 && this.state.timelock ? <div className="info">
-            <div className="text-center">Reading latest on-chain data...</div>
+            <div className="text-center">Reading Timelock configuration...</div>
           </div> : null }
           { this.state.calls.length != 0 ? <div className="info">
             <p>
@@ -289,74 +318,78 @@ class c extends Component {
               </a>)}
             </p>
           </div> : null }
-          { this.state.calls.length != 0 ? <div className="transactions">
-            { (this.state.calls || []).map((call, i) => <div key={i} className={'transaction ' + (i%2?'odd':'even') + (call.delay ? ' pending' : '')}>
-              { call.loading ? <div>
-                Loading...
-              </div> : 
-              <div>
-                <div className="date">
-                  <a href={'https://etherscan.io/tx/' + call.txHash} target="_blank">{call.date}</a>
+          { Object.keys(this.state.groupedCalls || []).length != 0 ? <div className="transactions">
+            { Object.keys(this.state.groupedCalls || []).map((callId, i) => <div key={i} className="group">
+              <div className="groupTitle">
+                Action {callId}
+              </div>
+              { this.state.groupedCalls[callId].timestamp ? <div className="groupInfo">
+                <div className="groupTx">
+                  <div>
+                    <strong>{ this.state.groupedCalls[callId].delay ? 'Queued on' : 'Executed on'}</strong> <a href={'https://etherscan.io/tx/' + this.state.groupedCalls[callId].txHash} target="_blank">{this.state.groupedCalls[callId].date}</a> by <a href={'https://etherscan.io/address/' + this.state.groupedCalls[callId].executedBy} target="_blank">{this.state.groupedCalls[callId].executedByLabel}</a>
+                  </div>
+                  { this.state.groupedCalls[callId].delay ? <div>
+                    <strong>Executable after</strong> {this.state.groupedCalls[callId].execDate}
+                  </div> : null}
                 </div>
-                <div className="fn">
-                  <a href={'https://etherscan.io/address/' + call.target} target="_blank">{call.targetLabel}</a>.{call.fnName}
-                </div>
-                { call.delay ? <div>
-                  <div style={{'float':'right'}}>Exec after {call.execDate}</div>
-                  <strong>Transaction id</strong> {call.id}
-                </div> : null}
-                <div>
-                  <strong>{ call.delay ? 'Queued by' : 'Executed by'}</strong>
-                  &nbsp;
-                  <a href={'https://etherscan.io/address/' + call.executedBy} target="_blank">{call.executedByLabel}</a>
-                </div>
-                <div>
-                  <strong>Value</strong> {call.value / 1e18} ether
-                </div>
-                { call.fnArgs.length ? <table className="args">
-                  <thead>
-                    <tr>
-                      <th>Argument</th>
-                      <th>Type</th>
-                      <th>Name</th>
-                      <th>Value</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    { (call.fnArgs || []).map((arg, i) => <tr key={i}>
-                      <td>{i}</td>
-                      <td>{arg.type}</td>
-                      <td>{arg.name}</td>
-                      <td title={arg.value}>
-                        {
-                          (arg.type == 'address') ? <div>
-                            <a href={'https://etherscan.io/address/' + arg.value} target="_blank">{arg.valueLabel}</a>
-                          </div> :
-                          (arg.type == 'address[]') ? <div>
-                            { (arg.value.split(',') || []).map((addr, i) => <div key={i}>
-                              {i}: <a href={'https://etherscan.io/address/' + addr} target="_blank">{arg.valueLabel.split(',')[i]}</a>
-                            </div>)}
-                          </div> :
-                          (arg.type == 'uint256[]') ? <div>
-                            { (arg.value.split(',') || []).map((num, i) => <div key={i}>
-                              {i}: {formatNumber(num)}
-                            </div>)}
-                          </div> :
-                          (arg.type == '-') ? <div>
-                            { (arg.value.match(/.{1,64}/g) || []).map((chunk, i) => <div key={i}>
-                              {i}: {chunk}
-                            </div>)}
-                          </div> :
-                          <div>{arg.valueLabel || arg.value}</div>
-                        }
-                      </td>
-                    </tr>)}
-                  </tbody>
-                </table> : null}
-                <pre style={{'display':'none'}}>{JSON.stringify(call,null,2)}</pre>
-              </div>}
+                { this.state.metadata[callId] ? <div className="groupDescription">{this.state.metadata[callId].replace(/\n+/g, '\n')}</div> : null }
+              </div> : null }
+              <div className="groupCalls">
+                { (this.state.groupedCalls[callId] || []).map((index, i) => <div key={i} className={'transaction ' + (i%2?'odd':'even') + (this.state.calls[index].delay ? ' pending' : '')}>
+                  { this.state.calls[index].loading ? <div className="fn">Loading...</div> : <div className="fn">
+                    <a href={'https://etherscan.io/address/' + this.state.calls[index].target} target="_blank">{this.state.calls[index].targetLabel}</a>.{this.state.calls[index].fnName}
+                    <div style={{'float':'right'}}>
+                      {this.state.calls[index].value / 1e18} ether
+                    </div>
+                  </div> }
+                  { (this.state.calls[index].fnArgs || []).length ? <table className="args">
+                    <thead>
+                      <tr>
+                        <th>Argument</th>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      { (this.state.calls[index].fnArgs || []).map((arg, i) => <tr key={i}>
+                        <td>{i}</td>
+                        <td>{arg.type}</td>
+                        <td>{arg.name}</td>
+                        <td title={arg.value}>
+                          {
+                            (arg.type == 'address') ? <div>
+                              <a href={'https://etherscan.io/address/' + arg.value} target="_blank">{arg.valueLabel}</a>
+                            </div> :
+                            (arg.type == 'address[]') ? <div>
+                              { (arg.value.split(',') || []).map((addr, i) => <div key={i}>
+                                {i}: <a href={'https://etherscan.io/address/' + addr} target="_blank">{arg.valueLabel.split(',')[i]}</a>
+                              </div>)}
+                            </div> :
+                            (arg.type == 'uint256[]') ? <div>
+                              { (arg.value.split(',') || []).map((num, i) => <div key={i}>
+                                {i}: {formatNumber(num)}
+                              </div>)}
+                            </div> :
+                            (arg.type == '-') ? <div>
+                              { (arg.value.match(/.{1,64}/g) || []).map((chunk, i) => <div key={i}>
+                                {i}: {chunk}
+                              </div>)}
+                            </div> :
+                            <div>{arg.valueLabel || arg.value}</div>
+                          }
+                        </td>
+                      </tr>)}
+                    </tbody>
+                  </table> : null}
+                  <pre style={{'display':'none'}}>{JSON.stringify(this.state.calls[index],null,2)}</pre>
+                </div>)}
+              </div>
             </div>)}
-          </div> : null }
+            
+          </div> : ((Object.keys(this.state.roles || {}) || []).length ? <div className="text-center p1">
+            Loading Timelock events (CallScheduled, CallExecuted, and Cancelled)...
+          </div> : null) }
         </div>
       </div>
     );
