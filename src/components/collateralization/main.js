@@ -184,7 +184,7 @@ class c extends Component {
           balance: balance,
           balanceUSD: balanceUSD,
           fei: fei,
-          pl: await this.getDepositPL(depositAddress, this.state.tokens[tokenAddress].value, balance, balanceUSD, fei)
+          //pl: await this.getDepositPL(depositAddress, this.state.tokens[tokenAddress].value, balance, balanceUSD, fei)
         });
       }
     }
@@ -205,6 +205,18 @@ class c extends Component {
     this.state.equity = this.state.pcv - this.state.circulatingFei;
     this.state.pl = this.state.deposits.reduce(function(acc, cur) {
       acc += cur.pl;
+      return acc;
+    }, 0);
+    const stableAssets = [
+      'DAI',
+      'LUSD',
+      'VOLT',
+      'agEUR',
+      'RAI'
+    ];
+    this.state.stableAssets = stableAssets;
+    this.state.stableBacking = this.state.deposits.reduce(function(acc, cur) {
+      if (stableAssets.indexOf(cur.token) != -1) acc += cur.balanceUSD;
       return acc;
     }, 0);
 
@@ -533,49 +545,13 @@ class c extends Component {
           <h1 className="mb-3">Collateralization Oracle</h1>
           <div className="info">
             <p>This page is a simple web tool that reads the <a href="https://etherscan.io/address/0xFF6f59333cfD8f4Ebc14aD0a0E181a83e655d257#code" target="_blank">Collateralization Oracle</a> of Fei Protocol, a smart contract that details where all the PCV assets that back the FEI stablecoin are deployed.</p>
-            <p>Additional metadata are hard-coded in the front-end, such as the PCV Deposit description, protocol, and rules for revenue calculations. Contract labels are fetched from <a href="https://github.com/fei-protocol/fei-protocol-core/blob/develop/protocol-configuration/mainnetAddresses.ts" target="_blank">Github</a>.</p>
-            <p>Revenue calculations are made since PCV deployments, so it has been higher in the recent months (when more strategies existed) than at the protocol genesis.</p>
-            <p>Revenue calculations are made only on PCV deployments, and other revenue streams from the DAO (like the <a href="https://metrics.rari.capital/d/NlUs6DwGk/fuse-overview?orgId=1&refresh=5m" target="_blank">~1.9M$ Fuse platform fees</a>) are not accounted here.</p>
-            <p><strong>For global stats, scroll below the big table.</strong></p>
+            <p>Additional metadata are hard-coded in the front-end, such as the PCV Deposit description and protocol. Contract labels are fetched from <a href="https://github.com/fei-protocol/fei-protocol-core/blob/develop/protocol-configuration/mainnetAddresses.ts" target="_blank">Github</a>.</p>
           </div>
           { this.state.loading ? <div className="info">
             <hr/>
             <div className="text-center loading">Reading latest on-chain data (this can take several seconds / a minute)...</div>
           </div> : null }
           { !this.state.loading ? <div>
-            <table className="mb-3">
-              <thead>
-                <tr>
-                  <th className="text-center">Token</th>
-                  <th>PCV Deposit</th>
-                  <th className="text-center">Protocol</th>
-                  <th className="text-right">Balance</th>
-                  <th className="text-right">Protocol FEI</th>
-                  <th className="text-right">Balance + FEI (USD)</th>
-                  <th className="text-right">Revenue</th>
-                </tr>
-              </thead>
-              <tbody>
-                { this.state.deposits.map((deposit, i) => <tr key={i} className={i%2?'odd':'even'}>
-                  <td className="text-center">{this.getTokenImage(deposit.token, deposit.address)}</td>
-                  <td>
-                    <a href={'https://etherscan.io/address/' + deposit.address} target="_blank">
-                      {deposit.label}
-                    </a>
-                    { deposit.description ? <div className="text-muted text-small">{deposit.description}</div> : null }
-                  </td>
-                  <td className="text-center">{deposit.protocol || '-'}</td>
-                  <td className="text-right nowrap">{formatNumber(deposit.balance)}</td>
-                  <td className="text-right nowrap">{formatNumber(deposit.fei)}</td>
-                  <td className="text-right nowrap">{formatNumber(deposit.balanceUSD + deposit.fei, '$ ')}</td>
-                  <td className="text-right nowrap">
-                    {deposit.pl ? <span className={deposit.pl>0?'positive':'negative'}>
-                      {formatNumber(deposit.pl, '$ ')}
-                    </span> : '-'}
-                  </td>
-                </tr>)}
-              </tbody>
-            </table>
             <table style={{'width':'auto', 'margin': '0 0 1em', 'background':'#eee', 'float': 'left'}}>
               <thead>
                 <tr>
@@ -594,6 +570,42 @@ class c extends Component {
                 <tr>
                   <td>User Circulating FEI</td>
                   <td><strong>{formatNumber(this.state.circulatingFei)}</strong></td>
+                </tr>
+                <tr>
+                  <td>Protocol Controlled Value</td>
+                  <td><strong>{formatNumber(this.state.pcv, '$ ')}</strong></td>
+                </tr>
+                <tr>
+                  <td>Protocol Equity (PCV - Circulating FEI)</td>
+                  <td><strong>{formatNumber(this.state.equity, '$ ')}</strong></td>
+                </tr>
+                <tr>
+                  <td>Collateral Ratio</td>
+                  <td><strong>{Math.round(100 * this.state.pcv / this.state.circulatingFei)} %</strong></td>
+                </tr>
+                <tr>
+                  <td>Stable Backing ({this.state.stableAssets.join(', ')})</td>
+                  <td><strong>{Math.round(100 * this.state.stableBacking / this.state.circulatingFei)} %</strong></td>
+                </tr>
+                <tr>
+                  <td>CR of FEI not backed by stables</td>
+                  <td><strong>{Math.round(100 * (this.state.pcv - this.state.stableBacking) / (this.state.circulatingFei - this.state.stableBacking))} %</strong></td>
+                </tr>
+                <tr>
+                  <td>TRIBE Total Supply</td>
+                  <td><strong>{formatNumber(this.state.tribeTotalSupply)}</strong></td>
+                </tr>
+                <tr>
+                  <td>TRIBE in DAO Treasury</td>
+                  <td><strong>{formatNumber(this.state.tribeInTreasury)}</strong></td>
+                </tr>
+                <tr>
+                  <td>TRIBE Circulating (+ Vesting + LM)</td>
+                  <td><strong>{formatNumber(this.state.tribeCirculating)}</strong></td>
+                </tr>
+                <tr>
+                  <td>TRIBE Circulating Market Cap</td>
+                  <td><strong>{formatNumber(this.state.cgko['TRIBE'] * this.state.tribeCirculating, '$ ')}</strong></td>
                 </tr>
               </tbody>
             </table>
@@ -624,61 +636,31 @@ class c extends Component {
                 </tr>)}
               </tbody>
             </table>
-            <table style={{'width':'auto', 'margin': '0 0 1em', 'background':'#eee', 'float': 'left', 'marginLeft': '1em'}}>
+            <table className="mb-3">
               <thead>
                 <tr>
-                  <th colSpan="2">TRIBE the asset</th>
+                  <th className="text-center">Token</th>
+                  <th>PCV Deposit</th>
+                  <th className="text-center">Protocol</th>
+                  <th className="text-right">Balance</th>
+                  <th className="text-right">Protocol FEI</th>
+                  <th className="text-right">Balance + FEI (USD)</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>TRIBE Total Supply</td>
-                  <td><strong>{formatNumber(this.state.tribeTotalSupply)}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE in DAO Treasury</td>
-                  <td><strong>{formatNumber(this.state.tribeInTreasury)}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE Circulating (+ Vesting + LM)</td>
-                  <td><strong>{formatNumber(this.state.tribeCirculating)}</strong></td>
-                </tr>
-                <tr>
-                  <td>Protocol Controlled Value</td>
-                  <td><strong>{formatNumber(this.state.pcv, '$ ')}</strong></td>
-                </tr>
-                <tr>
-                  <td>Protocol Equity (PCV - Circulating FEI)</td>
-                  <td><strong>{formatNumber(this.state.equity, '$ ')}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE Circulating Market Cap</td>
-                  <td><strong>{formatNumber(this.state.cgko['TRIBE'] * this.state.tribeCirculating, '$ ')}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE Book Value (Equity / Circ. MCap)</td>
-                  <td><strong>$ {Math.round(10000 * this.state.equity / this.state.tribeCirculating)/10000}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE Market Value</td>
-                  <td><strong>$ {Math.round(10000 * this.state.cgko['TRIBE'])/10000}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE P/BV</td>
-                  <td><strong>{Math.round(100 * (this.state.cgko['TRIBE'] * this.state.tribeCirculating / this.state.equity))/100}</strong></td>
-                </tr>
-                <tr>
-                  <td>PCV Growth since Genesis</td>
-                  <td><strong>{formatNumber(this.state.pl, '$ ')}</strong></td>
-                </tr>
-                <tr>
-                  <td>Average PCV Growth per Year</td>
-                  <td><strong>{formatNumber(this.state.pl / this.state.yearsSinceGenesis, '$ ')}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE P/E</td>
-                  <td><strong>{Math.round(100 * this.state.cgko['TRIBE'] * this.state.tribeCirculating / (this.state.pl / this.state.yearsSinceGenesis))/100}</strong></td>
-                </tr>
+                { this.state.deposits.map((deposit, i) => <tr key={i} className={i%2?'odd':'even'}>
+                  <td className="text-center">{this.getTokenImage(deposit.token, deposit.address)}</td>
+                  <td>
+                    <a href={'https://etherscan.io/address/' + deposit.address} target="_blank">
+                      {deposit.label}
+                    </a>
+                    { deposit.description ? <div className="text-muted text-small">{deposit.description}</div> : null }
+                  </td>
+                  <td className="text-center">{deposit.protocol || '-'}</td>
+                  <td className="text-right nowrap">{formatNumber(deposit.balance)}</td>
+                  <td className="text-right nowrap">{formatNumber(deposit.fei)}</td>
+                  <td className="text-right nowrap">{formatNumber(deposit.balanceUSD + deposit.fei, '$ ')}</td>
+                </tr>)}
               </tbody>
             </table>
           </div> : null }
