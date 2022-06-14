@@ -372,6 +372,15 @@ class c extends Component {
     if (address == '0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2') return 'Fei';
     if (address == '0x98E5F5706897074a4664DD3a32eB80242d6E694B') return 'Fei';
     if (address == '0xb0e731F036AdfDeC12da77c15aaB0F90E8e45A0e') return 'Fei';
+    if (address == '0x66977Ce30049CD0e443216Bf26377966c3A109E2') return 'Fei';
+    if (address == '0xaDdB7eBdCA3fa3b72D2e57c8e660C90ec00af7Cc') return 'Balancer';
+    if (address == '0xf24401F6992FaEAcbc5d6C6991db15B5F8364A1B') return 'Balancer';
+    if (address == '0x3AA57FAf7114a9ebEbda73a997A35eAE06008A7B') return 'Balancer';
+    if (address == '0x564eFCe5c6873219a7FbE450187c23254E3d62a4') return 'Volt';
+    if (address == '0x5ddE9B4b14eDf59CB23c1d4579B279846998205e') return 'Fei';
+    if (address == '0xdF9Ff5c077d9F3427ade67AC2d27a864Be6F3187') return 'Balancer';
+    if (address == '0x8465E7CFA63Aa6682531C7a34141966318aC5178') return 'Balancer';
+    if (address == '0x06dAcca04e201AD31393754E68dA04Dc14778Fa6') return 'Ondo';
     return '';
   }
 
