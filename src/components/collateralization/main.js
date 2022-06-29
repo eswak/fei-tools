@@ -393,6 +393,9 @@ class c extends Component {
     if (address == '0xdF9Ff5c077d9F3427ade67AC2d27a864Be6F3187') return 'Balancer';
     if (address == '0x8465E7CFA63Aa6682531C7a34141966318aC5178') return 'Balancer';
     if (address == '0x06dAcca04e201AD31393754E68dA04Dc14778Fa6') return 'Ondo';
+    if (address == '0x6e5f2745C08249a190239763706473bE0B72816d') return 'Lido';
+    if (address == '0x4037a70152F4c88Ad40522f35BD4dDD17E6B2052') return 'Fei';
+    if (address == '0x614D46B7eB2AC1a359b8835D64954F3Ee4E6F676') return 'Fei';
     return '';
   }
 
