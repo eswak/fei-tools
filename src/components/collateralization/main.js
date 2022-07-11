@@ -396,6 +396,10 @@ class c extends Component {
     if (address == '0x6e5f2745C08249a190239763706473bE0B72816d') return 'Lido';
     if (address == '0x4037a70152F4c88Ad40522f35BD4dDD17E6B2052') return 'Fei';
     if (address == '0x614D46B7eB2AC1a359b8835D64954F3Ee4E6F676') return 'Fei';
+    if (address == '0xC6D675ca5217d39C3A5E366141060fC2D1ea2b82') return 'Fei';
+    if (address == '0x4378De2F2991Fbed6616b34AC7727E7653713712') return 'Fei';
+    if (address == '0xBDC01c9743989429df9a4Fe24c908D87e462AbC1') return 'Fei';
+    if (address == '0x8fFAe111Ab06F532a18418190129373D14570014') return 'Fei';
     return '';
   }
 

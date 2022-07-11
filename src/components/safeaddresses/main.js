@@ -6,7 +6,7 @@ import label from '../../modules/label';
 
 const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT');
 
-const pcvGuardianAddress = '0x2D1b1b509B6432A73e3d798572f0648f6453a5D9';
+const pcvGuardianAddress = '0x02435948F84d7465FB71dE45ABa6098Fc6eC2993';
 var pcvGuardian = new ethers.Contract(
   pcvGuardianAddress,
   PCVGuardianAbi,
@@ -77,7 +77,7 @@ class c extends Component {
           <h1 className="mb-3">Fei Safe Addresses</h1>
           <div className="info">
             <p>
-              The <a href="https://etherscan.io/address/0x2D1b1b509B6432A73e3d798572f0648f6453a5D9" target="_blank">PCV Guardian</a> can move PCV instantly between "safe" addresses which are pre-approved by the DAO (immutable smart contracts owned by the DAO).
+              The <a href="https://etherscan.io/address/0x02435948F84d7465FB71dE45ABa6098Fc6eC2993" target="_blank">PCV Guardian</a> can move PCV instantly between "safe" addresses which are pre-approved by the DAO (immutable smart contracts owned by the DAO).
             </p>
             <p>
               See <a href="https://fei-protocol.github.io/docs/docs/protocol/Mechanism/PCVManagement" target="_blank"> docs</a> for more info.
