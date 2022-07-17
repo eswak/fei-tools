@@ -78,18 +78,25 @@ async function label(address) {
       staticLabels[ethers.utils.id(role)] = role;
     });
     
-    var str = (
-      ('{' + mainnetAddresses.split('MainnetContractsConfig = {')[1].split('};')[0] + '}')
-        .replace('artifactName: AddressCategory.Core', 'artifactName:\'Core\'')
-        .replace(/category:.*/g, '')
-        .replace(/\/\/.*/g, '')
-        .replace(/[\n\r ]/g, '')
-        .replace(/,}/g, '}')
-    );
-
-    var protocolConfig;
-    eval('protocolConfig = ' + str);
+    var protocolConfig = {};
     labels = {};
+    try {
+      var AddressCategory = {};
+      var str = (
+        ('{' + mainnetAddresses.split('MainnetContractsConfig = {')[1].split('};')[0] + '}')
+          .replace(/category:.*/g, '')
+          .replace(/\/\/.*/g, '')
+          .replace(/[\n\r ]/g, '')
+          .replace(/,}/g, '}')
+      );
+
+      console.log('str', str);
+
+      eval('protocolConfig = ' + str);
+    } catch (e) {
+      console.error('Error parsing mainnetAddresses.ts', e);
+    }
+
     for (var key in protocolConfig) {
       labels[protocolConfig[key].address.toLowerCase()] = key;
     }
