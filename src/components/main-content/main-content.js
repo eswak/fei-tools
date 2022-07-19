@@ -4,6 +4,7 @@ import Collateralization from '../collateralization/main';
 import SafeAddresses from '../safeaddresses/main';
 import TimelockTransactions from '../timelock/main';
 import CompoundingStakerOld from '../compounding-staker/old';
+import FeiProtocolRoles from '../fei-protocol-roles/main';
 import TxToasts from '../tx-toasts/tx-toasts';
 import './main-content.css';
 
@@ -31,6 +32,8 @@ class MainContent extends Component {
         return <SafeAddresses />;
       case '/TimelockTransactions':
         return <TimelockTransactions />;
+        case '/FeiProtocolRoles':
+          return <FeiProtocolRoles />;
       default:
         return (
           <div className="card section">
@@ -45,9 +48,7 @@ class MainContent extends Component {
               <a className="btn" href="#/SafeAddresses">Fei Safe Addresses</a>
               &nbsp;
               <a className="btn" href="#/TimelockTransactions">Tribe DAO Timelocks</a>
-            </p>
-            <br></br>
-            <p className="mb-0">
+              &nbsp;
               <a className="btn" href="#/FeiProtocolRoles">Fei Protocol Roles</a>
             </p>
             <hr/>
