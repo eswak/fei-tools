@@ -1,5 +1,23 @@
-.collateralization {
-  
+.collateralization .loading {
+  background: black;
+  color: white;
+  font-family: monospace;
+  border-bottom: 1px solid white;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 5px;
+}
+.collateralization .logs {
+  background: black;
+  color: white;
+  font-family: monospace;
+  width: 100%;
+  padding: 10px;
+  font-size: 11px;
+  height: 150px;
+  min-height: 0;
+  white-space: pre;
+  overflow: auto;
 }
 .collateralization img.token {
   height: 24px;
@@ -38,4 +56,25 @@
 }
 .collateralization .negative {
   color: #E64A19;
+}
+
+@media only screen and (max-width: 800px) {
+  .collateralization table {
+    font-size: 11px;
+    width: 100%!important;
+    margin: 0!important;
+  }
+  .collateralization .loading {
+    margin: -5px -10px;
+  }
+  .collateralization table th {
+    padding: 2px;
+  }
+  .collateralization table td {
+    padding: 2px;
+    word-break: break-word;
+  }
+  .collateralization table.mb-3 tr td:nth-child(1) img {
+    height: 16px;
+  }
 }

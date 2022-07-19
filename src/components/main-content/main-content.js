@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 //import CompoundingStaker from '../compounding-staker/main';
 import Collateralization from '../collateralization/main';
+import SafeAddresses from '../safeaddresses/main';
+import TimelockTransactions from '../timelock/main';
 import CompoundingStakerOld from '../compounding-staker/old';
 import TxToasts from '../tx-toasts/tx-toasts';
 import './main-content.css';
@@ -25,6 +27,10 @@ class MainContent extends Component {
         return <CompoundingStakerOld />;
       case '/CollateralizationOracle':
         return <Collateralization />;
+      case '/SafeAddresses':
+        return <SafeAddresses />;
+      case '/TimelockTransactions':
+        return <TimelockTransactions />;
       default:
         return (
           <div className="card section">
@@ -34,13 +40,17 @@ class MainContent extends Component {
             </p>
             <p>These tools are created by TRIBE community members, get in touch with Eswak if you want to suggest changes or add a tool to this website.</p>
             <p className="mb-0">
-              <a className="btn" href="#/CollateralizationOracle">Collateralization Oracle</a>
+              <a className="btn" href="#/CollateralizationOracle">Fei Collateralization Oracle</a>
+              &nbsp;
+              <a className="btn" href="#/SafeAddresses">Fei Safe Addresses</a>
+              &nbsp;
+              <a className="btn" href="#/TimelockTransactions">Tribe DAO Timelocks</a>
             </p>
             <hr/>
             <p className="mb-0">
-              <div>Deprecated tools :</div>
-              <a className="btn" href="#/CompoundingStaker">CompoundingStaker</a>
-              <div style={{color:'#D32F2F'}}>DO NOT DEPOSIT FUNDS IN THIS TOOL, REWARDS ARE NOT ACCRUING ANYMORE, USE ONLY FOR WITHDRAWAL.</div>
+              Deprecated tools :<br/>
+              <a className="btn" href="#/CompoundingStaker">CompoundingStaker</a><br/>
+              <span style={{color:'#D32F2F'}}>DO NOT DEPOSIT FUNDS IN THIS TOOL, REWARDS ARE NOT ACCRUING ANYMORE, USE ONLY FOR WITHDRAWAL.</span>
             </p>
           </div>
         );

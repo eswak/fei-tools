@@ -1,0 +1,18 @@
+.safeaddresses {
+  
+}
+.safeaddresses table {
+  width: 100%;
+  max-width: 600px;
+}
+.safeaddresses table th {
+  padding: 3px 10px;
+  color: white;
+  background: #333;
+}
+.safeaddresses table td {
+  padding: 3px 10px;
+}
+.safeaddresses table tr.odd td {
+  background: rgba(0, 0, 0, 0.05);
+}

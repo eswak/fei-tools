@@ -1,0 +1,70 @@
+.timelock {
+  
+}
+.timelock .roles .address {
+  border: 1px solid #007bff;
+  color: #007bff;
+  margin-right: 5px;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-family: monospace;
+  white-space: nowrap;
+}
+.timelock .roles .address:hover {
+  text-decoration:none;
+}
+.timelock .group {
+  border: 1px solid #444;
+  border-top: none;
+}
+.timelock .group .groupInfo {
+  padding: 5px;
+  font-family: monospace;
+  background: #444;
+  color: white;
+  font-size: 12px;
+  line-height: 16px;
+}
+.timelock .group .groupInfo a {
+  color: white;
+  text-decoration: underline;
+}
+.timelock .group .groupInfo a:hover {
+  color: #fdff94;
+}
+.timelock .group .groupDescription {
+  white-space: pre-line;
+  color: #d5d5d5;
+}
+.timelock .group .groupTitle {
+  background: #444;
+  color: white;
+  font-family: monospace;
+  padding: 5px;
+  font-size: 14px;
+}
+.timelock .transactions {
+  
+}
+.timelock .transactions .transaction {
+  border-top: 1px solid #ccc;
+  font-family: monospace;
+  font-size: 12px;
+}
+.timelock .transactions .transaction.pending {
+  background: #f9fdb9;
+}
+.timelock .transactions .transaction .date {
+  float: right;
+}
+.timelock .transactions .transaction .fn {
+  font-weight: bold;
+  background: #f0f0f0;
+  padding: 0 5px;
+}
+.timelock .transactions .transaction .args td {
+  vertical-align: top;
+}
+.timelock .transactions .transaction .args {
+  margin: 0 5px;
+}

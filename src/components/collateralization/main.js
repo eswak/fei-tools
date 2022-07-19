@@ -5,7 +5,7 @@ import IERC20Abi from '../../abi/IERC20.json';
 import IOracleAbi from '../../abi/IOracle.json';
 import IPCVDepositAbi from '../../abi/IPCVDeposit.json';
 import FixedPricePSMAbi from '../../abi/FixedPricePSM.json';
-import { getProvider, getSigner, getAccount } from '../wallet/wallet';
+import { getSigner, getAccount } from '../wallet/wallet';
 import $ from 'jquery';
 import './main.css';
 import imgAgeur from './img/ageur.png';
@@ -19,7 +19,11 @@ import imgDai from './img/dai.jpg';
 import imgDpi from './img/dpi.jpg';
 import imgUsd from './img/usd.jpg';
 import imgRai from './img/rai.jpg';
+import imgVolt from './img/volt.ico';
 import imgSteth from './img/wsteth.jpg';
+import label from '../../modules/label';
+
+const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT');
 
 const collateralizationOracle = '0xFF6f59333cfD8f4Ebc14aD0a0E181a83e655d257';
 const fei = '0x956F47F50A910163D8BF957Cf5846D573E7f87CA';
@@ -34,34 +38,36 @@ function ERC20(address) {
   return new ethers.Contract(
     address,
     IERC20Abi,
-    getProvider()
+    provider
   );
 }
 function IPCVDeposit(address) {
   return new ethers.Contract(
     address,
     IPCVDepositAbi,
-    getProvider()
+    provider
   );
 }
 var CollateralizationOracle = new ethers.Contract(
   collateralizationOracle,
   CollateralizationOracleAbi,
-  getProvider()
+  provider
 );
 var Fei = new ethers.Contract(
   fei,
   IERC20Abi,
-  getProvider()
+  provider
 );
 
 class c extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
       getTokensInPcv: [],
       getDepositsForToken: {},
-      tokenToOracle: {}
+      tokenToOracle: {},
+      logs: []
     };
   }
 
@@ -69,22 +75,35 @@ class c extends Component {
     if (depositAddress === '0x5ae217dE26f6Ff5F481C6e10ec48b2cf2fc857C8') return <img className="token" src={imgd3}></img>;
     if (depositAddress === '0x24F663c69Cd4B263cf5685A49013Ff5f1C898D24') return <img className="token" src={imgd3}></img>;
     if (depositAddress === '0xA271fF86426c7fdAaAE72603e6Ce68c892d69ED7') return <img className="token" src={imgSteth}></img>;
-    if (symbol === 'FEI') return <img className="token" src={imgFei}></img>;
-    if (symbol === 'agEUR') return <img className="token" src={imgAgeur}></img>;
-    if (symbol === 'BAL') return <img className="token" src={imgBal}></img>;
-    if (symbol === 'CREAM') return <img className="token" src={imgCream}></img>;
-    if (symbol === 'ETH') return <img className="token" src={imgEth}></img>;
-    if (symbol === 'WETH') return <img className="token" src={imgEth}></img>;
-    if (symbol === 'LUSD') return <img className="token" src={imgLusd}></img>;
-    if (symbol === 'DAI') return <img className="token" src={imgDai}></img>;
-    if (symbol === 'DPI') return <img className="token" src={imgDpi}></img>;
-    if (symbol === 'USD') return <img className="token" src={imgUsd}></img>;
-    if (symbol === 'RAI') return <img className="token" src={imgRai}></img>;
+    if (symbol === 'FEI') return <img className="token" src={imgFei} title="FEI"></img>;
+    if (symbol === 'agEUR') return <img className="token" src={imgAgeur} title="agEUR"></img>;
+    if (symbol === 'BAL') return <img className="token" src={imgBal} title="BAL"></img>;
+    if (symbol === 'CREAM') return <img className="token" src={imgCream} title="CREAM"></img>;
+    if (symbol === 'ETH') return <img className="token" src={imgEth} title="ETH"></img>;
+    if (symbol === 'WETH') return <img className="token" src={imgEth} title="WETH"></img>;
+    if (symbol === 'LUSD') return <img className="token" src={imgLusd} title="LUSD"></img>;
+    if (symbol === 'DAI') return <img className="token" src={imgDai} title="DAI"></img>;
+    if (symbol === 'DPI') return <img className="token" src={imgDpi} title="DPI"></img>;
+    if (symbol === 'USD') return <img className="token" src={imgUsd} title="USD"></img>;
+    if (symbol === 'RAI') return <img className="token" src={imgRai} title="RAI"></img>;
+    if (symbol === 'VOLT') return <img className="token" src={imgVolt} title="VOLT"></img>;
     return symbol;
   }
 
   async componentWillMount() {
     await this.refreshData();
+  }
+
+  log(...args) {
+    this.state.logs.push(args.join(' '));
+    this.state.nLogs = this.state.logs.length;
+    this.setState(this.state);
+    this.forceUpdate();
+    console.log.apply(console, args);
+    setTimeout(function() {
+      var el = document.querySelector('.collateralization .logs');
+      if (el) el.scroll(0, el.scrollHeight);
+    }, 10);
   }
 
   /*componentWillUnmount() {
@@ -94,6 +113,7 @@ class c extends Component {
 
   async refreshData() {
     // fetch Coingecko data
+    this.log('Fetching price data on Coingecko...');
     const cgko = (await $getJSON('https://api.coingecko.com/api/v3/simple/price?ids=angle-protocol,balancer,curve-dao-token,tribe-2,convex-finance,tokemak,aave,compound-governance-token,liquity&vs_currencies=usd'));
     this.state.cgko = {};
     this.state.cgko['AAVE'] = cgko['aave'].usd;
@@ -107,24 +127,32 @@ class c extends Component {
     this.state.cgko['TRIBE'] = cgko['tribe-2'].usd;
 
     // read CR oracle
+    this.log('Reading CR Oracle...');
+    this.log('  collateralizationOracle.getTokensInPcv() // List tokens in PCV...');
     this.state.getTokensInPcv = await CollateralizationOracle.getTokensInPcv();
+    this.log('  Get PCVDeposits for each tokens...');
     for (var i = 0; i < this.state.getTokensInPcv.length; i++) {
       var tokenAddress = this.state.getTokensInPcv[i];
+      this.log('    collateralizationOracle.getDepositsForToken(' + await label(tokenAddress) + ')');
       this.state.getDepositsForToken[tokenAddress] = await CollateralizationOracle.getDepositsForToken(tokenAddress);
     }
+    this.log('  Get Oracle for each tokens...');
     for (var i = 0; i < this.state.getTokensInPcv.length; i++) {
       var tokenAddress = this.state.getTokensInPcv[i];
+      this.log('    collateralizationOracle.tokenToOracle(' + await label(tokenAddress) + ')');
       this.state.tokenToOracle[tokenAddress] = await CollateralizationOracle.tokenToOracle(tokenAddress);
     }
     this.state.tokens = {};
+    this.log('  Read Oracle values...');
     for (var i = 0; i < this.state.getTokensInPcv.length; i++) {
       var tokenAddress = this.state.getTokensInPcv[i];
       var oracle = new ethers.Contract(
         this.state.tokenToOracle[tokenAddress],
         IOracleAbi,
-        getProvider()
+        provider
       );
       
+      this.log('    ' + await label(oracle.address) + '.read()');
       this.state.tokens[tokenAddress] = {
         symbol: await this.getTokenSymbol(tokenAddress),
         value: (await oracle.read())[0].toString() / 1e18
@@ -132,13 +160,16 @@ class c extends Component {
     }
     this.state.deposits = [];
     for (var i = 0; i < this.state.getTokensInPcv.length; i++) {
+      this.log('Token', i+1, '/', this.state.getTokensInPcv.length, '[' + this.state.tokens[tokenAddress].symbol + ']');
       var tokenAddress = this.state.getTokensInPcv[i];
       for (var j = 0; j < this.state.getDepositsForToken[tokenAddress].length; j++) {
         var depositAddress = this.state.getDepositsForToken[tokenAddress][j];
+        var depositLabel = await label(depositAddress);
+        this.log('  ' + depositLabel + '.resistantBalanceAndFei() // Loading data for deposit', j+1, '/', this.state.getDepositsForToken[tokenAddress].length, '...');
         var deposit = new ethers.Contract(
           depositAddress,
           IPCVDepositAbi,
-          getProvider()
+          provider
         );
         var resistantBalanceAndFei = await deposit.resistantBalanceAndFei();
         var balance = resistantBalanceAndFei[0].toString() / 1e18;
@@ -146,23 +177,25 @@ class c extends Component {
         var fei = resistantBalanceAndFei[1].toString() / 1e18;
         this.state.deposits.push({
           address: depositAddress,
-          label: await this.getDepositLabel(depositAddress),
+          label: depositLabel,
           description: await this.getDepositDescription(depositAddress),
           protocol: await this.getDepositProtocol(depositAddress),
           token: this.state.tokens[tokenAddress].symbol,
           balance: balance,
           balanceUSD: balanceUSD,
           fei: fei,
-          pl: await this.getDepositPL(depositAddress, this.state.tokens[tokenAddress].value, balance, balanceUSD, fei)
+          //pl: await this.getDepositPL(depositAddress, this.state.tokens[tokenAddress].value, balance, balanceUSD, fei)
         });
       }
     }
+    this.log('Chain state reading done. Get data for global stats...');
 
     // Compute global stats
     this.state.pcv = this.state.deposits.reduce(function(acc, cur) {
       acc += cur.balanceUSD;
       return acc;
     }, 0);
+    this.log('  fei.totalSupply() // get FEI totalSupply...');
     this.state.totalFei = (await Fei.totalSupply()).toString() / 1e18;
     this.state.protocolFei = this.state.deposits.reduce(function(acc, cur) {
       acc += cur.fei;
@@ -172,6 +205,18 @@ class c extends Component {
     this.state.equity = this.state.pcv - this.state.circulatingFei;
     this.state.pl = this.state.deposits.reduce(function(acc, cur) {
       acc += cur.pl;
+      return acc;
+    }, 0);
+    const stableAssets = [
+      'DAI',
+      'LUSD',
+      'VOLT',
+      'agEUR',
+      'RAI'
+    ];
+    this.state.stableAssets = stableAssets;
+    this.state.stableBacking = this.state.deposits.reduce(function(acc, cur) {
+      if (stableAssets.indexOf(cur.token) != -1) acc += cur.balanceUSD;
       return acc;
     }, 0);
 
@@ -194,6 +239,16 @@ class c extends Component {
       });
     }
     this.state.pcvComposition.sort((a, b) => a.balanceUSD < b.balanceUSD ? 1 :-1);
+
+    // persist an history in localStorage
+    var comp = JSON.parse(localStorage.getItem('comp') || '{}');
+    var today = new Date().toISOString().split('T')[0];
+    comp[today] = comp[today] || this.state.pcvComposition.reduce((acc, cur) => {
+      acc[cur.token] = [cur.balance, cur.balanceUSD/cur.balance];
+      return acc;
+    }, {});
+    localStorage.setItem('comp', JSON.stringify(comp));
+
     // Protocols
     var protocolsMap = this.state.deposits.reduce(function(acc, cur) {
       acc[cur.protocol] = acc[cur.protocol] || 0;
@@ -211,6 +266,8 @@ class c extends Component {
 
     // TRIBE
     var tribe = ERC20('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B');
+    this.log('  tribe.totalSupply() // get TRIBE totalSupply...');
+    this.log('  tribe.balanceOf(core) // get TRIBE in treasury...');
     this.state.tribeTotalSupply = (await tribe.totalSupply()).toString() / 1e18;
     this.state.tribeInTreasury = (await tribe.balanceOf('0x8d5ED43dCa8C2F7dFB20CF7b53CC7E593635d7b9')).toString() / 1e18;
     this.state.tribeCirculating = this.state.tribeTotalSupply - this.state.tribeInTreasury;
@@ -220,6 +277,9 @@ class c extends Component {
     // sort deposits
     //this.state.deposits.sort(function(a,b) { return a.label > b.label ? 1 : -1 });
     this.state.deposits.sort(function(a,b) { return (a.balanceUSD + a.fei) < (b.balanceUSD + b.fei) ? 1 : -1 });
+
+    this.log('Done.');
+    this.state.loading = false;
 
     // set state & redraw
     this.setState(this.state);
@@ -242,65 +302,9 @@ class c extends Component {
     var token = new ethers.Contract(
       address,
       IERC20Abi,
-      getProvider()
+      provider
     );
     return await token.symbol();
-  }
-
-  async getDepositLabel(address) {
-    if (address == '0x5ae217dE26f6Ff5F481C6e10ec48b2cf2fc857C8') return 'Convex D3pool';
-    if (address == '0x24F663c69Cd4B263cf5685A49013Ff5f1C898D24') return 'Curve D3pool';
-    if (address == '0x06dAcca04e201AD31393754E68dA04Dc14778Fa6') return 'Static (Constant) PCV Deposit';
-    if (address == '0x0961d2a545e0c1201B313d14C57023682a546b9D') return 'Tokemak ETH Reactor';
-    if (address == '0xA271fF86426c7fdAaAE72603e6Ce68c892d69ED7') return 'Staked ETH - Lido';
-    if (address == '0x0735e14D28eD395048d5Fa4a8dbe6e6EB9fc0470') return 'Compound ETH Lending';
-    if (address == '0xfDe7077AAEcDaf2C4B85261Aa858c96A7E737a61') return 'Compound DAI Lending';
-    if (address == '0xB80B3dc4F8B30589477b2bA0e4EF2b8224bDf0a5') return 'Compound FEI Lending';
-    if (address == '0x43Ef03755991056681F01EE2182234eF6aF1f658') return 'Aave ETH Lending';
-    if (address == '0x1267B39c93711Dd374DEAB15e0127e4adB259BE0') return 'Aave RAI Lending';
-    if (address == '0xFAc571b6054619053ac311dA8112939C9a374A85') return 'Aave FEI Lending';
-    if (address == '0x15958381E9E6dc98bD49655e36f524D2203a28bD') return 'Uniswap v2 ETH/FEI';
-    if (address == '0x98E5F5706897074a4664DD3a32eB80242d6E694B') return 'PSM - ETH';
-    if (address == '0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2') return 'PSM - DAI';
-    if (address == '0xb0e731F036AdfDeC12da77c15aaB0F90E8e45A0e') return 'PSM - LUSD';
-    if (address == '0x7Eb88140af813294aEDce981b6aC08fcd139d408') return 'OA Timelock';
-    if (address == '0xCCe230c087F31032fc17621a2CF5E425A0b80C96') return 'Fuse pool 9 (Frax & Reflexer) RAI Lending';
-    if (address == '0xD6598a23418c7FEf7c0Dc863265515B623B720F9') return 'Fuse pool 8 (FeiRari) FEI Lending';
-    if (address == '0x9CC46aB5A714f7cd24C59f33C5769039B5872491') return 'Fuse pool 8 (FeiRari) DAI Lending';
-    if (address == '0xF846eE6E8EE9A6fbf51c7c65105CAbc041c048ad') return 'Fuse pool 8 (FeiRari) LUSD Lending';
-    if (address == '0xec54148CbC47bFF8FCc5e04e5E8083aDb8aF9aD9') return 'Fuse pool 90 (Float Protocol) FEI Lending';
-    if (address == '0xb3A026B830796E43bfC8b135553A7573538aB341') return 'Fuse pool 79 (Fox and Frens) FEI Lending';
-    if (address == '0x7aA4b1558C3e219cFFFd6a356421C071F71966e7') return 'Fuse pool 6 (Tetranode\'s locker) FEI Lending';
-    if (address == '0xC68412B72e68c30D4E6c0854b439CBBe957146e4') return 'Fuse pool 146 (Tribe ETH Pool) ETH Lending';
-    if (address == '0x9a774a1B1208C323EDeD05E6Daf592E6E59cAa55') return 'Fuse pool 19 (Index Coop) DPI Lending';
-    if (address == '0x7e39bBA9D0d967Ee55524fAe9e54900B02d9889a') return 'Fuse pool 19 (Index Coop) FEI Lending';
-    if (address == '0x508f6fbd78B6569C29E9D75986a51558dE9E5865') return 'Fuse pool 24 (Harvest) FEI Lending';
-    if (address == '0xB4FFD10C4C290Dc13E8e30BF186F1509001515fD') return 'Fuse pool 25 (Barnbridge) FEI Lending';
-    if (address == '0xe2e35097638F0Ff2EeCA2EF70F352Be37431945f') return 'Fuse pool 27 (StakeDAO) FEI Lending';
-    if (address == '0x07F2DD7E6A78D96c08D0a8212f4097dCC129d629') return 'Fuse pool 18 (Olympus) FEI Lending';
-    if (address == '0x05E2e93CFb0B53D36A3151ee727Bb581D4B918Ce') return 'Fuse pool 31 (NFTX) FEI Lending';
-    if (address == '0xA62ddde8F799873E6FcdbB3aCBbA75da85D9dcdE') return 'Fuse pool 128 (UMA) FEI Lending';
-    if (address == '0xa2BdbCb95d31C85BAE6f0FA42D55F65d609D94eE') return 'Fuse pool 22 (Badger) FEI Lending';
-    if (address == '0x395B1Bc1800fa0ad48ae3876E66d4C10d297650c') return 'Fuse pool 72 (Forex) FEI Lending';
-    if (address == '0x1370CA8655C255948d6c6110066d78680601B7c2') return 'Fuse pool 156 (Tribe Convex Pool) FEI Lending';
-    if (address == '0x8C51E4532CC745cF3DFec5CEBd835D07E7BA1002') return 'Fuse pool 91 (Liquity) LUSD Lending';
-    if (address == '0x6026a1559CDd44a63C5CA9A078CC996a9eb68ABB') return 'Fuse pool 7 (ChainLinkGod / Tetranode Up Only) LUSD Lending';
-    if (address == '0x5E9fA7d783A7F7d4626cE450C8Bd2EbBB26dfdB2') return 'DAO Timelock : ETH';
-    if (address == '0x7339cA4Ac94020b83A34f5edFA6e0F26986c434b') return 'DAO Timelock : RAI';
-    if (address == '0xB250926E75b1CC6c53E77bb9426Baac14aB1e24c') return 'DAO Timelock : DPI';
-    if (address == '0x3a1838Ac9EcA864054bebB82C32455Dd7d7Fc89c') return 'DAO Timelock : CREAM';
-    if (address == '0x485d23ce5725ecdE46ca9033012984D90b514FFd') return 'DAO Timelock : agEUR';
-    if (address == '0xc5bb8F0253776beC6FF450c2B40f092f7e7f5b57') return 'Balancer 70% WETH 30% FEI';
-    if (address == '0xcd1Ac0014E2ebd972f40f24dF1694e6F528B2fD4') return 'Balancer 80% BAL 20% WETH';
-    if (address == '0x89DfBC12001b41985eFAbd7dFCae6a77B22E4Ec3') return 'Balancer Buyback Pool';
-    if (address == '0xb31F75550e97A2C4c7AC8d4355032B8AE8b9584D') return 'Balancer 70% WETH 30% FEI Staked in Gauge';
-    if (address == '0xD8Eb546726d449fC1dEd06DFeCa800A2fa8bB930') return 'Balancer veBAL : WETH';
-    if (address == '0x8cbA3149b95084A61bBAb9e01110b0fB92C9a289') return 'Balancer veBAL : BAL';
-    if (address == '0x2c47Fef515d2C70F2427706999E158533F7cF090') return 'Turbo FEI Lending';
-    if (address == '0x374628EBE7Ef6AcA0574e750B618097531A26Ff8') return 'B.AMM Liquity Stability Pool';
-    if (address == '0xE8633C49AcE655EB4A8B720e6b12F09Bd3a97812') return 'Uniswap v2 agEUR/FEI';
-    if (address == '0xD2554839c2e8a87Dd2CddD013EF828B6534aBC26') return 'Uniswap v2 agEUR/FEI LP tokens staked in Gauge';
-    return address.slice(0, 10);
   }
 
   async getDepositDescription(address) {
@@ -380,6 +384,22 @@ class c extends Component {
     if (address == '0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2') return 'Fei';
     if (address == '0x98E5F5706897074a4664DD3a32eB80242d6E694B') return 'Fei';
     if (address == '0xb0e731F036AdfDeC12da77c15aaB0F90E8e45A0e') return 'Fei';
+    if (address == '0x66977Ce30049CD0e443216Bf26377966c3A109E2') return 'Fei';
+    if (address == '0xaDdB7eBdCA3fa3b72D2e57c8e660C90ec00af7Cc') return 'Balancer';
+    if (address == '0xf24401F6992FaEAcbc5d6C6991db15B5F8364A1B') return 'Balancer';
+    if (address == '0x3AA57FAf7114a9ebEbda73a997A35eAE06008A7B') return 'Balancer';
+    if (address == '0x564eFCe5c6873219a7FbE450187c23254E3d62a4') return 'Volt';
+    if (address == '0x5ddE9B4b14eDf59CB23c1d4579B279846998205e') return 'Fei';
+    if (address == '0xdF9Ff5c077d9F3427ade67AC2d27a864Be6F3187') return 'Balancer';
+    if (address == '0x8465E7CFA63Aa6682531C7a34141966318aC5178') return 'Balancer';
+    if (address == '0x06dAcca04e201AD31393754E68dA04Dc14778Fa6') return 'Ondo';
+    if (address == '0x6e5f2745C08249a190239763706473bE0B72816d') return 'Lido';
+    if (address == '0x4037a70152F4c88Ad40522f35BD4dDD17E6B2052') return 'Fei';
+    if (address == '0x614D46B7eB2AC1a359b8835D64954F3Ee4E6F676') return 'Fei';
+    if (address == '0xC6D675ca5217d39C3A5E366141060fC2D1ea2b82') return 'Fei';
+    if (address == '0x4378De2F2991Fbed6616b34AC7727E7653713712') return 'Fei';
+    if (address == '0xBDC01c9743989429df9a4Fe24c908D87e462AbC1') return 'Fei';
+    if (address == '0x8fFAe111Ab06F532a18418190129373D14570014') return 'Fei';
     return '';
   }
 
@@ -459,14 +479,14 @@ class c extends Component {
     // Liquity B.AMM
     if (address == '0x374628EBE7Ef6AcA0574e750B618097531A26Ff8') {
       const lqty = (await ERC20('0x6DEA81C8171D0bA574754EF6F8b412F2Ed88c54D').balanceOf(address)).toString() / 1e18;
-      return 80e6 - balance + lqty * this.state.cgko['LQTY'];
+      return lqty * this.state.cgko['LQTY'];
     }
     // DAI PSM
     if (address == '0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2') {
       var contract = new ethers.Contract(
         address,
         FixedPricePSMAbi,
-        getProvider()
+        provider
       );
       let redeems = await contract.queryFilter(contract.filters.Redeem());
       const redeemProfits = redeems.reduce((acc, cur) => {
@@ -481,7 +501,7 @@ class c extends Component {
       var contract = new ethers.Contract(
         address,
         FixedPricePSMAbi,
-        getProvider()
+        provider
       );
       let redeems = await contract.queryFilter(contract.filters.Redeem());
       const redeemProfits = redeems.reduce((acc, cur) => {
@@ -532,47 +552,13 @@ class c extends Component {
           <h1 className="mb-3">Collateralization Oracle</h1>
           <div className="info">
             <p>This page is a simple web tool that reads the <a href="https://etherscan.io/address/0xFF6f59333cfD8f4Ebc14aD0a0E181a83e655d257#code" target="_blank">Collateralization Oracle</a> of Fei Protocol, a smart contract that details where all the PCV assets that back the FEI stablecoin are deployed.</p>
-            <p>Additional metadata are hard-coded in the front-end, such as the PCV Deposit label, description, protocol, and rules for revenue calculations.</p>
-            <p><strong>For global stats, scroll below the big table.</strong></p>
+            <p>Additional metadata are hard-coded in the front-end, such as the PCV Deposit description and protocol. Contract labels are fetched from <a href="https://github.com/fei-protocol/fei-protocol-core/blob/develop/protocol-configuration/mainnetAddresses.ts" target="_blank">Github</a>.</p>
           </div>
-          { this.state.getTokensInPcv.length == 0 ? <div className="info">
+          { this.state.loading ? <div className="info">
             <hr/>
-            <div className="text-center">Reading latest on-chain data (this can take several seconds)...</div>
+            <div className="text-center loading">Reading latest on-chain data (this can take several seconds / a minute)...</div>
           </div> : null }
-          { this.state.getTokensInPcv.length != 0 ? <div>
-            <table className="mb-3">
-              <thead>
-                <tr>
-                  <th className="text-center">Token</th>
-                  <th>PCV Deposit</th>
-                  <th className="text-center">Protocol</th>
-                  <th className="text-right">Balance</th>
-                  <th className="text-right">Balance (USD)</th>
-                  <th className="text-right">Protocol FEI</th>
-                  <th className="text-right">Revenue</th>
-                </tr>
-              </thead>
-              <tbody>
-                { this.state.deposits.map((deposit, i) => <tr key={i} className={i%2?'odd':'even'}>
-                  <td className="text-center">{this.getTokenImage(deposit.token, deposit.address)}</td>
-                  <td>
-                    <a href={'https://etherscan.io/address/' + deposit.address} target="_blank">
-                      {deposit.label}
-                    </a>
-                    { deposit.description ? <div className="text-muted text-small">{deposit.description}</div> : null }
-                  </td>
-                  <td className="text-center">{deposit.protocol || '-'}</td>
-                  <td className="text-right nowrap">{formatNumber(deposit.balance)}</td>
-                  <td className="text-right nowrap">{formatNumber(deposit.balanceUSD, '$ ')}</td>
-                  <td className="text-right nowrap">{formatNumber(deposit.fei)}</td>
-                  <td className="text-right nowrap">
-                    {deposit.pl ? <span className={deposit.pl>0?'positive':'negative'}>
-                      {formatNumber(deposit.pl, '$ ')}
-                    </span> : '-'}
-                  </td>
-                </tr>)}
-              </tbody>
-            </table>
+          { !this.state.loading ? <div>
             <table style={{'width':'auto', 'margin': '0 0 1em', 'background':'#eee', 'float': 'left'}}>
               <thead>
                 <tr>
@@ -591,6 +577,42 @@ class c extends Component {
                 <tr>
                   <td>User Circulating FEI</td>
                   <td><strong>{formatNumber(this.state.circulatingFei)}</strong></td>
+                </tr>
+                <tr>
+                  <td>Protocol Controlled Value</td>
+                  <td><strong>{formatNumber(this.state.pcv, '$ ')}</strong></td>
+                </tr>
+                <tr>
+                  <td>Protocol Equity (PCV - Circulating FEI)</td>
+                  <td><strong>{formatNumber(this.state.equity, '$ ')}</strong></td>
+                </tr>
+                <tr>
+                  <td>Collateral Ratio</td>
+                  <td><strong>{Math.round(100 * this.state.pcv / this.state.circulatingFei)} %</strong></td>
+                </tr>
+                <tr>
+                  <td>Stable Backing ({this.state.stableAssets.join(', ')})</td>
+                  <td><strong>{Math.round(100 * this.state.stableBacking / this.state.circulatingFei)} %</strong></td>
+                </tr>
+                <tr>
+                  <td>CR of FEI not backed by stables</td>
+                  <td><strong>{Math.round(100 * (this.state.pcv - this.state.stableBacking) / (this.state.circulatingFei - this.state.stableBacking))} %</strong></td>
+                </tr>
+                <tr>
+                  <td>TRIBE Total Supply</td>
+                  <td><strong>{formatNumber(this.state.tribeTotalSupply)}</strong></td>
+                </tr>
+                <tr>
+                  <td>TRIBE in DAO Treasury</td>
+                  <td><strong>{formatNumber(this.state.tribeInTreasury)}</strong></td>
+                </tr>
+                <tr>
+                  <td>TRIBE Circulating (+ Vesting + LM)</td>
+                  <td><strong>{formatNumber(this.state.tribeCirculating)}</strong></td>
+                </tr>
+                <tr>
+                  <td>TRIBE Circulating Market Cap</td>
+                  <td><strong>{formatNumber(this.state.cgko['TRIBE'] * this.state.tribeCirculating, '$ ')}</strong></td>
                 </tr>
               </tbody>
             </table>
@@ -621,64 +643,37 @@ class c extends Component {
                 </tr>)}
               </tbody>
             </table>
-            <table style={{'width':'auto', 'margin': '0 0 1em', 'background':'#eee', 'float': 'left', 'marginLeft': '1em'}}>
+            <table className="mb-3">
               <thead>
                 <tr>
-                  <th colSpan="2">TRIBE the asset</th>
+                  <th className="text-center">Token</th>
+                  <th>PCV Deposit</th>
+                  <th className="text-center">Protocol</th>
+                  <th className="text-right">Balance</th>
+                  <th className="text-right">Protocol FEI</th>
+                  <th className="text-right">Balance + FEI (USD)</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>TRIBE Total Supply</td>
-                  <td><strong>{formatNumber(this.state.tribeTotalSupply)}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE in DAO Treasury</td>
-                  <td><strong>{formatNumber(this.state.tribeInTreasury)}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE Circulating (+ Vesting + LM)</td>
-                  <td><strong>{formatNumber(this.state.tribeCirculating)}</strong></td>
-                </tr>
-                <tr>
-                  <td>Protocol Controlled Value</td>
-                  <td><strong>{formatNumber(this.state.pcv, '$ ')}</strong></td>
-                </tr>
-                <tr>
-                  <td>Protocol Equity (PCV - Circulating FEI)</td>
-                  <td><strong>{formatNumber(this.state.equity, '$ ')}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE Book Value (Equity / Circulating TRIBE)</td>
-                  <td><strong>$ {Math.round(10000 * this.state.equity / this.state.tribeCirculating)/10000}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE Market Value</td>
-                  <td><strong>$ {Math.round(10000 * this.state.cgko['TRIBE'])/10000}</strong></td>
-                </tr>
-                <tr>
-                  <td>TRIBE Premium (Market - Book)</td>
-                  <td><strong>$ {Math.round(10000 * this.state.tribeSpeculativePremium)/10000}</strong></td>
-                </tr>
-                <tr>
-                  <td>Total Tracked Revenue (PCV Growth)</td>
-                  <td><strong>{formatNumber(this.state.pl, '$ ')}</strong></td>
-                </tr>
-                <tr>
-                  <td>Years since Genesis (protocol start)</td>
-                  <td><strong>{Math.floor(10000 * this.state.yearsSinceGenesis)/10000}</strong></td>
-                </tr>
-                <tr>
-                  <td>Protocol Revenue / Year</td>
-                  <td><strong>{formatNumber(this.state.pl / this.state.yearsSinceGenesis, '$ ')}</strong></td>
-                </tr>
-                <tr>
-                  <td>P/E of TRIBE Premium</td>
-                  <td><strong>{Math.round(100 * this.state.tribeCirculating * this.state.tribeSpeculativePremium / (this.state.pl / this.state.yearsSinceGenesis))/100}</strong></td>
-                </tr>
+                { this.state.deposits.map((deposit, i) => <tr key={i} className={i%2?'odd':'even'}>
+                  <td className="text-center">{this.getTokenImage(deposit.token, deposit.address)}</td>
+                  <td>
+                    <a href={'https://etherscan.io/address/' + deposit.address} target="_blank">
+                      {deposit.label}
+                    </a>
+                    { deposit.description ? <div className="text-muted text-small">{deposit.description}</div> : null }
+                  </td>
+                  <td className="text-center">{deposit.protocol || '-'}</td>
+                  <td className="text-right nowrap">{formatNumber(deposit.balance)}</td>
+                  <td className="text-right nowrap">{formatNumber(deposit.fei)}</td>
+                  <td className="text-right nowrap">{formatNumber(deposit.balanceUSD + deposit.fei, '$ ')}</td>
+                </tr>)}
               </tbody>
             </table>
           </div> : null }
+          <div className="logs">
+            {this.state.logs.map((log, i) => <div key={i} className="log">{log}</div>)}
+          </div>
         </div>
       </div>
     );

@@ -1,9 +1,11 @@
 .side-panel {
+  transition: all .3s;
   position: absolute;
   left: 0;
   top: 0;
   height: 100%;
   width: 400px;
+  max-width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   padding: 1em;
@@ -47,4 +49,10 @@
   font-size: 11px;
   text-align: center;
   color: #aaa;
+}
+
+@media only screen and (max-width: 800px) {
+  .side-panel {
+    left: -400px;
+  }
 }

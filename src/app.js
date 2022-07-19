@@ -42,12 +42,10 @@ class App extends Component {
   }
 
   render() {
-    return (
-      <div>
-        <SidePanel />
-        <MainContent content={this.state.content} key={window.location.hash} />
-      </div>
-    );
+    return [
+      <SidePanel />,
+      <MainContent content={this.state.content} key={window.location.hash} />
+    ];
   }
 }
 
