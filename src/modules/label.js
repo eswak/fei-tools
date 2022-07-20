@@ -90,8 +90,6 @@ async function label(address) {
           .replace(/,}/g, '}')
       );
 
-      console.log('str', str);
-
       eval('protocolConfig = ' + str);
     } catch (e) {
       console.error('Error parsing mainnetAddresses.ts', e);
@@ -110,5 +108,6 @@ async function label(address) {
       if (ensName) return ensName;
     }
   }
+  console.log(labels);
   return address;
 }

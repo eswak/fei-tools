@@ -74,13 +74,13 @@ class c extends Component {
     return (
       <div className="feiprotocolroles">
         <div className="card section">
-          <h1 className="mb-3">Fei Safe Addresses</h1>
+          <h1 className="mb-3">Fei Protocol Roles</h1>
           <div className="info">
             <p>
-              The <a href="https://etherscan.io/address/0x02435948F84d7465FB71dE45ABa6098Fc6eC2993" target="_blank">PCV Guardian</a> can move PCV instantly between "safe" addresses which are pre-approved by the DAO (immutable smart contracts owned by the DAO).
+              The <a href="https://etherscan.io/address/0x8d5ED43dCa8C2F7dFB20CF7b53CC7E593635d7b9" target="_blank">Core contract</a> of the Tribe DAO manages roles.
             </p>
             <p>
-              See <a href="https://fei-protocol.github.io/docs/docs/protocol/Mechanism/PCVManagement" target="_blank"> docs</a> for more info.
+              See <a href="https://github.com/fei-protocol/fei-protocol-core/blob/develop/contracts/core/TribeRoles.sol" target="_blank"> docs</a> for more info.
             </p>
           </div>
           { this.state.safeAddresses.length == 0 ? <div className="info">
