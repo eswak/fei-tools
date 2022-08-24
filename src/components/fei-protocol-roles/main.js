@@ -28,7 +28,6 @@ var roleTable = []
 export async function fetchRoles() {
   // fetch all instances of RoleGranted events
   const grantedRoles = await feiDeployer.queryFilter('RoleGranted')
-  console.log(grantedRoles)
 
   // fetch all instances of RoleRevoked events
   const revokedRoles = await feiDeployer.queryFilter('RoleRevoked')
@@ -44,6 +43,8 @@ export async function fetchRoles() {
       key: grantedRoles[i]['args'][1] + grantedRoles[i]['args'][0],
       address: grantedRoles[i]['args'][1],
       role: grantedRoles[i]['args'][0],
+      blockGrant:grantedRoles[i]['blockNumber'],
+      blockRevoke:null,
       grantedOn: null,
       revoked: false,
       revokedOn: null,
@@ -75,8 +76,10 @@ export async function fetchRoles() {
     roleTable[index].revoked = true
 
     //update revoked timestamp
-    roleTable[index].revokedOn = new Date((await revokedRoles[i].getBlock()).timestamp * 1000).toISOString().split('T')[0]
+    roleTable[index].revokedOn = null
 
+    //update blockrevoke number
+    roleTable[index].blockRevoke = revokedRoles[i]['blockNumber']
     //update revokeTransaction
     roleTable[index].revokeTransaction = revokedRoles[i]['transactionHash']
   }
@@ -229,10 +232,10 @@ export default class roles extends Component {
                     </a>
                   </td>
                   <td className="text-center">
-                    <a href={'https://etherscan.io/tx/' + instance.revokeTransaction} target="_blank">{instance.grantedOn}</a>
+                    <a href={'https://etherscan.io/tx/' + instance.grantTransaction} target="_blank">{instance.grantedOn}</a>
                   </td>
                   <td className="text-center">
-                    <a href={'https://etherscan.io/tx/' + instance.grantTransaction} target="_blank">{instance.revokedOn}</a>
+                    <a href={'https://etherscan.io/tx/' + instance.revokeTransaction} target="_blank">{instance.revokedOn}</a>
                   </td>
                 </tr>)}
               </tbody>
