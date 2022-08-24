@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import deployerAbi from '../../abi/FeiDeployer.json';
 import './main.css';
 import label from '../../modules/label';
+import DisplayRow from './DisplayRow'
 
 
 
@@ -27,6 +28,7 @@ var roleTable = []
 export async function fetchRoles() {
   // fetch all instances of RoleGranted events
   const grantedRoles = await feiDeployer.queryFilter('RoleGranted')
+  console.log(grantedRoles)
 
   // fetch all instances of RoleRevoked events
   const revokedRoles = await feiDeployer.queryFilter('RoleRevoked')
@@ -39,10 +41,10 @@ export async function fetchRoles() {
   for (let i = 0; i < grantedRoles.length; i++) {
     // define instance of role
     const role = {
-      key: grantedRoles[i]['args'][1]+grantedRoles[i]['args'][0],
+      key: grantedRoles[i]['args'][1] + grantedRoles[i]['args'][0],
       address: grantedRoles[i]['args'][1],
       role: grantedRoles[i]['args'][0],
-      grantedOn: new Date((await grantedRoles[i].getBlock()).timestamp * 1000).toISOString().split('T')[0],
+      grantedOn: null,
       revoked: false,
       revokedOn: null,
       grantTransaction: grantedRoles[i]['transactionHash'],
@@ -53,7 +55,7 @@ export async function fetchRoles() {
     //check if role in array
     const index = roleTable.findIndex((object) => object.key === role.key);
     //if role not in array push to array
-    if (index === -1){
+    if (index === -1) {
       roleTable.push(role);
 
     }
@@ -62,15 +64,15 @@ export async function fetchRoles() {
 
   //// UPDATING REVOKED ROLES
 
-  for (let i = 0; i < revokedRoles.length; i++){
+  for (let i = 0; i < revokedRoles.length; i++) {
     // define revocation key
-    const revokedRole = revokedRoles[i]['args'][1]+revokedRoles[i]['args'][0];
+    const revokedRole = revokedRoles[i]['args'][1] + revokedRoles[i]['args'][0];
 
     //find index of revoked role
     const index = roleTable.findIndex((object) => object.key === revokedRole);
 
     //change revoked to true
-    roleTable[index].revoked = true 
+    roleTable[index].revoked = true
 
     //update revoked timestamp
     roleTable[index].revokedOn = new Date((await revokedRoles[i].getBlock()).timestamp * 1000).toISOString().split('T')[0]
@@ -86,19 +88,19 @@ export async function fetchRoles() {
 ///// extracting and sorting by rolename the current roles
 
 
-function currentRoles(roles){
+function currentRoles(roles) {
   const sortedCurrentRoles = []
 
-  for(let i=0; i<roles.length; i++){
-    if(roles[i].revoked === false){
+  for (let i = 0; i < roles.length; i++) {
+    if (roles[i].revoked === false) {
       sortedCurrentRoles.push(roles[i])
     }
   };
-  sortedCurrentRoles.sort((a,b) => {
-    if(a.rolelabel < b.rolelabel){
+  sortedCurrentRoles.sort((a, b) => {
+    if (a.rolelabel < b.rolelabel) {
       return -1
     }
-    if(a.rolelabel > b.rolelabel){
+    if (a.rolelabel > b.rolelabel) {
       return 1;
     }
     return 0;
@@ -108,19 +110,19 @@ function currentRoles(roles){
 }
 
 ///// extracting and sorting by rolename the revoked roles
-function revokedRoles(roles){
+function revokedRoles(roles) {
   const sortedRevokedRoles = []
 
-  for(let i=0; i<roles.length; i++){
-    if(!roles[i].revoked === false){
+  for (let i = 0; i < roles.length; i++) {
+    if (!roles[i].revoked === false) {
       sortedRevokedRoles.push(roles[i])
     }
   };
-  sortedRevokedRoles.sort((a,b) => {
-    if(a.rolelabel < b.rolelabel){
+  sortedRevokedRoles.sort((a, b) => {
+    if (a.rolelabel < b.rolelabel) {
       return -1
     }
-    if(a.rolelabel > b.rolelabel){
+    if (a.rolelabel > b.rolelabel) {
       return 1;
     }
     return 0;
@@ -135,32 +137,31 @@ function revokedRoles(roles){
 
 
 export default class roles extends Component {
-        // two state to keep track of, data and loading status
-        state = {
-          roleData:[],
-          current:[],
-          revoked:[],
-          isLoading: true
-      }
-        // loading the role data
-        async componentDidMount()
-            {
-                const data = await fetchRoles();
-                this.setState({roleData: data})
+  // two state to keep track of, data and loading status
+  state = {
+    roleData: [],
+    current: [],
+    revoked: [],
+    isLoading: true
+  }
+  // loading the role data
+  async componentDidMount() {
+    const data = await fetchRoles();
+    this.setState({ roleData: data })
 
 
-                const sortedCurrent = currentRoles(data);
-                const sortedRevoked = revokedRoles(data);
-                this.setState({current: sortedCurrent})
-                this.setState({revoked: sortedRevoked})
+    const sortedCurrent = currentRoles(data);
+    const sortedRevoked = revokedRoles(data);
+    this.setState({ current: sortedCurrent })
+    this.setState({ revoked: sortedRevoked })
 
-                this.setState({isLoading: false})
+    this.setState({ isLoading: false })
 
-                console.log(this.state.current)
-                console.log(this.state.revoked)
+    console.log(this.state.current)
+    console.log(this.state.revoked)
 
 
-            }
+  }
   // render the data
   render() {
     return (
@@ -179,14 +180,14 @@ export default class roles extends Component {
 
 
 
-          
-            { this.state.isLoading == true ? <div className="info">
-            <hr/>
-            <div className="text-center">Reading latest on-chain data...</div>
-          </div> : null }
 
-          
-          { this.state.isLoading == false ? <div>
+          {this.state.isLoading == true ? <div className="info">
+            <hr />
+            <div className="text-center">Reading latest on-chain data...</div>
+          </div> : null}
+
+
+          {this.state.isLoading == false ? <div>
             <h2>Currently assigned roles</h2>
             <table className="mb-3">
               <thead>
@@ -197,26 +198,14 @@ export default class roles extends Component {
                 </tr>
               </thead>
               <tbody>
-                { this.state.current.map((instance, i) => <tr key={i} className={i%2?'odd':'even'}>
-                  <td>
-                      {instance.rolelabel}
-                  </td>
-                  <td>
-                    <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
-                      {instance.label}
-                    </a>
-                  </td>
-                  <td className="text-center">
-                    <a href={'https://etherscan.io/tx/' + instance.revokeTransaction} target="_blank">{instance.grantedOn}</a>
-                  </td>
-                </tr>)}
+                {this.state.current.map((instance, i) => <DisplayRow rowkey={i} {...instance} />)}
               </tbody>
             </table>
-          </div> : null }
+          </div> : null}
 
-          <hr/>
+          <hr />
 
-          { this.state.isLoading == false ? <div>
+          {this.state.isLoading == false ? <div>
             <h2>Formerly assigned roles</h2>
             <table className="mb-3">
               <thead>
@@ -228,10 +217,10 @@ export default class roles extends Component {
                 </tr>
               </thead>
               <tbody>
-                { this.state.revoked.map((instance, i) => <tr key={i} className={i%2?'odd':'even'}>
+                {this.state.revoked.map((instance, i) => <tr key={i} className={i % 2 ? 'odd' : 'even'}>
                   <td>
 
-                      {instance.rolelabel}
+                    {instance.rolelabel}
 
                   </td>
                   <td>
@@ -248,7 +237,7 @@ export default class roles extends Component {
                 </tr>)}
               </tbody>
             </table>
-          </div> : null }
+          </div> : null}
         </div>
       </div>
     );
