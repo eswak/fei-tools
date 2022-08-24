@@ -192,16 +192,14 @@ export default class roles extends Component {
               <thead>
                 <tr>
                   <th>Role</th>
-                  <th>Holder</th>
+                  <th>Account</th>
                   <th className="text-center">Added</th>
                 </tr>
               </thead>
               <tbody>
                 { this.state.current.map((instance, i) => <tr key={i} className={i%2?'odd':'even'}>
                   <td>
-                    <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
                       {instance.rolelabel}
-                    </a>
                   </td>
                   <td>
                     <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
@@ -224,7 +222,7 @@ export default class roles extends Component {
               <thead>
                 <tr>
                   <th>Role</th>
-                  <th>Holder</th>
+                  <th>Account</th>
                   <th className="text-center">Added</th>
                   <th className="text-center">Removed</th>
                 </tr>
@@ -232,9 +230,9 @@ export default class roles extends Component {
               <tbody>
                 { this.state.revoked.map((instance, i) => <tr key={i} className={i%2?'odd':'even'}>
                   <td>
-                    <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
+
                       {instance.rolelabel}
-                    </a>
+
                   </td>
                   <td>
                     <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
