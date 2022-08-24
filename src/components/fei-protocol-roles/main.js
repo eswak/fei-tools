@@ -27,9 +27,11 @@ var roleTable = []
 export async function fetchRoles() {
   // fetch all instances of RoleGranted events
   const grantedRoles = await feiDeployer.queryFilter('RoleGranted')
-  console.log(grantedRoles)
+
   // fetch all instances of RoleRevoked events
   const revokedRoles = await feiDeployer.queryFilter('RoleRevoked')
+
+
 
   //// ADDING THE ROLES TO THE TABLE
 
@@ -43,6 +45,8 @@ export async function fetchRoles() {
       grantedOn: new Date((await grantedRoles[i].getBlock()).timestamp * 1000).toISOString().split('T')[0],
       revoked: false,
       revokedOn: null,
+      grantTransaction: grantedRoles[i]['transactionHash'],
+      revokeTransaction: null,
       label: await label(grantedRoles[i]['args'][1]),
       rolelabel: await label(grantedRoles[i]['args'][0]),
     }
@@ -70,6 +74,9 @@ export async function fetchRoles() {
 
     //update revoked timestamp
     roleTable[index].revokedOn = new Date((await revokedRoles[i].getBlock()).timestamp * 1000).toISOString().split('T')[0]
+
+    //update revokeTransaction
+    roleTable[index].revokeTransaction = revokedRoles[i]['transactionHash']
   }
   console.log(roleTable)
   return roleTable
@@ -96,6 +103,7 @@ export default class roles extends Component {
   // render the data
   render() {
     return (
+
       <div className="feiprotocolroles">
         <div className="card section">
           <h1 className="mb-3">Fei Protocol Roles</h1>
@@ -106,10 +114,50 @@ export default class roles extends Component {
             <p>
               See <a href="https://github.com/fei-protocol/fei-protocol-core/blob/develop/contracts/core/TribeRoles.sol" target="_blank"> docs</a> for more info.
             </p>
-            <p>
-            {this.state.isLoading && <h1>Loading</h1>}
-            </p>
           </div>
+
+
+
+          
+            { this.state.isLoading == true ? <div className="info">
+            <hr/>
+            <div className="text-center">Reading latest on-chain data...</div>
+          </div> : null }
+
+
+          
+          { this.state.isLoading == false ? <div>
+            <table className="mb-3">
+              <thead>
+                <tr>
+                <th>Role</th>
+                  <th>Address</th>
+                  <th className="text-center">Added</th>
+                  <th className="text-center">Removed</th>
+                </tr>
+              </thead>
+              <tbody>
+                { this.state.roleData.map((instance, i) => <tr key={i} className={i%2?'odd':'even'}>
+                  <td>
+                    <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
+                      {instance.rolelabel}
+                    </a>
+                  </td>
+                  <td>
+                    <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
+                      {instance.label}
+                    </a>
+                  </td>
+                  <td className="text-center">
+                    <a href={'https://etherscan.io/tx/' + instance.revokedTransaction} target="_blank">{instance.revokedOn}</a>
+                  </td>
+                  <td className="text-center">
+                    <a href={'https://etherscan.io/tx/' + instance.grantTransaction} target="_blank">{instance.grantedOn}</a>
+                  </td>
+                </tr>)}
+              </tbody>
+            </table>
+          </div> : null }
         </div>
       </div>
     );
