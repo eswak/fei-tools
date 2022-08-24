@@ -83,20 +83,81 @@ export async function fetchRoles() {
 }
 
 
+///// extracting and sorting by rolename the current roles
+
+
+function currentRoles(roles){
+  const sortedCurrentRoles = []
+
+  for(let i=0; i<roles.length; i++){
+    if(roles[i].revoked === false){
+      sortedCurrentRoles.push(roles[i])
+    }
+  };
+  sortedCurrentRoles.sort((a,b) => {
+    if(a.rolelabel < b.rolelabel){
+      return -1
+    }
+    if(a.rolelabel > b.rolelabel){
+      return 1;
+    }
+    return 0;
+  });
+  return sortedCurrentRoles
+
+}
+
+///// extracting and sorting by rolename the revoked roles
+function revokedRoles(roles){
+  const sortedRevokedRoles = []
+
+  for(let i=0; i<roles.length; i++){
+    if(!roles[i].revoked === false){
+      sortedRevokedRoles.push(roles[i])
+    }
+  };
+  sortedRevokedRoles.sort((a,b) => {
+    if(a.rolelabel < b.rolelabel){
+      return -1
+    }
+    if(a.rolelabel > b.rolelabel){
+      return 1;
+    }
+    return 0;
+  });
+  return sortedRevokedRoles
+
+}
+
+
+
+
+
 
 export default class roles extends Component {
         // two state to keep track of, data and loading status
         state = {
           roleData:[],
+          current:[],
+          revoked:[],
           isLoading: true
       }
         // loading the role data
         async componentDidMount()
             {
                 const data = await fetchRoles();
-
                 this.setState({roleData: data})
+
+
+                const sortedCurrent = currentRoles(data);
+                const sortedRevoked = revokedRoles(data);
+                this.setState({current: sortedCurrent})
+                this.setState({revoked: sortedRevoked})
+
                 this.setState({isLoading: false})
+
+                console.log(this.state.current)
+                console.log(this.state.revoked)
 
 
             }
@@ -126,6 +187,39 @@ export default class roles extends Component {
 
           
           { this.state.isLoading == false ? <div>
+            <h2>Currently assigned roles</h2>
+            <table className="mb-3">
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Holder</th>
+                  <th className="text-center">Added</th>
+                </tr>
+              </thead>
+              <tbody>
+                { this.state.current.map((instance, i) => <tr key={i} className={i%2?'odd':'even'}>
+                  <td>
+                    <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
+                      {instance.rolelabel}
+                    </a>
+                  </td>
+                  <td>
+                    <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
+                      {instance.label}
+                    </a>
+                  </td>
+                  <td className="text-center">
+                    <a href={'https://etherscan.io/tx/' + instance.revokeTransaction} target="_blank">{instance.grantedOn}</a>
+                  </td>
+                </tr>)}
+              </tbody>
+            </table>
+          </div> : null }
+
+          <hr/>
+
+          { this.state.isLoading == false ? <div>
+            <h2>Formerly assigned roles</h2>
             <table className="mb-3">
               <thead>
                 <tr>
@@ -136,7 +230,7 @@ export default class roles extends Component {
                 </tr>
               </thead>
               <tbody>
-                { this.state.roleData.map((instance, i) => <tr key={i} className={i%2?'odd':'even'}>
+                { this.state.revoked.map((instance, i) => <tr key={i} className={i%2?'odd':'even'}>
                   <td>
                     <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
                       {instance.rolelabel}
