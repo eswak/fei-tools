@@ -55,6 +55,12 @@ staticLabels['0x9f5e6F58CC8823D3c022AeBE3942EeF689E9AcD9'.toLowerCase()] = 'Jack
 staticLabels['0xaB339ae6eab3C3CF4f5885E56F7B49391a01DDA6'.toLowerCase()] = 'State (TC)';
 staticLabels['0xd90E9181B20D8D1B5034d9f5737804Da182039F6'.toLowerCase()] = 'OneTrueKirk (TC)';
 staticLabels['0x7671f0615B1764fb4bf4b8dF06B7338843f99678'.toLowerCase()] = 'Freddie Farmer (TC)';
+staticLabels['0x7D809969f6A04777F0A87FF94B57E56078E5fE0F'.toLowerCase()] = 'genesisIdo';
+staticLabels['0xfe5b6c2a87A976dCe20130c423C679f4d6044cD7'.toLowerCase()] = 'uniswapDirectIncentives';
+staticLabels['0x7a165F8518A9Ec7d5DA15f4B77B1d7128B5D9188'.toLowerCase()] = 'ethUniswapPCVController';
+staticLabels['0x5d6446880FCD004c851EA8920a628c70Ca101117'.toLowerCase()] = 'ethUniswapPCVDepositV1';
+staticLabels['0x90fA375B75A58bB3A4842603f712DB285CC82Bf6'.toLowerCase()] = 'dpiSushiswapPCVDeposit';
+
 
 async function label(address) {
   if (staticLabels[(address || '').toLowerCase()]) return staticLabels[(address || '').toLowerCase()];
@@ -74,7 +80,9 @@ async function label(address) {
       'DEFAULT_ADMIN_ROLE',
       'CANCELLER_ROLE',
       'AUTO_REWARDS_DISTRIBUTOR_ROLE',
-      'TRIBE_MINTER_ROLE'
+      'TRIBE_MINTER_ROLE',
+      'BURNER_ROLE',
+      
     ].forEach((role) => {
       staticLabels[ethers.utils.id(role)] = role;
     });

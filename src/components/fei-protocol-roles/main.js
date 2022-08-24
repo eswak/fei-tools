@@ -124,7 +124,6 @@ export default class roles extends Component {
             <div className="text-center">Reading latest on-chain data...</div>
           </div> : null }
 
-
           
           { this.state.isLoading == false ? <div>
             <table className="mb-3">
