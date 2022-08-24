@@ -73,7 +73,8 @@ async function label(address) {
       'EXECUTOR_ROLE',
       'DEFAULT_ADMIN_ROLE',
       'CANCELLER_ROLE',
-      'AUTO_REWARDS_DISTRIBUTOR_ROLE'
+      'AUTO_REWARDS_DISTRIBUTOR_ROLE',
+      'TRIBE_MINTER_ROLE'
     ].forEach((role) => {
       staticLabels[ethers.utils.id(role)] = role;
     });
