@@ -130,8 +130,8 @@ export default class roles extends Component {
             <table className="mb-3">
               <thead>
                 <tr>
-                <th>Role</th>
-                  <th>Address</th>
+                  <th>Role</th>
+                  <th>Holder</th>
                   <th className="text-center">Added</th>
                   <th className="text-center">Removed</th>
                 </tr>
@@ -149,10 +149,10 @@ export default class roles extends Component {
                     </a>
                   </td>
                   <td className="text-center">
-                    <a href={'https://etherscan.io/tx/' + instance.revokedTransaction} target="_blank">{instance.revokedOn}</a>
+                    <a href={'https://etherscan.io/tx/' + instance.revokeTransaction} target="_blank">{instance.grantedOn}</a>
                   </td>
                   <td className="text-center">
-                    <a href={'https://etherscan.io/tx/' + instance.grantTransaction} target="_blank">{instance.grantedOn}</a>
+                    <a href={'https://etherscan.io/tx/' + instance.grantTransaction} target="_blank">{instance.revokedOn}</a>
                   </td>
                 </tr>)}
               </tbody>
