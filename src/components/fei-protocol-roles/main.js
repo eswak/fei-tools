@@ -1,75 +1,99 @@
 import React, { Component } from 'react';
 import { ethers } from 'ethers';
-import PCVGuardianAbi from '../../abi/PCVGuardian.json';
+import deployerAbi from '../../abi/FeiDeployer.json';
 import './main.css';
 import label from '../../modules/label';
 
+
+
+// set up the connection to alchemy node
 const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT');
 
-const pcvGuardianAddress = '0x02435948F84d7465FB71dE45ABa6098Fc6eC2993';
-var pcvGuardian = new ethers.Contract(
-  pcvGuardianAddress,
-  PCVGuardianAbi,
+// Fei Deployer address set up
+const deployerAddress = '0x8d5ED43dCa8C2F7dFB20CF7b53CC7E593635d7b9'
+
+// create contract object to interact
+const feiDeployer = new ethers.Contract(
+  deployerAddress,
+  deployerAbi,
   provider
-);
+)
 
-class c extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      safeAddresses: []
-    };
-  }
+///// ROLE TABLE FETCHING AND ORGANIZING
 
-  async componentWillMount() {
-    await this.refreshData();
-  }
+// create RoleTable
+var roleTable = []
 
-  async refreshData() {
-    var safeAddresses = {};
-    let adds = await pcvGuardian.queryFilter(pcvGuardian.filters.SafeAddressAdded());
-    for (var i = 0; i < adds.length; i++) {
-      var add = adds[i];
-      safeAddresses[add.args[0]] = safeAddresses[add.args[0]] || {
-        address: add.args[0],
-        label: await label(add.args[0]),
-        add: null,
-        addTx: null,
-        remove: null,
-        removeTx: null
-      };
-      safeAddresses[add.args[0]].add = new Date((await add.getBlock()).timestamp * 1000).toISOString().split('T')[0];
-      safeAddresses[add.args[0]].addTx = add.transactionHash;
+export async function fetchRoles() {
+  // fetch all instances of RoleGranted events
+  const grantedRoles = await feiDeployer.queryFilter('RoleGranted')
+  console.log(grantedRoles)
+  // fetch all instances of RoleRevoked events
+  const revokedRoles = await feiDeployer.queryFilter('RoleRevoked')
+
+  //// ADDING THE ROLES TO THE TABLE
+
+  // for each event add role instance to role list
+  for (let i = 0; i < grantedRoles.length; i++) {
+    // define instance of role
+    const role = {
+      key: grantedRoles[i]['args'][1]+grantedRoles[i]['args'][0],
+      address: grantedRoles[i]['args'][1],
+      role: grantedRoles[i]['args'][0],
+      grantedOn: new Date((await grantedRoles[i].getBlock()).timestamp * 1000).toISOString().split('T')[0],
+      revoked: false,
+      revokedOn: null,
+      label: await label(grantedRoles[i]['args'][1]),
+      rolelabel: await label(grantedRoles[i]['args'][0]),
+    }
+    //check if role in array
+    const index = roleTable.findIndex((object) => object.key === role.key);
+    //if role not in array push to array
+    if (index === -1){
+      roleTable.push(role);
+
     }
 
-    let removes = await pcvGuardian.queryFilter(pcvGuardian.filters.SafeAddressRemoved());
-    for (var i = 0; i < removes.length; i++) {
-      var remove = removes[i];
-      safeAddresses[remove.args[0]] = safeAddresses[remove.args[0]] || {
-        address: remove.args[0],
-        label: await label(remove.args[0]),
-        add: null,
-        addTx: null,
-        remove: null,
-        removeTx: null
-      };
-      safeAddresses[remove.args[0]].remove = new Date((await remove.getBlock()).timestamp * 1000).toISOString().split('T')[0];
-      safeAddresses[remove.args[0]].removeTx = remove.transactionHash;
-    }
-
-    this.state.safeAddresses = Object.values(safeAddresses).sort(function(a, b) {
-      return a.add < b.add ? 1 : -1;
-    });
-
-    // set state & redraw
-    this.setState(this.state);
-    this.forceUpdate();
-
-    // make the data available in console & print
-    window.state = this.state;
-    console.log('window.state', window.state);
   }
 
+  //// UPDATING REVOKED ROLES
+
+  for (let i = 0; i < revokedRoles.length; i++){
+    // define revocation key
+    const revokedRole = revokedRoles[i]['args'][1]+revokedRoles[i]['args'][0];
+
+    //find index of revoked role
+    const index = roleTable.findIndex((object) => object.key === revokedRole);
+
+    //change revoked to true
+    roleTable[index].revoked = true 
+
+    //update revoked timestamp
+    roleTable[index].revokedOn = new Date((await revokedRoles[i].getBlock()).timestamp * 1000).toISOString().split('T')[0]
+  }
+  console.log(roleTable)
+  return roleTable
+}
+
+
+
+export default class roles extends Component {
+        // two state to keep track of, data and loading status
+        state = {
+          roleData:[],
+          isLoading: true
+      }
+        // loading the role data
+        async componentDidMount()
+            {
+                const data = await fetchRoles();
+
+                this.setState({roleData: data})
+                this.setState({isLoading: false})
+
+
+            }
+  // render the data
   render() {
     return (
       <div className="feiprotocolroles">
@@ -82,41 +106,12 @@ class c extends Component {
             <p>
               See <a href="https://github.com/fei-protocol/fei-protocol-core/blob/develop/contracts/core/TribeRoles.sol" target="_blank"> docs</a> for more info.
             </p>
+            <p>
+            {this.state.isLoading && <h1>Loading</h1>}
+            </p>
           </div>
-          { this.state.safeAddresses.length == 0 ? <div className="info">
-            <hr/>
-            <div className="text-center">Reading latest on-chain data...</div>
-          </div> : null }
-          { this.state.safeAddresses.length != 0 ? <div>
-            <table className="mb-3">
-              <thead>
-                <tr>
-                  <th>Contract</th>
-                  <th className="text-center">Removed</th>
-                  <th className="text-center">Added</th>
-                </tr>
-              </thead>
-              <tbody>
-                { this.state.safeAddresses.map((contract, i) => <tr key={i} className={i%2?'odd':'even'}>
-                  <td>
-                    <a href={'https://etherscan.io/address/' + contract.address} target="_blank">
-                      {contract.label}
-                    </a>
-                  </td>
-                  <td className="text-center">
-                    <a href={'https://etherscan.io/tx/' + contract.removeTx} target="_blank">{contract.remove}</a>
-                  </td>
-                  <td className="text-center">
-                    <a href={'https://etherscan.io/tx/' + contract.addTx} target="_blank">{contract.add}</a>
-                  </td>
-                </tr>)}
-              </tbody>
-            </table>
-          </div> : null }
         </div>
       </div>
     );
   }
 }
-
-export default c;
