@@ -46,7 +46,7 @@ class TableRow extends React.Component {
           </a>
         </td>
         <td className="text-center" title="view transaction on etherscan">
-                {this.state.revokedDate === null ? '' :
+                {this.state.revokedDate === null ? '----------' :
                     <a href={'https://etherscan.io/tx/' + this.props.removeTx} target="_blank">{this.state.revokedDate}</a>}
                   </td>
         {this.state.grantedDate == null ? <td className="text-center">
