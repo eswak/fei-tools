@@ -7,7 +7,7 @@ const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alche
 
 
 /// function to get the date based on block number
-async function updateTime(block){
+async function updateTime(block) {
     const blockData = new Date((await provider.getBlock(block)).timestamp * 1000).toISOString().split('T')[0]
     return blockData
 }
@@ -21,7 +21,7 @@ class TableRow extends React.Component {
     state = {
         grantedDate: null,
         revokedDate: null,
-      }
+    }
 
 
     async componentDidMount() {
@@ -30,32 +30,33 @@ class TableRow extends React.Component {
         this.setState({ grantedDate: grantedDate })
 
         //if it was removed, // get the date for the remove column
-        if(this.props.removeBlock !== null){
+        if (this.props.removeBlock !== null) {
             const revokedTime = await updateTime(this.props.removeBlock);
-            console.log(revokedTime)
-            this.setState({revokedDate: revokedTime})
+            this.setState({ revokedDate: revokedTime })
         }
 
     };
 
     render() {
-        return ((<tr key={this.props.rowkey} className={this.props.rowkey%2?'odd':'even'}>
-        <td>
-          <a href={'https://etherscan.io/address/' + this.props.address} target="_blank">
-            {this.props.label}
-          </a>
-        </td>
-        <td className="text-center" title="view transaction on etherscan">
+        return ((<tr key={this.props.rowkey} className={this.props.rowkey % 2 ? 'odd' : 'even'}>
+            <td>
+                <a href={'https://etherscan.io/address/' + this.props.address} target="_blank">
+                    {this.props.label}
+                </a>
+            </td>
+            {this.state.grantedDate == null ? <td className="text-center">
+                <span>----------</span>
+            </td>
+                : <td className="text-center" title="view transaction on etherscan">
+                    <a href={'https://etherscan.io/tx/' + this.props.grantTransaction} target="_blank">{this.state.grantedDate}</a>
+                </td>}
+            {this.props.remove === true ? <td className="text-center" title="view transaction on etherscan">
                 {this.state.revokedDate === null ? '----------' :
                     <a href={'https://etherscan.io/tx/' + this.props.removeTx} target="_blank">{this.state.revokedDate}</a>}
-                  </td>
-        {this.state.grantedDate == null ? <td className="text-center">
-                {'----------'}
             </td>
-            : <td className="text-center" title="view transaction on etherscan">
-                <a href={'https://etherscan.io/tx/' + this.props.grantTransaction} target="_blank">{this.state.grantedDate}</a>
-            </td>}
-      </tr>))
+                : null
+            }
+        </tr>))
     }
 
 }

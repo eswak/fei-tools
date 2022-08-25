@@ -60,9 +60,10 @@ class c extends React.Component {
       };
       safeAddresses[remove.args[0]].removeBlock = remove.blockNumber;
       safeAddresses[remove.args[0]].removeTx = remove.transactionHash;
+      safeAddresses[remove.args[0]].remove = true;
     }
 
-    this.state.safeAddresses = Object.values(safeAddresses).sort(function(a, b) {
+    this.state.safeAddresses = Object.values(safeAddresses).sort(function (a, b) {
       return a.add < b.add ? 1 : -1;
     });
 
@@ -88,24 +89,51 @@ class c extends React.Component {
               See <a href="https://fei-protocol.github.io/docs/docs/protocol/Mechanism/PCVManagement" target="_blank"> docs</a> for more info.
             </p>
           </div>
-          { this.state.safeAddresses.length == 0 ? <div className="info">
-            <hr/>
+          {this.state.safeAddresses.length == 0 ? <div className="info">
+            <hr />
             <div className="text-center">Reading latest on-chain data...</div>
-          </div> : null }
-          { this.state.safeAddresses.length != 0 ? <div>
+          </div> : null}
+          {this.state.safeAddresses.length != 0 ? <div><div>
+            <h2>Current Safe Addresses</h2>
             <table className="mb-3">
               <thead>
                 <tr>
                   <th>Contract</th>
-                  <th className="text-center">Removed</th>
                   <th className="text-center">Added</th>
                 </tr>
               </thead>
               <tbody>
-                { this.state.safeAddresses.map((contract, i) => <TableRow rowkey={i} {...contract} />)}
+                {this.state.safeAddresses.map((contract, i) => {
+                  return contract.remove !== true ?
+                  <TableRow rowkey={i} {...contract} />
+                    :
+                    null 
+                })}
               </tbody>
             </table>
-          </div> : null }
+          </div>
+          <hr />
+            <div>
+            <h2>Deprecated Safe Addresses</h2>
+              <table className="mb-3">
+                <thead>
+                  <tr>
+                    <th>Contract</th>
+                    <th className="text-center">Added</th>
+                    <th className="text-center">Removed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {this.state.safeAddresses.map((contract, i) => {
+                  return contract.remove == true ?
+                  <TableRow rowkey={i} {...contract} />
+                    :
+                    null 
+                })}
+                </tbody>
+              </table>
+            </div>
+            </div> : null}
         </div>
       </div>
     );

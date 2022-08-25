@@ -32,8 +32,6 @@ export async function fetchRoles() {
   // fetch all instances of RoleRevoked events
   const revokedRoles = await feiDeployer.queryFilter('RoleRevoked')
 
-
-
   //// ADDING THE ROLES TO THE TABLE
 
   // for each event add role instance to role list
@@ -43,8 +41,8 @@ export async function fetchRoles() {
       key: grantedRoles[i]['args'][1] + grantedRoles[i]['args'][0],
       address: grantedRoles[i]['args'][1],
       role: grantedRoles[i]['args'][0],
-      blockGrant:grantedRoles[i]['blockNumber'],
-      blockRevoke:null,
+      blockGrant: grantedRoles[i]['blockNumber'],
+      blockRevoke: null,
       grantedOn: null,
       revoked: false,
       revokedOn: null,
@@ -58,9 +56,7 @@ export async function fetchRoles() {
     //if role not in array push to array
     if (index === -1) {
       roleTable.push(role);
-
     }
-
   }
 
   //// UPDATING REVOKED ROLES
@@ -108,7 +104,6 @@ function currentRoles(roles) {
     return 0;
   });
   return sortedCurrentRoles
-
 }
 
 ///// extracting and sorting by rolename the revoked roles
@@ -130,15 +125,10 @@ function revokedRoles(roles) {
     return 0;
   });
   return sortedRevokedRoles
-
 }
 
-
-
-
-
-
 export default class roles extends React.Component {
+
   // two state to keep track of, data and loading status
   state = {
     roleData: [],
@@ -146,6 +136,7 @@ export default class roles extends React.Component {
     revoked: [],
     isLoading: true
   }
+
   // loading the role data
   async componentDidMount() {
     const data = await fetchRoles();
@@ -158,10 +149,8 @@ export default class roles extends React.Component {
     this.setState({ revoked: sortedRevoked })
 
     this.setState({ isLoading: false })
-
-
-
   }
+
   // render the data
   render() {
     return (
@@ -178,14 +167,10 @@ export default class roles extends React.Component {
             </p>
           </div>
 
-
-
-
           {this.state.isLoading == true ? <div className="info">
             <hr />
             <div className="text-center">Reading latest on-chain data...</div>
           </div> : null}
-
 
           {this.state.isLoading == false ? <div>
             <h2>Currently assigned roles</h2>
@@ -199,11 +184,10 @@ export default class roles extends React.Component {
               </thead>
               <tbody>
                 {this.state.current.map((instance, i, current) => {
-                  console.log(instance.rolelabel === (current[i+1] || {}).rolelabel)
-                  return instance.rolelabel === (current[i+1] || {}).rolelabel ?
-                  <DisplayRow rowkey={i} {...instance} last={""} /> 
-                  :
-                  <DisplayRow rowkey={i} {...instance} last={"last"}/>
+                  return instance.rolelabel === (current[i + 1] || {}).rolelabel ?
+                    <DisplayRow rowkey={i} {...instance} last={""} />
+                    :
+                    <DisplayRow rowkey={i} {...instance} last={"last"} />
                 })}
               </tbody>
             </table>
@@ -223,11 +207,11 @@ export default class roles extends React.Component {
                 </tr>
               </thead>
               <tbody>
-              {this.state.revoked.map((instance, i, revoked) => {
-                  return instance.rolelabel === (revoked[i+1] || {}).rolelabel ?
-                  <DisplayRow rowkey={i} {...instance} last={""} /> 
-                  :
-                  <DisplayRow rowkey={i} {...instance} last={"last"}/>
+                {this.state.revoked.map((instance, i, revoked) => {
+                  return instance.rolelabel === (revoked[i + 1] || {}).rolelabel ?
+                    <DisplayRow rowkey={i} {...instance} last={""} />
+                    :
+                    <DisplayRow rowkey={i} {...instance} last={"last"} />
                 })}
               </tbody>
             </table>

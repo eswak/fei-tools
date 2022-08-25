@@ -4,17 +4,11 @@ import { ethers } from 'ethers';
 // set up the connection to alchemy node
 const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT');
 
-
-
 /// function to get the date based on block number
-async function updateTime(block){
+async function updateTime(block) {
     const blockData = new Date((await provider.getBlock(block)).timestamp * 1000).toISOString().split('T')[0]
     return blockData
 }
-
-
-
-
 
 class DisplayRow extends React.Component {
 
@@ -22,7 +16,6 @@ class DisplayRow extends React.Component {
         grantedDate: null,
         revokedDate: null,
       }
-
 
     async componentDidMount() {
         // get the date for the added column
@@ -49,7 +42,7 @@ class DisplayRow extends React.Component {
                 </a>
             </td>
             {this.state.grantedDate == null ? <td className="text-center">
-                {'----------'}
+            <span>----------</span>
             </td>
             : <td className="text-center" title="view transaction on etherscan">
                 <a href={'https://etherscan.io/tx/' + this.props.grantTransaction} target="_blank">{this.state.grantedDate}</a>
