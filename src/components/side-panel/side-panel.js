@@ -15,23 +15,30 @@ class SidePanel extends Component {
   render() {
     return (
       <div className="side-panel">
-        <div className="text-center cpointer" onClick={()=>this.goTo('#')}>
+        <div className="text-center cpointer" onClick={() => this.goTo('#')}>
           <img className="logo" src={logo} />
         </div>
-        <div className="version mb-2">
-          Made with 💚 by La Tribu.
-        </div>
+        <div className="version mb-2">Made with 💚 by La Tribu.</div>
         <Wallet />
         <a href="#" className={'menu-item' + (document.location.hash == '' ? ' active' : '')}>
           <span className="ml-1">About</span>
         </a>
-        <a href="#/CollateralizationOracle" className={'menu-item' + (document.location.hash == '#/CollateralizationOracle' ? ' active' : '')}>
+        <a
+          href="#/CollateralizationOracle"
+          className={'menu-item' + (document.location.hash == '#/CollateralizationOracle' ? ' active' : '')}
+        >
           <span className="ml-1">Fei Collateralization Oracle</span>
         </a>
-        <a href="#/SafeAddresses" className={'menu-item' + (document.location.hash == '#/SafeAddresses' ? ' active' : '')}>
+        <a
+          href="#/SafeAddresses"
+          className={'menu-item' + (document.location.hash == '#/SafeAddresses' ? ' active' : '')}
+        >
           <span className="ml-1">Fei Safe Addresses</span>
         </a>
-        <a href="#/TimelockTransactions" className={'menu-item' + (document.location.hash == '#/TimelockTransactions' ? ' active' : '')}>
+        <a
+          href="#/TimelockTransactions"
+          className={'menu-item' + (document.location.hash == '#/TimelockTransactions' ? ' active' : '')}
+        >
           <span className="ml-1">Tribe DAO Timelocks</span>
         </a>
       </div>

@@ -6,7 +6,7 @@ const $get = (url) => {
   return new Promise((resolve) => {
     $.get(url, resolve);
   });
-}
+};
 
 window.label = label;
 export default label;
@@ -60,8 +60,12 @@ async function label(address) {
   if (staticLabels[(address || '').toLowerCase()]) return staticLabels[(address || '').toLowerCase()];
 
   if (labels == null) {
-    var mainnetAddresses = await $get('https://raw.githubusercontent.com/fei-protocol/fei-protocol-core/develop/protocol-configuration/mainnetAddresses.ts');
-    var roles = await $get('https://raw.githubusercontent.com/fei-protocol/fei-protocol-core/develop/contracts/core/TribeRoles.sol');
+    var mainnetAddresses = await $get(
+      'https://raw.githubusercontent.com/fei-protocol/fei-protocol-core/develop/protocol-configuration/mainnetAddresses.ts'
+    );
+    var roles = await $get(
+      'https://raw.githubusercontent.com/fei-protocol/fei-protocol-core/develop/contracts/core/TribeRoles.sol'
+    );
 
     roles.match(/keccak256(.*)/g).forEach((match) => {
       var role = match.replace('keccak256("', '').replace('");', '');
@@ -77,18 +81,16 @@ async function label(address) {
     ].forEach((role) => {
       staticLabels[ethers.utils.id(role)] = role;
     });
-    
+
     var protocolConfig = {};
     labels = {};
     try {
       var AddressCategory = {};
-      var str = (
-        ('{' + mainnetAddresses.split('MainnetContractsConfig = {')[1].split('};')[0] + '}')
-          .replace(/category:.*/g, '')
-          .replace(/\/\/.*/g, '')
-          .replace(/[\n\r ]/g, '')
-          .replace(/,}/g, '}')
-      );
+      var str = ('{' + mainnetAddresses.split('MainnetContractsConfig = {')[1].split('};')[0] + '}')
+        .replace(/category:.*/g, '')
+        .replace(/\/\/.*/g, '')
+        .replace(/[\n\r ]/g, '')
+        .replace(/,}/g, '}');
 
       console.log('str', str);
 
@@ -105,7 +107,7 @@ async function label(address) {
   if (protocolLabel) return protocolLabel;
   if (!protocolLabel && (address || '').length == 42) {
     if (ensNames[address] != false) {
-      var ensName = ensNames[address] || await getProvider().lookupAddress(address);
+      var ensName = ensNames[address] || (await getProvider().lookupAddress(address));
       ensNames[address] = ensName || false;
       if (ensName) return ensName;
     }
