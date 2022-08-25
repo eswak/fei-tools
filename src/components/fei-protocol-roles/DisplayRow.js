@@ -46,7 +46,7 @@ class DisplayRow extends React.Component {
             <td>
                 {this.props.rolelabel}
             </td>
-            <td>
+            <td title="view account on etherscan">
                 <a href={'https://etherscan.io/address/' + this.props.address} target="_blank">
                     {this.props.label}
                 </a>
@@ -54,11 +54,11 @@ class DisplayRow extends React.Component {
             {this.state.grantedDate == null ? <td className="text-center">
                 {'----------'}
             </td>
-            : <td className="text-center">
+            : <td className="text-center" title="view transaction on etherscan">
                 <a href={'https://etherscan.io/tx/' + this.props.grantTransaction} target="_blank">{this.state.grantedDate}</a>
             </td>}
             
-            {this.props.revoked === true  ? <td className="text-center">
+            {this.props.revoked === true  ? <td className="text-center" title="view transaction on etherscan">
                 {this.state.revokedDate === null ? '----------' :
                     <a href={'https://etherscan.io/tx/' + this.props.revokeTransaction} target="_blank">{this.state.revokedDate}</a>}
                   </td>
