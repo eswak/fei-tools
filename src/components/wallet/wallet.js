@@ -11,7 +11,9 @@ if (window.ethereum) {
   provider = new ethers.providers.Web3Provider(window.ethereum);
   window.ethereum.on('networkChanged', () => window.location.reload());
 } else {
-  provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT');
+  provider = new ethers.providers.JsonRpcProvider(
+    'https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT'
+  );
 }
 const signer = provider.getSigner();
 
@@ -55,29 +57,39 @@ class Wallet extends Component {
   render() {
     return (
       <div>
-        { !this.state.ethereum ? <a className="wallet" href="https://metamask.io/" target="_blank">
-          <img src={metamaskLogo} />
-          <span className="error">
-            Click to install Metamask
-          </span>
-        </a> : null }
-        { (this.state.ethereum && !this.state.accounts.length) ? <a className="wallet" onClick={()=>this.connectAccounts()}>
-          <img src={metamaskLogo} />
-          Connect wallet
-        </a> : null }
-        { (this.state.ethereum && this.state.accounts.length) ? <a className="wallet">
-          <img src={metamaskLogo} />
-          <span title={account}>
-            {account.slice(0,6)}...{account.slice(-4)}
-          </span>
-          <span className="indicator-connected" title={'Connected. Last block : ' + this.state.block}></span>
-        </a> : null }
+        {!this.state.ethereum ? (
+          <a className="wallet" href="https://metamask.io/" target="_blank">
+            <img src={metamaskLogo} />
+            <span className="error">Click to install Metamask</span>
+          </a>
+        ) : null}
+        {this.state.ethereum && !this.state.accounts.length ? (
+          <a className="wallet" onClick={() => this.connectAccounts()}>
+            <img src={metamaskLogo} />
+            Connect wallet
+          </a>
+        ) : null}
+        {this.state.ethereum && this.state.accounts.length ? (
+          <a className="wallet">
+            <img src={metamaskLogo} />
+            <span title={account}>
+              {account.slice(0, 6)}...{account.slice(-4)}
+            </span>
+            <span className="indicator-connected" title={'Connected. Last block : ' + this.state.block}></span>
+          </a>
+        ) : null}
       </div>
     );
   }
 }
 
 export default Wallet;
-export function getAccount() { return account };
-export function getProvider() { return provider };
-export function getSigner() { return signer };
+export function getAccount() {
+  return account;
+}
+export function getProvider() {
+  return provider;
+}
+export function getSigner() {
+  return signer;
+}

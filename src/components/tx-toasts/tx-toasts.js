@@ -9,7 +9,7 @@ class TxToasts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tx: [],
+      tx: []
     };
   }
 
@@ -41,19 +41,21 @@ class TxToasts extends Component {
 
   componentWillUnmount() {
     clearInterval(intervalRefresh);
-    TxToasts
+    TxToasts;
   }
 
   render() {
     return (
       <div className="tx-toasts">
-        { this.state.tx.map((tx, i) => <a key={i} className="tx card" target="_blank" href={'https://etherscan.io/tx/' + tx.hash}>
-          <div className="label">
-            <span className={'status status-' + tx.status} title={'Status : ' + status}></span>
-            {tx.label}
-          </div>
-          <div className="hash">{tx.hash}</div>
-        </a>) }
+        {this.state.tx.map((tx, i) => (
+          <a key={i} className="tx card" target="_blank" href={'https://etherscan.io/tx/' + tx.hash}>
+            <div className="label">
+              <span className={'status status-' + tx.status} title={'Status : ' + status}></span>
+              {tx.label}
+            </div>
+            <div className="hash">{tx.hash}</div>
+          </a>
+        ))}
       </div>
     );
   }

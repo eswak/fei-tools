@@ -23,7 +23,7 @@ class MainContent extends Component {
   }
 
   renderSwitch(props) {
-    switch(this.props.content.type) {
+    switch (this.props.content.type) {
       case '/CompoundingStaker':
         return <CompoundingStakerOld />;
       case '/CollateralizationOracle':
@@ -39,7 +39,8 @@ class MainContent extends Component {
           <div className="card section">
             <h1>Fei Tools</h1>
             <p className="mt-3">
-              This website hosts third-party tools to interact with <a href="https://fei.money/">Fei Protocol</a> and more broadly the Tribe DAO products.
+              This website hosts third-party tools to interact with <a href="https://fei.money/">Fei Protocol</a> and
+              more broadly the Tribe DAO products.
             </p>
             <p>These tools are created by TRIBE community members, get in touch with Eswak if you want to suggest changes or add a tool to this website.</p>
             <p className="mb-0">
@@ -51,11 +52,16 @@ class MainContent extends Component {
               &nbsp;
               <a className="btn" href="#/FeiProtocolRoles">Fei Protocol Roles</a>
             </p>
-            <hr/>
+            <hr />
             <p className="mb-0">
-              Deprecated tools :<br/>
-              <a className="btn" href="#/CompoundingStaker">CompoundingStaker</a><br/>
-              <span style={{color:'#D32F2F'}}>DO NOT DEPOSIT FUNDS IN THIS TOOL, REWARDS ARE NOT ACCRUING ANYMORE, USE ONLY FOR WITHDRAWAL.</span>
+              Deprecated tools :<br />
+              <a className="btn" href="#/CompoundingStaker">
+                CompoundingStaker
+              </a>
+              <br />
+              <span style={{ color: '#D32F2F' }}>
+                DO NOT DEPOSIT FUNDS IN THIS TOOL, REWARDS ARE NOT ACCRUING ANYMORE, USE ONLY FOR WITHDRAWAL.
+              </span>
             </p>
           </div>
         );

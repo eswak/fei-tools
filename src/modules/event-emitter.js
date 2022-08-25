@@ -3,7 +3,7 @@ const EventEmitter = {
   _subscribers: {},
   dispatch: function (event, data) {
     if (!this._events[event]) return;
-    setTimeout(() => this._events[event].forEach(callback => callback(data))); // break out of the render cycle
+    setTimeout(() => this._events[event].forEach((callback) => callback(data))); // break out of the render cycle
   },
   on: function (event, callback, subscriber) {
     if (!this._events[event]) this._events[event] = [];
@@ -13,7 +13,7 @@ const EventEmitter = {
       this._subscribers[subscriber].push(callback);
     }
   },
-  off: function(event, subscriber) {
+  off: function (event, subscriber) {
     this._events[event] = (this._events[event] || []).filter((cb1) => {
       var found = false;
       (this._subscribers[subscriber] || []).forEach((cb2) => {

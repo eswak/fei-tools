@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import $ from 'jquery';
 import { ethers } from 'ethers';
 import { getProvider } from '../components/wallet/wallet';
@@ -112,11 +113,11 @@ async function label(address) {
   if (protocolLabel) return protocolLabel;
   if (!protocolLabel && (address || '').length == 42) {
     if (ensNames[address] != false) {
-      var ensName = ensNames[address] || await getProvider().lookupAddress(address);
+      var ensName = ensNames[address] || (await getProvider().lookupAddress(address));
       ensNames[address] = ensName || false;
       if (ensName) return ensName;
     }
   }
-  console.log(labels);
   return address;
 }
+>>>>>>> master

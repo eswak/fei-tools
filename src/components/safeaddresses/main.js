@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { Component } from 'react';
 import { ethers } from 'ethers';
 import PCVGuardianAbi from '../../abi/PCVGuardian.json';
@@ -63,7 +64,7 @@ class c extends React.Component {
       safeAddresses[remove.args[0]].remove = true;
     }
 
-    this.state.safeAddresses = Object.values(safeAddresses).sort(function (a, b) {
+    this.state.safeAddresses = Object.values(safeAddresses).sort(function  (a, b) {
       return a.add < b.add ? 1 : -1;
     });
 
@@ -83,10 +84,20 @@ class c extends React.Component {
           <h1 className="mb-3">Fei Safe Addresses</h1>
           <div className="info">
             <p>
-              The <a href="https://etherscan.io/address/0x02435948F84d7465FB71dE45ABa6098Fc6eC2993" target="_blank">PCV Guardian</a> can move PCV instantly between "safe" addresses which are pre-approved by the DAO (immutable smart contracts owned by the DAO).
+              The{' '}
+              <a href="https://etherscan.io/address/0x02435948F84d7465FB71dE45ABa6098Fc6eC2993" target="_blank">
+                PCV Guardian
+              </a>{' '}
+              can move PCV instantly between "safe" addresses which are pre-approved by the DAO (immutable smart
+              contracts owned by the DAO).
             </p>
             <p>
-              See <a href="https://fei-protocol.github.io/docs/docs/protocol/Mechanism/PCVManagement" target="_blank"> docs</a> for more info.
+              See{' '}
+              <a href="https://fei-protocol.github.io/docs/docs/protocol/Mechanism/PCVManagement" target="_blank">
+                {' '}
+                docs
+              </a>{' '}
+              for more info.
             </p>
           </div>
           {this.state.safeAddresses.length == 0 ? <div className="info">
@@ -141,3 +152,4 @@ class c extends React.Component {
 }
 
 export default c;
+>>>>>>> master
