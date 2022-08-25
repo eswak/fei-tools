@@ -1,8 +1,5 @@
-import { checkProperties } from 'ethers/lib/utils';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ethers } from 'ethers';
-import { get } from 'jquery';
-import { update } from 'lodash';
 
 // set up the connection to alchemy node
 const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT');
