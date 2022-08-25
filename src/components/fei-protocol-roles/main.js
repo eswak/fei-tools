@@ -139,7 +139,7 @@ function revokedRoles(roles) {
 
 
 
-export default class roles extends Component {
+export default class roles extends React.Component {
   // two state to keep track of, data and loading status
   state = {
     roleData: [],
