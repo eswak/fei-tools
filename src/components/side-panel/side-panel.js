@@ -41,7 +41,10 @@ class SidePanel extends Component {
         >
           <span className="ml-1">Tribe DAO Timelocks</span>
         </a>
-        <a href="#/FeiProtocolRoles" className={'menu-item' + (document.location.hash == '#/FeiProtocolRoles' ? ' active' : '')}>
+        <a
+          href="#/FeiProtocolRoles"
+          className={'menu-item' + (document.location.hash == '#/FeiProtocolRoles' ? ' active' : '')}
+        >
           <span className="ml-1">Fei Protocol Roles</span>
         </a>
       </div>

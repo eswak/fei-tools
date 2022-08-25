@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import $ from 'jquery';
 import { ethers } from 'ethers';
 import { getProvider } from '../components/wallet/wallet';
@@ -7,7 +6,7 @@ const $get = (url) => {
   return new Promise((resolve) => {
     $.get(url, resolve);
   });
-}
+};
 
 window.label = label;
 export default label;
@@ -62,13 +61,16 @@ staticLabels['0x7a165F8518A9Ec7d5DA15f4B77B1d7128B5D9188'.toLowerCase()] = 'ethU
 staticLabels['0x5d6446880FCD004c851EA8920a628c70Ca101117'.toLowerCase()] = 'ethUniswapPCVDepositV1';
 staticLabels['0x90fA375B75A58bB3A4842603f712DB285CC82Bf6'.toLowerCase()] = 'dpiSushiswapPCVDeposit';
 
-
 async function label(address) {
   if (staticLabels[(address || '').toLowerCase()]) return staticLabels[(address || '').toLowerCase()];
 
   if (labels == null) {
-    var mainnetAddresses = await $get('https://raw.githubusercontent.com/fei-protocol/fei-protocol-core/develop/protocol-configuration/mainnetAddresses.ts');
-    var roles = await $get('https://raw.githubusercontent.com/fei-protocol/fei-protocol-core/develop/contracts/core/TribeRoles.sol');
+    var mainnetAddresses = await $get(
+      'https://raw.githubusercontent.com/fei-protocol/fei-protocol-core/develop/protocol-configuration/mainnetAddresses.ts'
+    );
+    var roles = await $get(
+      'https://raw.githubusercontent.com/fei-protocol/fei-protocol-core/develop/contracts/core/TribeRoles.sol'
+    );
 
     roles.match(/keccak256(.*)/g).forEach((match) => {
       var role = match.replace('keccak256("', '').replace('");', '');
@@ -82,23 +84,20 @@ async function label(address) {
       'CANCELLER_ROLE',
       'AUTO_REWARDS_DISTRIBUTOR_ROLE',
       'TRIBE_MINTER_ROLE',
-      'BURNER_ROLE',
-      
+      'BURNER_ROLE'
     ].forEach((role) => {
       staticLabels[ethers.utils.id(role)] = role;
     });
-    
+
     var protocolConfig = {};
     labels = {};
     try {
       var AddressCategory = {};
-      var str = (
-        ('{' + mainnetAddresses.split('MainnetContractsConfig = {')[1].split('};')[0] + '}')
-          .replace(/category:.*/g, '')
-          .replace(/\/\/.*/g, '')
-          .replace(/[\n\r ]/g, '')
-          .replace(/,}/g, '}')
-      );
+      var str = ('{' + mainnetAddresses.split('MainnetContractsConfig = {')[1].split('};')[0] + '}')
+        .replace(/category:.*/g, '')
+        .replace(/\/\/.*/g, '')
+        .replace(/[\n\r ]/g, '')
+        .replace(/,}/g, '}');
 
       eval('protocolConfig = ' + str);
     } catch (e) {
@@ -120,4 +119,3 @@ async function label(address) {
   }
   return address;
 }
->>>>>>> master

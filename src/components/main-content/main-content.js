@@ -32,8 +32,8 @@ class MainContent extends Component {
         return <SafeAddresses />;
       case '/TimelockTransactions':
         return <TimelockTransactions />;
-        case '/FeiProtocolRoles':
-          return <FeiProtocolRoles />;
+      case '/FeiProtocolRoles':
+        return <FeiProtocolRoles />;
       default:
         return (
           <div className="card section">
@@ -42,15 +42,26 @@ class MainContent extends Component {
               This website hosts third-party tools to interact with <a href="https://fei.money/">Fei Protocol</a> and
               more broadly the Tribe DAO products.
             </p>
-            <p>These tools are created by TRIBE community members, get in touch with Eswak if you want to suggest changes or add a tool to this website.</p>
+            <p>
+              These tools are created by TRIBE community members, get in touch with Eswak if you want to suggest changes
+              or add a tool to this website.
+            </p>
             <p className="mb-0">
-              <a className="btn" href="#/CollateralizationOracle">Fei Collateralization Oracle</a>
+              <a className="btn" href="#/CollateralizationOracle">
+                Fei Collateralization Oracle
+              </a>
               &nbsp;
-              <a className="btn" href="#/SafeAddresses">Fei Safe Addresses</a>
+              <a className="btn" href="#/SafeAddresses">
+                Fei Safe Addresses
+              </a>
               &nbsp;
-              <a className="btn" href="#/TimelockTransactions">Tribe DAO Timelocks</a>
+              <a className="btn" href="#/TimelockTransactions">
+                Tribe DAO Timelocks
+              </a>
               &nbsp;
-              <a className="btn" href="#/FeiProtocolRoles">Fei Protocol Roles</a>
+              <a className="btn" href="#/FeiProtocolRoles">
+                Fei Protocol Roles
+              </a>
             </p>
             <hr />
             <p className="mb-0">
