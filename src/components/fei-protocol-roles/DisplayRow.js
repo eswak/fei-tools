@@ -33,14 +33,13 @@ class DisplayRow extends React.Component {
         if(this.props.revoked){
             const revokedTime = await updateTime(this.props.blockRevoke);
             this.setState({revokedDate: revokedTime})
-            console.log(this.state.revokedDate)
         }
 
     };
 
 
     render() {
-        return ((<tr key={this.props.rowkey} className={this.props.rowkey % 2 ? 'odd' : 'even'}>
+        return ((<tr key={this.props.rowkey} className={this.props.rowkey % 2 ? 'odd' : 'even' + this.props.last}>
             <td>
                 {this.props.rolelabel}
             </td>

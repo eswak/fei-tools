@@ -83,7 +83,6 @@ export async function fetchRoles() {
     //update revokeTransaction
     roleTable[index].revokeTransaction = revokedRoles[i]['transactionHash']
   }
-  console.log(roleTable)
   return roleTable
 }
 
@@ -160,8 +159,6 @@ export default class roles extends React.Component {
 
     this.setState({ isLoading: false })
 
-    console.log(this.state.current)
-    console.log(this.state.revoked)
 
 
   }
@@ -201,7 +198,12 @@ export default class roles extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.current.map((instance, i) => <DisplayRow rowkey={i} {...instance} />)}
+                {this.state.current.map((instance, i, current) => {
+                  return instance.rolelabel === (current[i+1] || {}).rolelabel ?
+                  <DisplayRow rowkey={i} {...instance} last={""} /> 
+                  :
+                  <DisplayRow rowkey={i} {...instance} last={"last"}/>
+                })}
               </tbody>
             </table>
           </div> : null}
@@ -220,7 +222,12 @@ export default class roles extends React.Component {
                 </tr>
               </thead>
               <tbody>
-              {this.state.revoked.map((instance, i) => <DisplayRow rowkey={i} {...instance} />)}
+              {this.state.revoked.map((instance, i, revoked) => {
+                  return instance.rolelabel === (revoked[i+1] || {}).rolelabel ?
+                  <DisplayRow rowkey={i} {...instance} last={""} /> 
+                  :
+                  <DisplayRow rowkey={i} {...instance} last={"last"}/>
+                })}
               </tbody>
             </table>
           </div> : null}
