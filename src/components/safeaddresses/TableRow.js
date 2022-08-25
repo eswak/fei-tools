@@ -33,7 +33,7 @@ class TableRow extends React.Component {
   render() {
     return (
       <tr key={this.props.rowkey} className={this.props.rowkey % 2 ? 'odd' : 'even'}>
-        <td>
+        <td title="view contract on etherscan">
           <a href={'https://etherscan.io/address/' + this.props.address} target="_blank">
             {this.props.label}
           </a>
@@ -44,7 +44,7 @@ class TableRow extends React.Component {
           </td>
         ) : (
           <td className="text-center" title="view transaction on etherscan">
-            <a href={'https://etherscan.io/tx/' + this.props.grantTransaction} target="_blank">
+            <a href={'https://etherscan.io/tx/' + this.props.addTx} target="_blank">
               {this.state.grantedDate}
             </a>
           </td>
