@@ -33,6 +33,7 @@ class DisplayRow extends React.Component {
         if(this.props.revoked){
             const revokedTime = await updateTime(this.props.blockRevoke);
             this.setState({revokedDate: revokedTime})
+            console.log(this.state.revokedDate)
         }
 
     };
@@ -51,6 +52,10 @@ class DisplayRow extends React.Component {
             <td className="text-center">
                 <a href={'https://etherscan.io/tx/' + this.props.grantTransaction} target="_blank">{this.state.grantedDate}</a>
             </td>
+            {this.props.revoked === true ? <td className="text-center">
+                    <a href={'https://etherscan.io/tx/' + this.props.revokeTransaction} target="_blank">{this.state.revokedDate}</a>
+                  </td>
+                  : null}
         </tr>))
     }
 

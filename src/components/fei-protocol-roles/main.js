@@ -220,24 +220,7 @@ export default class roles extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.revoked.map((instance, i) => <tr key={i} className={i % 2 ? 'odd' : 'even'}>
-                  <td>
-
-                    {instance.rolelabel}
-
-                  </td>
-                  <td>
-                    <a href={'https://etherscan.io/address/' + instance.address} target="_blank">
-                      {instance.label}
-                    </a>
-                  </td>
-                  <td className="text-center">
-                    <a href={'https://etherscan.io/tx/' + instance.grantTransaction} target="_blank">{instance.grantedOn}</a>
-                  </td>
-                  <td className="text-center">
-                    <a href={'https://etherscan.io/tx/' + instance.revokeTransaction} target="_blank">{instance.revokedOn}</a>
-                  </td>
-                </tr>)}
+              {this.state.revoked.map((instance, i) => <DisplayRow rowkey={i} {...instance} />)}
               </tbody>
             </table>
           </div> : null}
