@@ -11,6 +11,7 @@
   background: #333;
 }
 .feiprotocolroles table td {
+  min-width: 120px;
   padding: 3px 10px;
 }
 .feiprotocolroles table tr.odd td {

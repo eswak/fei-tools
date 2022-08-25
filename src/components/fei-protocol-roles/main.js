@@ -197,7 +197,7 @@ export default class roles extends React.Component {
                 <tr>
                   <th>Role</th>
                   <th>Account</th>
-                  <th className="text-center">Added</th>
+                  <th className="text-center">Added On</th>
                 </tr>
               </thead>
               <tbody>
@@ -215,8 +215,8 @@ export default class roles extends React.Component {
                 <tr>
                   <th>Role</th>
                   <th>Account</th>
-                  <th className="text-center">Added</th>
-                  <th className="text-center">Removed</th>
+                  <th className="text-center">Added On</th>
+                  <th className="text-center">Removed On</th>
                 </tr>
               </thead>
               <tbody>

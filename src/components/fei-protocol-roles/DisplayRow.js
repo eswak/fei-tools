@@ -49,9 +49,13 @@ class DisplayRow extends React.Component {
                     {this.props.label}
                 </a>
             </td>
-            <td className="text-center">
-                <a href={'https://etherscan.io/tx/' + this.props.grantTransaction} target="_blank">{this.state.grantedDate}</a>
+            {this.state.grantedDate == null ? <td className="text-center">
+                {'1337-13-37'}
             </td>
+            : <td className="text-center">
+                <a href={'https://etherscan.io/tx/' + this.props.grantTransaction} target="_blank">{this.state.grantedDate}</a>
+            </td>}
+            
             {this.props.revoked === true ? <td className="text-center">
                     <a href={'https://etherscan.io/tx/' + this.props.revokeTransaction} target="_blank">{this.state.revokedDate}</a>
                   </td>
