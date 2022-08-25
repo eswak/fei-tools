@@ -199,6 +199,7 @@ export default class roles extends React.Component {
               </thead>
               <tbody>
                 {this.state.current.map((instance, i, current) => {
+                  console.log(instance.rolelabel === (current[i+1] || {}).rolelabel)
                   return instance.rolelabel === (current[i+1] || {}).rolelabel ?
                   <DisplayRow rowkey={i} {...instance} last={""} /> 
                   :

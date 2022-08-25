@@ -9,7 +9,7 @@ const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alche
 
 
 
-
+/// function to get the date based on block number
 async function updateTime(block){
     const blockData = new Date((await provider.getBlock(block)).timestamp * 1000).toISOString().split('T')[0]
     return blockData
@@ -28,8 +28,11 @@ class DisplayRow extends React.Component {
 
 
     async componentDidMount() {
+        // get the date for the added column
         const grantedDate = await updateTime(this.props.blockGrant);
         this.setState({ grantedDate: grantedDate })
+
+        //if it was removed, // get the date for the remove column
         if(this.props.revoked){
             const revokedTime = await updateTime(this.props.blockRevoke);
             this.setState({revokedDate: revokedTime})
@@ -39,7 +42,7 @@ class DisplayRow extends React.Component {
 
 
     render() {
-        return ((<tr key={this.props.rowkey} className={this.props.rowkey % 2 ? 'odd' : 'even' + this.props.last}>
+        return ((<tr key={this.props.rowkey} className={(this.props.rowkey % 2 ? 'odd' : 'even') + this.props.last}>
             <td>
                 {this.props.rolelabel}
             </td>
@@ -49,14 +52,14 @@ class DisplayRow extends React.Component {
                 </a>
             </td>
             {this.state.grantedDate == null ? <td className="text-center">
-                {'1337-13-37'}
+                {'----------'}
             </td>
             : <td className="text-center">
                 <a href={'https://etherscan.io/tx/' + this.props.grantTransaction} target="_blank">{this.state.grantedDate}</a>
             </td>}
             
             {this.props.revoked === true  ? <td className="text-center">
-                {this.state.revokedDate === null ? '1337-13-37' :
+                {this.state.revokedDate === null ? '----------' :
                     <a href={'https://etherscan.io/tx/' + this.props.revokeTransaction} target="_blank">{this.state.revokedDate}</a>}
                   </td>
                   : null
