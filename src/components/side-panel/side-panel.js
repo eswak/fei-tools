@@ -41,6 +41,12 @@ class SidePanel extends Component {
         >
           <span className="ml-1">Tribe DAO Timelocks</span>
         </a>
+        <a
+          href="#/RariHackRedeem"
+          className={'menu-item' + (document.location.hash == '#/RariHackRedeem' ? ' active' : '')}
+        >
+          <span className="ml-1">Rari Hack Redeem</span>
+        </a>
       </div>
     );
   }
