@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import Collateralization from '../collateralization/main';
 import SafeAddresses from '../safeaddresses/main';
 import TimelockTransactions from '../timelock/main';
-import CompoundingStakerOld from '../compounding-staker/old';
 import TxToasts from '../tx-toasts/tx-toasts';
 import RariHackRedeem from '../rari-hack-redeem/main';
 import './main-content.css';
@@ -24,8 +23,6 @@ class MainContent extends React.Component {
 
   renderSwitch(props) {
     switch (this.props.content.type) {
-      case '/CompoundingStaker':
-        return <CompoundingStakerOld />;
       case '/CollateralizationOracle':
         return <Collateralization />;
       case '/SafeAddresses':
@@ -60,16 +57,6 @@ class MainContent extends React.Component {
               </a>
             </p>
             <hr />
-            <p className="mb-0">
-              Deprecated tools :<br />
-              <a className="btn" href="#/CompoundingStaker">
-                CompoundingStaker
-              </a>
-              <br />
-              <span style={{ color: '#D32F2F' }}>
-                DO NOT DEPOSIT FUNDS IN THIS TOOL, REWARDS ARE NOT ACCRUING ANYMORE, USE ONLY FOR WITHDRAWAL.
-              </span>
-            </p>
           </div>
         );
     }
