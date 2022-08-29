@@ -4,10 +4,8 @@ import Collateralization from '../collateralization/main';
 import SafeAddresses from '../safeaddresses/main';
 import TimelockTransactions from '../timelock/main';
 import CompoundingStakerOld from '../compounding-staker/old';
-import RariHack from '../rari-redeem/main';
 import TxToasts from '../tx-toasts/tx-toasts';
 import './main-content.css';
-
 
 class MainContent extends Component {
   constructor(props) {
@@ -33,8 +31,6 @@ class MainContent extends Component {
         return <SafeAddresses />;
       case '/TimelockTransactions':
         return <TimelockTransactions />;
-        case '/RariHackRedeem':
-        return <RariHack />;
       default:
         return (
           <div className="card section">
