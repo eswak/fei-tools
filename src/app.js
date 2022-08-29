@@ -5,7 +5,7 @@ import 'react-app-polyfill/stable';
 // imports
 import _ from 'lodash';
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import SidePanel from './components/side-panel/side-panel';
 import MainContent from './components/main-content/main-content';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -50,10 +50,11 @@ class App extends Component {
 
 // Initialize DOM elements
 document.title = 'Fei Tools';
-var wrapper = document.createElement('div');
+const wrapper = document.createElement('div');
 wrapper.className = 'app';
 document.body.appendChild(wrapper);
-ReactDOM.render(<App />, wrapper);
+const root = createRoot(wrapper);
+root.render(<App/>);
 
 // Favicon
 document.head.innerHTML +=
