@@ -21,7 +21,7 @@ class SidePanel extends Component {
         <div className="version mb-2">Made with 💚 by La Tribu.</div>
         <hr/>
         <span className="connectbutton">
-        <ConnectKitButton showBalance="true"/></span>
+        <ConnectKitButton showBalance="true" showAvatar="true" /></span>
         <hr/>
         <a href="#" className={'menu-item' + (document.location.hash == '' ? ' active' : '')}>
           <span className="ml-1">About</span>

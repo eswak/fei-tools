@@ -100,7 +100,7 @@ class App extends Component {
 
   render() {
     return <WagmiConfig client={client}><ConnectKitProvider theme="retro">
-      [<SidePanel />, <MainContent content={this.state.content} key={window.location.hash} />]</ConnectKitProvider></WagmiConfig>;
+      <SidePanel /> <MainContent content={this.state.content} key={window.location.hash} /></ConnectKitProvider></WagmiConfig>;
   }
 }
 
