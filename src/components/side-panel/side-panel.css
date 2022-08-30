@@ -51,6 +51,11 @@
   color: #aaa;
 }
 
+.side-panel .connectbutton {
+  display: flex;
+  justify-content: center
+}
+
 @media only screen and (max-width: 800px) {
   .side-panel {
     left: -400px;

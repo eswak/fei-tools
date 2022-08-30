@@ -10,6 +10,61 @@ import SidePanel from './components/side-panel/side-panel';
 import MainContent from './components/main-content/main-content';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
+///WAGMI IMPORTS
+import {
+  WagmiConfig,
+  createClient,
+  defaultChains,
+  configureChains,
+} from 'wagmi'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { publicProvider } from 'wagmi/providers/public'
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { InjectedConnector } from 'wagmi/connectors/injected'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+//IMPORT CONNECTKIT
+import { ConnectKitProvider, ConnectKitButton, getDefaultClient } from "connectkit";
+
+
+
+//WAGMI CONFIG
+// Configure chains & providers with the Alchemy provider.
+const { chains, provider, webSocketProvider } = configureChains(defaultChains, [
+  alchemyProvider({ apiKey: '2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT' }),
+  publicProvider(),
+])
+
+// Set up client
+const client = createClient({
+  autoConnect: true,
+  connectors: [
+    new MetaMaskConnector({ chains }),
+    new CoinbaseWalletConnector({
+      chains,
+      options: {
+        appName: 'wagmi',
+      },
+    }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        qrcode: true,
+      },
+    }),
+    new InjectedConnector({
+      chains,
+      options: {
+        name: 'Injected',
+        shimDisconnect: true,
+      },
+    }),
+  ],
+  provider,
+  webSocketProvider,
+})
+
+//END WAGMI CONFIG
 
 class App extends Component {
   constructor(props) {
@@ -44,7 +99,8 @@ class App extends Component {
   }
 
   render() {
-    return [<SidePanel />, <MainContent content={this.state.content} key={window.location.hash} />];
+    return <WagmiConfig client={client}><ConnectKitProvider theme="retro">
+      [<SidePanel />, <MainContent content={this.state.content} key={window.location.hash} />]</ConnectKitProvider></WagmiConfig>;
   }
 }
 
