@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import Collateralization from '../collateralization/main';
 import SafeAddresses from '../safeaddresses/main';
 import TimelockTransactions from '../timelock/main';
-import CompoundingStakerOld from '../compounding-staker/old';
 import FeiProtocolRoles from '../fei-protocol-roles/main';
 import TxToasts from '../tx-toasts/tx-toasts';
 import RariHackRedeem from '../rari-hack-redeem/main';
