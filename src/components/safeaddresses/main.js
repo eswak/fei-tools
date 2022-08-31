@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import PCVGuardianAbi from '../../abi/PCVGuardian.json';
 import './main.css';
 import label from '../../modules/label';
+import TableRow from './TableRow';
 
 const provider = new ethers.providers.JsonRpcProvider(
   'https://eth-mainnet.alchemyapi.io/v2/2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT'
@@ -11,7 +12,7 @@ const provider = new ethers.providers.JsonRpcProvider(
 const pcvGuardianAddress = '0x02435948F84d7465FB71dE45ABa6098Fc6eC2993';
 var pcvGuardian = new ethers.Contract(pcvGuardianAddress, PCVGuardianAbi, provider);
 
-class c extends Component {
+class c extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,10 +34,12 @@ class c extends Component {
         label: await label(add.args[0]),
         add: null,
         addTx: null,
+        addBlock: null,
         remove: null,
-        removeTx: null
+        removeTx: null,
+        removeBlock: null
       };
-      safeAddresses[add.args[0]].add = new Date((await add.getBlock()).timestamp * 1000).toISOString().split('T')[0];
+      safeAddresses[add.args[0]].addBlock = add.blockNumber;
       safeAddresses[add.args[0]].addTx = add.transactionHash;
     }
 
@@ -48,13 +51,14 @@ class c extends Component {
         label: await label(remove.args[0]),
         add: null,
         addTx: null,
+        addBlock: null,
         remove: null,
-        removeTx: null
+        removeTx: null,
+        removeBlock: null
       };
-      safeAddresses[remove.args[0]].remove = new Date((await remove.getBlock()).timestamp * 1000)
-        .toISOString()
-        .split('T')[0];
+      safeAddresses[remove.args[0]].removeBlock = remove.blockNumber;
       safeAddresses[remove.args[0]].removeTx = remove.transactionHash;
+      safeAddresses[remove.args[0]].remove = true;
     }
 
     this.state.safeAddresses = Object.values(safeAddresses).sort(function (a, b) {
@@ -101,36 +105,40 @@ class c extends Component {
           ) : null}
           {this.state.safeAddresses.length != 0 ? (
             <div>
-              <table className="mb-3">
-                <thead>
-                  <tr>
-                    <th>Contract</th>
-                    <th className="text-center">Removed</th>
-                    <th className="text-center">Added</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.safeAddresses.map((contract, i) => (
-                    <tr key={i} className={i % 2 ? 'odd' : 'even'}>
-                      <td>
-                        <a href={'https://etherscan.io/address/' + contract.address} target="_blank">
-                          {contract.label}
-                        </a>
-                      </td>
-                      <td className="text-center">
-                        <a href={'https://etherscan.io/tx/' + contract.removeTx} target="_blank">
-                          {contract.remove}
-                        </a>
-                      </td>
-                      <td className="text-center">
-                        <a href={'https://etherscan.io/tx/' + contract.addTx} target="_blank">
-                          {contract.add}
-                        </a>
-                      </td>
+              <div>
+                <h2>Current Safe Addresses</h2>
+                <table className="mb-3">
+                  <thead>
+                    <tr>
+                      <th>Contract</th>
+                      <th className="text-center">Added</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {this.state.safeAddresses.map((contract, i) => {
+                      return contract.remove !== true ? <TableRow rowkey={i} {...contract} /> : null;
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <hr />
+              <div>
+                <h2>Deprecated Safe Addresses</h2>
+                <table className="mb-3">
+                  <thead>
+                    <tr>
+                      <th>Contract</th>
+                      <th className="text-center">Added</th>
+                      <th className="text-center">Removed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.safeAddresses.map((contract, i) => {
+                      return contract.remove == true ? <TableRow rowkey={i} {...contract} /> : null;
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : null}
         </div>

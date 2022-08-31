@@ -1,0 +1,34 @@
+.feiprotocolroles {
+  
+}
+.feiprotocolroles table {
+  width: 100%;
+  max-width: 600px;
+  min-width: 300px;
+}
+.feiprotocolroles table th {
+  padding: 3px 10px;
+  color: white;
+  background: #333;
+}
+.feiprotocolroles table td {
+  min-width: 120px;
+  padding: 3px 10px;
+}
+.feiprotocolroles table tr.odd td {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.feiprotocolroles table tr.even td {
+  background: rgb(255, 255, 255);
+}
+
+.feiprotocolroles table tr.oddlast td {
+  background: rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #ccc;
+}
+
+.feiprotocolroles table tr.evenlast td {
+  background: rgb(255, 255, 255);
+  border-bottom: 1px solid #ccc;
+}
