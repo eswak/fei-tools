@@ -60,6 +60,8 @@ staticLabels['0xfe5b6c2a87A976dCe20130c423C679f4d6044cD7'.toLowerCase()] = 'unis
 staticLabels['0x7a165F8518A9Ec7d5DA15f4B77B1d7128B5D9188'.toLowerCase()] = 'ethUniswapPCVController';
 staticLabels['0x5d6446880FCD004c851EA8920a628c70Ca101117'.toLowerCase()] = 'ethUniswapPCVDepositV1';
 staticLabels['0x90fA375B75A58bB3A4842603f712DB285CC82Bf6'.toLowerCase()] = 'dpiSushiswapPCVDeposit';
+staticLabels['0x9b0C6299D08fe823f2C0598d97A1141507e4ad86'.toLowerCase()] = 'ethUniswapPCVDepositV0';
+staticLabels['0x80f17b512780F313F265dC4CeEDb89D1079D67F4'.toLowerCase()] = 'protocolDeploymentHelper';
 
 async function label(address) {
   if (staticLabels[(address || '').toLowerCase()]) return staticLabels[(address || '').toLowerCase()];
