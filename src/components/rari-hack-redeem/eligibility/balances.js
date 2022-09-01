@@ -15,3 +15,4 @@ export  const balances = {
 
 
   export const cTokens = ["0xd8553552f8868c1ef160eedf031cf0bcf9686945", "0xd9559442f8868c1ef160eedf031cf0bcf9686945", "0xd2243412f8868c1ef160eedf031cf0bcf9686945"]
+  export const cTokensLabels = ["cFei", "cUSDC", "cTUSD"]
