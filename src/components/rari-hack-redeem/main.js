@@ -1,6 +1,7 @@
 import React, { Component, useState } from 'react';
 import { useAccount } from 'wagmi';
 import RariHackEligibility from './eligibility/eligibility';
+import { SigningMessage } from './signing';
 
 
 
@@ -8,10 +9,14 @@ export default function RariHackRedeem() {
 
   const { address, isConnected, isDisconnected } = useAccount()
   const [eligible, setEligible] = useState(false)
+  const [messageSigned, setMessageSigned] = useState(false)
   console.log(eligible)
 
   const isEligible = () => {
     setEligible(true)
+  }
+  const messageIsSigned = () => {
+    setMessageSigned(true)
   }
 
 
@@ -34,8 +39,7 @@ export default function RariHackRedeem() {
         <h2>Eligibility</h2>
         {isConnected == true ? <RariHackEligibility onCompute={isEligible} /> : <span className='connectprompt'>Please connect your wallet.</span>}
         {eligible ? <div><h2>Signing message</h2>
-          <p><span>Please sign the following message:</span></p>
-          <p><span>"I love the Fei Labs team and will never ever even consider taking legal actions against Fei Labs or anyone even remotely associated with it, so help me God."</span></p>
+          <SigningMessage onMessageReturn={setMessageSigned} />
         </div> : null}
       </div>
     </div>
