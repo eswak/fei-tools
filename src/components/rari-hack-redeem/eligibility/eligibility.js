@@ -6,10 +6,11 @@ import Row from './row';
 
 
 
-export function RariHackEligibility() {
+export function RariHackEligibility(props) {
   const account = useAccount().address
   const [redeemable, setRedeemable] = useState([])
   const [loaded, setLoaded] = useState(false)
+  console.log(props.onCompute)
 
 
   // finding out what the user can redeem
@@ -29,6 +30,7 @@ export function RariHackEligibility() {
       }}
       // set loaded state as true
       setLoaded(true)
+      props.onCompute()
       
     }
   }
