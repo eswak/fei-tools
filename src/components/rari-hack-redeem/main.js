@@ -12,9 +12,12 @@ export default function RariHackRedeem() {
   const [messageSigned, setMessageSigned] = useState(false)
   console.log(eligible)
 
+  //Keep track of eligibility
   const isEligible = () => {
     setEligible(true)
   }
+
+  //Is the message signed?
   const messageIsSigned = () => {
     setMessageSigned(true)
   }

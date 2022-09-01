@@ -30,7 +30,9 @@ export function RariHackEligibility(props) {
       }}
       // set loaded state as true
       setLoaded(true)
+      if(redeemable.length !== 0){
       props.onCompute()
+    }
       
     }
   }
@@ -38,7 +40,7 @@ export function RariHackEligibility(props) {
   // render the data
   return (
     <div className="rarihackeligilibity">
-      <p><button onClick={canRedeem}> Balances </button></p>
+      <p><button onClick={canRedeem}> Check my eligibility </button></p>
       {
       loaded && redeemable.length == 0 ?
         <span>you are not eligible</span>
