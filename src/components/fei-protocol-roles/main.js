@@ -139,7 +139,6 @@ export default class roles extends React.Component {
     const sortedRevoked = revokedRoles(data);
     this.setState({ current: sortedCurrent });
     this.setState({ revoked: sortedRevoked });
-
     this.setState({ isLoading: false });
   }
 
