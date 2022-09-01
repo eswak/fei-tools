@@ -13,8 +13,10 @@ export default function RariHackRedeem() {
   console.log(eligible)
 
   //Keep track of eligibility
-  const isEligible = () => {
-    setEligible(true)
+  const isEligible = (check) => {
+    console.log(check)
+    if(check){
+    setEligible(true)}
   }
 
   //Is the message signed?

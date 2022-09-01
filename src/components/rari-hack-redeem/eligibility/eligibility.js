@@ -13,27 +13,30 @@ export function RariHackEligibility(props) {
   console.log(props.onCompute)
 
 
+
+
   // finding out what the user can redeem
   function canRedeem() {
+    let eligibilityCheck = false
     if (!loaded) {
       for (let i = 0; i < cTokens.length; i++) {
         // check if the balance value is defined
-        if(balances[cTokens[i]][account] !== undefined ){
+        if (balances[cTokens[i]][account] !== undefined) {
           // if defined setup instance
-        const instance = {
-          cToken: cTokens[i],
-          balance: balances[cTokens[i]][account],
-          cTokenLabel: cTokensLabels[i]
+          const instance = {
+            cToken: cTokens[i],
+            balance: balances[cTokens[i]][account],
+            cTokenLabel: cTokensLabels[i]
+          }
+          // add instance to array
+          setRedeemable(redeemable => [...redeemable, instance])
+          eligibilityCheck = true
+
         }
-        // add instance to array
-        setRedeemable(redeemable => [...redeemable, instance])
-      }}
+      }
       // set loaded state as true
       setLoaded(true)
-      if(redeemable.length !== 0){
-      props.onCompute()
-    }
-      
+      props.onCompute(eligibilityCheck)
     }
   }
 
@@ -42,22 +45,23 @@ export function RariHackEligibility(props) {
     <div className="rarihackeligilibity">
       <p><button onClick={canRedeem}> Check my eligibility </button></p>
       {
-      loaded && redeemable.length == 0 ?
-        <span>you are not eligible</span>
-        :
-        loaded && redeemable !==null ? <table className="mb-3">
-          <thead>
-            <tr>
-              <th>cToken</th>
-              <th>Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            {redeemable.map((instance, i) => {
-              return <Row key={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
-            })}
-          </tbody>
-        </table> : null}
+        loaded && redeemable.length == 0 ?
+          <span>you are not eligible</span>
+          :
+          loaded && redeemable !== null ? 
+          <table className="mb-3">
+            <thead>
+              <tr>
+                <th>cToken</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {redeemable.map((instance, i) => {
+                return <Row key={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
+              })}
+            </tbody>
+          </table>: null}
     </div>
   );
 
