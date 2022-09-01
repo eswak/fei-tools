@@ -51,8 +51,9 @@ export function RariHackEligibility() {
           </tr>
         </thead>
         <tbody>
-          {redeemable.map((instance) =>{
-            return <Row {... instance} />
+          {redeemable.map((instance, i) =>{
+            console.log(instance)
+            return <Row key={i} cToken={instance.cToken} balance={instance.balance} />
           })}
         </tbody>
       </table>
