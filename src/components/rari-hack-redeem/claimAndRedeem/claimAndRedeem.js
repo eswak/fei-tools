@@ -6,22 +6,34 @@ export function ClaimAndRedeem(props) {
 
     const [redeemable, setRedeemable] = useState(props.redeemableTokens)
     const [wantRedeem, setWantRedeem] = useState(props.redeemableTokens)
+    const [redeemState, setRedeemState] = useState(null)
 
 
 
     // function to handle value change in the form
-   function updateWantRedeem(cToken, value){
+    function updateWantRedeem(cToken, value) {
         setWantRedeem(previousArray => {
             return previousArray.map((item, i) => {
-                return item.cToken === cToken ? {...item, balance:value} : item
+                return item.cToken === cToken ? { ...item, balance: value } : item
             })
         })
-        console.log("WantRedeem is now",wantRedeem)
+        console.log("WantRedeem is now", wantRedeem)
     }
 
 
-    function redeem(){
+    function redeem() {
         console.log("button want redeem:", wantRedeem)
+        console.log("redeemable", redeemable)
+        ////check if inputed values are inferior or equal to redeemable
+        for (let i = 0; wantRedeem.length; i++) {
+            if (wantRedeem[i]["balance"] <= redeemable[i]["balance"]) {
+                console.log("ok")
+            }
+            else {
+                setRedeemState("error, you are trying to claim more than you can")
+            }
+        }
+
     }
 
     return (
@@ -42,7 +54,8 @@ export function ClaimAndRedeem(props) {
                     }
                 </tbody>
             </table>
-            <p><button onClick={redeem}> Check my eligibility </button></p>
+            <p><button onClick={redeem}> Claim and Redeem </button></p>
+            {redeemState !== null ? <span>{redeemState}</span> : null}
 
         </div>
     )
