@@ -11,20 +11,21 @@ export default function RariHackRedeem() {
   const { address, isConnected, isDisconnected } = useAccount()
   const [eligible, setEligible] = useState(false)
   const [messageSigned, setMessageSigned] = useState(false)
+  const [signedMessage, setSignedMessage] = useState(null)
   const [redeemable, setRedeemable] = useState([])
 
   //Keep track of eligibility
   const isEligible = (check, value) => {
-    console.log("check value is", check)
-    console.log("redeemable value is", value)
     if(check){
     setEligible(true)
     setRedeemable(value)}
   }
 
-  //Is the message signed?
-  const messageIsSigned = () => {
+  //Is the message signed? update message data to the main state
+  const liftMessageData = (data) => {
     setMessageSigned(true)
+    setSignedMessage(data)
+
   }
 
 
@@ -47,7 +48,7 @@ export default function RariHackRedeem() {
         <h2>Eligibility</h2>
         {isConnected == true ? <RariHackEligibility onCompute={isEligible} /> : <span className='connectprompt'>Please connect your wallet.</span>}
         {eligible ? <div><h2>Signing message</h2>
-          <SigningMessage onMessageReturn={setMessageSigned} />
+          <SigningMessage liftMessageData={liftMessageData} />
         </div> : null}
       </div>
     </div>

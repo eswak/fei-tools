@@ -11,7 +11,6 @@ export function SigningMessage(props) {
 
 
 
-
     return (<div>
         <p>
             <span>Please sign the following message:</span>
@@ -23,7 +22,7 @@ export function SigningMessage(props) {
             <button disabled={isLoading} onClick={() => signMessage()}>
                 Sign message
             </button>
-            {isSuccess && <div>Signature: {data}</div>}
+            {isSuccess && <div>Signature: {data}{props.liftMessageData(data)}</div>}
             {isError && <div>Error signing message</div>}
         </div>
     </div>)
