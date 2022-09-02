@@ -6,6 +6,9 @@ import { useSignMessage } from 'wagmi'
 export function SigningMessage(props) {
     const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
         message: 'lolilol',
+        onSettled(data,error){
+            props.liftMessageData(data)
+        }
     })
 
 
@@ -22,7 +25,7 @@ export function SigningMessage(props) {
             <button disabled={isLoading} onClick={() => signMessage()}>
                 Sign message
             </button>
-            {isSuccess && <div>Signature: {data}{props.liftMessageData(data)}</div>}
+            {isSuccess && <div>Signature: {data}</div>}
             {isError && <div>Error signing message</div>}
         </div>
     </div>)
