@@ -25,7 +25,7 @@ export function SigningMessage(props) {
             <button disabled={isLoading} onClick={() => signMessage()}>
                 Sign message
             </button>
-            {isSuccess && <div>Signature: {data}</div>}
+            {isSuccess && <div>Message signed, please choose what you want to redeem.</div>}
             {isError && <div>Error signing message</div>}
         </div>
     </div>)
