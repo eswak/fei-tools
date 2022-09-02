@@ -1,7 +1,8 @@
 import React from "react";
 
+
 export default function Row(props) {
-    return <tr>
+    return <tr key={props.rowkey} className={(props.rowkey % 2 ? 'odd' : 'even')}>
             <td title={props.cToken}>
                 {props.cTokenLabel}
             </td>

@@ -2,6 +2,7 @@ import React, { Component, useState } from 'react';
 import { useAccount } from 'wagmi';
 import RariHackEligibility from './eligibility/eligibility';
 import { SigningMessage } from './signing';
+import './main.css'
 
 
 
@@ -10,13 +11,15 @@ export default function RariHackRedeem() {
   const { address, isConnected, isDisconnected } = useAccount()
   const [eligible, setEligible] = useState(false)
   const [messageSigned, setMessageSigned] = useState(false)
-  console.log(eligible)
+  const [redeemable, setRedeemable] = useState([])
 
   //Keep track of eligibility
-  const isEligible = (check) => {
-    console.log(check)
+  const isEligible = (check, value) => {
+    console.log("check value is", check)
+    console.log("redeemable value is", value)
     if(check){
-    setEligible(true)}
+    setEligible(true)
+    setRedeemable(value)}
   }
 
   //Is the message signed?

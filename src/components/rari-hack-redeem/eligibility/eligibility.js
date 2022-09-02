@@ -8,9 +8,8 @@ import Row from './row';
 
 export function RariHackEligibility(props) {
   const account = useAccount().address
-  const [redeemable, setRedeemable] = useState([])
+  const [redeemable, setRedeemable] = useState(["redeemable"])
   const [loaded, setLoaded] = useState(false)
-  console.log(props.onCompute)
 
 
 
@@ -18,6 +17,7 @@ export function RariHackEligibility(props) {
   // finding out what the user can redeem
   function canRedeem() {
     let eligibilityCheck = false
+    let liftUpValue = []
     if (!loaded) {
       for (let i = 0; i < cTokens.length; i++) {
         // check if the balance value is defined
@@ -30,15 +30,17 @@ export function RariHackEligibility(props) {
           }
           // add instance to array
           setRedeemable(redeemable => [...redeemable, instance])
+          liftUpValue.push(instance)
           eligibilityCheck = true
-
         }
       }
       // set loaded state as true
       setLoaded(true)
-      props.onCompute(eligibilityCheck)
+      console.log(liftUpValue)
+      props.onCompute(eligibilityCheck, liftUpValue)
     }
   }
+
 
   // render the data
   return (
@@ -53,12 +55,12 @@ export function RariHackEligibility(props) {
             <thead>
               <tr>
                 <th>cToken</th>
-                <th>Balance</th>
+                <th className="text-center">Balance</th>
               </tr>
             </thead>
             <tbody>
               {redeemable.map((instance, i) => {
-                return <Row key={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
+                return <Row rowkey={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
               })}
             </tbody>
           </table>: null}
