@@ -18,7 +18,7 @@ export default function ClaimRow(props){
             <td className="text-center" title="tooltip tavu2">
                 {props.balance}
             </td>
-            <td><input type="number" id={props.cToken} value={value} onChange={handleChange}/></td>
+            <td><input type="string" id={props.cToken} value={value} onChange={handleChange}/></td>
         </tr>
         )
 }
