@@ -49,7 +49,7 @@ export function ClaimAndRedeem(props) {
                 </thead>
                 <tbody>
                     {props.redeemableTokens.map((instance, i) => {
-                        return <ClaimRow updateNumber={updateWantRedeem} rowkey={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
+                        return <ClaimRow updateNumber={updateWantRedeem} rowkey={i} key={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
                     })
                     }
                 </tbody>

@@ -60,7 +60,7 @@ export function RariHackEligibility(props) {
             </thead>
             <tbody>
               {redeemable.map((instance, i) => {
-                return <Row rowkey={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
+                return <Row key={i} rowkey={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
               })}
             </tbody>
           </table>: null}

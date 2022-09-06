@@ -190,9 +190,9 @@ export default class roles extends React.Component {
                 <tbody>
                   {this.state.current.map((instance, i, current) => {
                     return instance.rolelabel === (current[i + 1] || {}).rolelabel ? (
-                      <DisplayRow rowkey={i} {...instance} last={''} />
+                      <DisplayRow key={i} rowkey={i} {...instance} last={''} />
                     ) : (
-                      <DisplayRow rowkey={i} {...instance} last={'last'} />
+                      <DisplayRow key={i} rowkey={i} {...instance} last={'last'} />
                     );
                   })}
                 </tbody>
@@ -217,9 +217,9 @@ export default class roles extends React.Component {
                 <tbody>
                   {this.state.revoked.map((instance, i, revoked) => {
                     return instance.rolelabel === (revoked[i + 1] || {}).rolelabel ? (
-                      <DisplayRow rowkey={i} {...instance} last={''} />
+                      <DisplayRow key={i} rowkey={i} {...instance} last={''} />
                     ) : (
-                      <DisplayRow rowkey={i} {...instance} last={'last'} />
+                      <DisplayRow key={i} rowkey={i} {...instance} last={'last'} />
                     );
                   })}
                 </tbody>

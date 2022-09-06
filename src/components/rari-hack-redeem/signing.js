@@ -2,14 +2,20 @@ import { ethers } from "ethers"
 import React, { useState } from "react"
 import { useProvider, useSignMessage, useSigner, usePrepareContractWrite, useContractWrite } from 'wagmi'
 import MultiMerkleRedeemer from "../../abi/MultiMerkleRedeemer.json"
+import SigningTx from "./signingtx"
 
 export function SigningMessage(props) {
     const [signer, setSigner] = useState(useSigner())
     const [provider, setProvider] = useState(useProvider())
+    const [signedMessage, setSignedMessage] = useState(null)
+
+    
     const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
         message: 'Sample message, please update.',
         onSettled(data, error) {
             props.liftMessageData(data)
+            setSignedMessage(data)
+            console.log("signed message", data)
         }
     })
     ///1. CHECKING FOR SIGNATURE
@@ -21,28 +27,22 @@ export function SigningMessage(props) {
     const usersDidSign = readContract.userSignatures("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
 
 
+    ///Trying another way
+    const account_from = {
+        privateKey: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+    };
+    // Create wallet
+    let wallet = new ethers.Wallet(account_from.privateKey, provider);
+    // Create contract instance with signer
+    const writeCon = new ethers.Contract(contractAddress, MultiMerkleRedeemer, wallet);
+    function sign(){
+        console.log("provider chain id is", provider.getNetwork())
+        console.log("signer chain id is", wallet.getChainId())
+        console.log("calling the sign function")
+        const createReceipt = writeCon.sign(data)
+        console.log("call result is", createReceipt)
 
-
-    ///2. SIGNING
-    const { config, error } = usePrepareContractWrite({
-        addressOrName: contractAddress,
-        contractInterface: MultiMerkleRedeemer,
-        functionName: 'sign',
-        args: data
-    })
-    const { signData, signIsLoading, signIsSuccess, write } = useContractWrite(
-        {
-            config,
-            onError(error) {
-                console.log("error", error)
-            },
-            onSettled(data, error) {
-                console.log("settled", data, error)
-            },
-            onSuccess(data) {
-                console.log("success", data)
-            }
-        })
+    }
 
     const display = true
 
@@ -67,9 +67,7 @@ export function SigningMessage(props) {
                 </button>
                 {isSuccess && <div>
                     <p>Message signed, please send.</p>
-                    <p><button onClick={() => write()}>
-                        Test
-                    </button></p>
+                    <p><SigningTx data={signedMessage}/></p>
                 </div>}
                 {isError && <div>Error signing message</div>}
             </div>
