@@ -3,6 +3,7 @@ import { useAccount } from 'wagmi';
 import RariHackEligibility from './eligibility/eligibility';
 import { SigningMessage } from './signing';
 import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
+import { PastRedemptions } from './pastRedemptions/pastRedemptions';
 import './main.css'
 
 
@@ -66,6 +67,11 @@ export default function RariHackRedeem() {
             <h2>Claim and redeem</h2>
             <ClaimAndRedeem redeemableTokens={redeemable} messageProof={signedMessage}/>
           </div> : null}
+
+          <div>
+            <h2>Redemption stats</h2>
+            <PastRedemptions userAddress={address}/>
+          </div>
       </div>
     </div>
   );
