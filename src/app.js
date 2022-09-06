@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 ///WAGMI IMPORTS
 import {
+  chain,
   WagmiConfig,
   createClient,
   defaultChains,
@@ -19,6 +20,7 @@ import {
 } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
@@ -30,9 +32,15 @@ import { ConnectKitProvider, ConnectKitButton, getDefaultClient } from "connectk
 
 //WAGMI CONFIG
 // Configure chains & providers with the Alchemy provider.
-const { chains, provider, webSocketProvider } = configureChains(defaultChains, [
+const { chains, provider, webSocketProvider } = configureChains([chain.localhost], [
   alchemyProvider({ apiKey: '2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT' }),
   publicProvider(),
+  jsonRpcProvider({
+    rpc: (chain) => ({
+      http: `http://127.0.0.1:8545`,
+    }),
+  }),
+
 ])
 
 // Set up client
