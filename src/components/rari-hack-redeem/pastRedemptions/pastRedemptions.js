@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useProvider } from 'wagmi';
+import { ethers } from 'ethers';
 import MultiMerkleRedeemerAbi from '../../../abi/MultiMerkleRedeemer.json';
-import labels from '../data/labels.json';
 import rates from '../data/rates.json';
 import snapshot from '../data/snapshot.json';
 
