@@ -45,6 +45,8 @@ export function ClaimAndRedeem(props) {
                         <th>cToken</th>
                         <th className="text-center">Balance</th>
                         <th>Claiming</th>
+                        <th>Approve Transfer</th>
+                        <th>Transfer Approved?</th>
                     </tr>
                 </thead>
                 <tbody>

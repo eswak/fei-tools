@@ -33,7 +33,7 @@ export function SigningMessage(props) {
  
 
 
-    return (<div>{false == false ?
+    return (<div>{false == true ?
         <div>
             Message has already been signed
             {console.log("contractRead", contractRead)}
