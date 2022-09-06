@@ -33,7 +33,7 @@ export default function ClaimRow(props) {
                 <ApproveCToken liftApproveState={approveCToken} />
             </td>
             <td>
-            {approve == true ? <span>approved!</span> : <span>approval pending</span>}
+            {approve == true ? <span>✅</span> : <span>❌</span>}
             </td>
         </tr>
     )
