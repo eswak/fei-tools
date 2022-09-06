@@ -1,13 +1,17 @@
 import { ethers } from "ethers"
+import { solidityKeccak256 } from "ethers/lib/utils"
 import React, { useState } from "react"
-import { useProvider, useSignMessage, useSigner, usePrepareContractWrite, useContractWrite } from 'wagmi'
-import MultiMerkleRedeemer from "../../abi/MultiMerkleRedeemer.json"
+import { useProvider, useSignMessage, useSigner, usePrepareContractWrite, useContractWrite, useAccount, useContractRead } from 'wagmi'
+import MultiMerkleRedeemer from "../../../abi/MultiMerkleRedeemer.json"
 import SigningTx from "./signingtx"
 
 export function SigningMessage(props) {
-    const [signer, setSigner] = useState(useSigner())
-    const [provider, setProvider] = useState(useProvider())
+     const [provider, setProvider] = useState(useProvider())
     const [signedMessage, setSignedMessage] = useState(null)
+    const [account, setAccount] = useState(useAccount())
+
+
+    const signer = useSigner()
 
     
     const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
@@ -18,39 +22,21 @@ export function SigningMessage(props) {
             console.log("signed message", data)
         }
     })
-    ///1. CHECKING FOR SIGNATURE
+
+///1. CHECKING FOR SIGNATURE
     ////Contract address :
     const contractAddress = "0xB22C255250d74B0ADD1bfB936676D2a299BF48Bd"
     //// Contract instance to check for signature:
     const readContract = new ethers.Contract(contractAddress, MultiMerkleRedeemer, provider)
     /// Checking for signature
-    const usersDidSign = readContract.userSignatures("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
+    const contractRead = readContract.userSignatures(account.address)
+ 
 
 
-    ///Trying another way
-    const account_from = {
-        privateKey: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-    };
-    // Create wallet
-    let wallet = new ethers.Wallet(account_from.privateKey, provider);
-    // Create contract instance with signer
-    const writeCon = new ethers.Contract(contractAddress, MultiMerkleRedeemer, wallet);
-    function sign(){
-        console.log("provider chain id is", provider.getNetwork())
-        console.log("signer chain id is", wallet.getChainId())
-        console.log("calling the sign function")
-        const createReceipt = writeCon.sign(data)
-        console.log("call result is", createReceipt)
-
-    }
-
-    const display = true
-
-    return (<div>{display == false ?
+    return (<div>{false == false ?
         <div>
-            <button onClick={() => console.log(usersDidSign)}>
-                Test
-            </button>
+            Message has already been signed
+            {console.log("contractRead", contractRead)}
         </div> :
         <div>
             <p>

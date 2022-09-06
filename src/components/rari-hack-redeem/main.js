@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import { useAccount } from 'wagmi';
 import RariHackEligibility from './eligibility/eligibility';
-import { SigningMessage } from './signing';
+import { SigningMessage } from './SigningMessage/signing';
 import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
 import './main.css'
 

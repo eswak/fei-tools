@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { usePrepareContractWrite, useContractWrite, ChainDoesNotSupportMulticallError, useProvider, useSigner } from "wagmi";
-import MultiMerkleRedeemer from "../../abi/MultiMerkleRedeemer.json"
+import MultiMerkleRedeemer from "../../../abi/MultiMerkleRedeemer.json"
 
 
 
