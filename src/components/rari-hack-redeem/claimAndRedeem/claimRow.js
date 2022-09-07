@@ -30,7 +30,7 @@ export default function ClaimRow(props) {
                 <input type="string" id={props.cToken} value={value} onChange={handleChange} />
             </td>
             <td>
-                <ApproveCToken liftApproveState={approveCToken} />
+                <ApproveCToken value={value} contractAddress={props.cToken} liftApproveState={approveCToken} />
             </td>
             <td>
             {approve == true ? <span>✅</span> : <span>❌</span>}
