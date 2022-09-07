@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import MultiMerkleRedeemer from "../../../abi/MultiMerkleRedeemer.json"
 import roots from "../data/roots.json"
@@ -57,10 +57,12 @@ export default function SignClaimRedeemCall(props) {
     const amountsToRedeem = props.toRedeem.map(item => item.balance)
 
     ////4. _merkeProofs
-    /////see inside redeem function
-
-
-
+    useEffect(() => {
+        for (let i = 0; i < cTokens.length; i++) {
+            setMerkleProofs(merkleProofs => [...merkleProofs, [cTokens[i],roots[cTokens[i]]]])
+        }
+      }, props.toRedeem);
+  
 
 
 
@@ -93,28 +95,6 @@ export default function SignClaimRedeemCall(props) {
         })
 
 
-    //function to be called by the button
-    function redeem() {
-        setDisableButton(true)
-        if (checkredeem() == true) {
-            //GETTING THE MERKLE ROOTS
-            console.log("ctokens is", cTokens)
-            for (let i = 0; i < cTokens.length; i++) {
-                setMerkleProofs(merkleProofs => [...merkleProofs, roots[cTokens[i]]])
-            }
-        }
-        write()
-    }
-
-
-    function log() {
-        console.log("signed message is", props.signedMessage)
-        console.log("to redeem is", props.toRedeem)
-        console.log("cTokens is", cTokens)
-        console.log("roots", roots)
-
-
-    }
 
 
     return (<div>
@@ -122,7 +102,7 @@ export default function SignClaimRedeemCall(props) {
         <br />
         <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
         <p>
-            <button disabled={disableButton} onClick={() => redeem()}> Claim and Redeem </button>
+            <button disabled={disableButton} onClick={() => write?.()}> Claim and Redeem </button>
         </p>
     </div>
     )
