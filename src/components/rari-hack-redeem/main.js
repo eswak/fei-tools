@@ -57,7 +57,7 @@ export default function RariHackRedeem() {
           :
           <span className='connectprompt'>Please connect your wallet.</span>}
 
-        {eligible ?
+        {eligible && isConnected ?
           <div>
             <h2>Signing message</h2>
             <SigningMessage liftMessageData={liftMessageData} />
@@ -65,7 +65,7 @@ export default function RariHackRedeem() {
           :
           null}
 
-        {messageSigned ?
+        {messageSigned && isConnected ?
           <div>
             <h2>Claim and redeem</h2>
             <ClaimAndRedeem redeemableTokens={redeemable} contractAddress={contractAddress} signedMessage={signedMessage}/>

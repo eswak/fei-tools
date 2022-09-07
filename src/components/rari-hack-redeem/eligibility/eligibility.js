@@ -1,5 +1,5 @@
 import { checkProperties } from 'ethers/lib/utils';
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { useAccount, useContractRead } from 'wagmi';
 import { balances, cTokens, cTokensLabels } from './balances';
 import Row from './row';
@@ -40,8 +40,9 @@ export function RariHackEligibility(props) {
       props.onCompute(eligibilityCheck, liftUpValue)
     }
   }
-
-  const calculation = canRedeem()
+  useEffect(() => {
+    canRedeem()
+  }, []);
 
 
   // render the data
