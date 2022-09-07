@@ -8,11 +8,8 @@ import IERC20 from"../../../abi/IERC20.json"
 
 
 export default function ApproveCToken(props){
-    const [value, setValue] = useState(props.value || 0)
     const account = useAccount().address
-    console.log("value in approve is", value)
-    console.log("account in approve is", account)
-    console.log("contract address in approve is", props.contractAddress)
+    console.log("value in approve is", props.value)
 
 
 /// check if approved already
@@ -27,7 +24,7 @@ const { config, error } = usePrepareContractWrite({
     addressOrName: props.contractAddress,
     contractInterface: IERC20,
     functionName: 'approve',
-    args: [account, value],
+    args: [account, props.value],
     onError(error) {
         console.log('Error prepareContractWrite', error)
       },
