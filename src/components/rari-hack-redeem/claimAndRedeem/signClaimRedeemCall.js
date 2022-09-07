@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import MultiMerkleRedeemer from "../../../abi/MultiMerkleRedeemer.json"
+import roots from "../data/roots.json"
 
 
 
 export default function SignClaimRedeemCall(props) {
     const [redeemState, setRedeemState] = useState(true)
+    const [merkleProofs, setMerkleProofs] = useState([])
+    const [disableButton, setDisableButton] = useState(false)
 
     ///SMART CONTRACT FUNCTION FOR REFERENCE
     /// @notice Combines sign, claim, and redeem into a single function
@@ -26,8 +29,6 @@ export default function SignClaimRedeemCall(props) {
 
     //// Function to check if the user is trying to redeem more than he can
     function checkredeem() {
-        console.log("button want redeem:", props.toRedeem)
-        console.log("redeemable", props.redeemable)
         ////check if inputed values are inferior or equal to redeemable
         for (let i = 0; props.toRedeem.length; i++) {
             if (props.toRedeem[i]["balance"] <= props.redeemable[i]["balance"]) {
@@ -42,13 +43,36 @@ export default function SignClaimRedeemCall(props) {
 
     }
 
+
+    /// DATA TRANSFORMATION INTO INPUTS
+    ////0. signature
+    //// signature is in props.signedMessage
+    ////1. _cTokens
+    const cTokens = props.toRedeem.map(item => item.cToken)
+
+    ////2. _amountsToClaim
+    const amountsToClaim = props.toRedeem.map(item => item.balance)
+
+    ////3. _amountsToRedeem
+    const amountsToRedeem = props.toRedeem.map(item => item.balance)
+
+    ////4. _merkeProofs
+    /////see inside redeem function
+
+
+
+
+
+
+
+
     /// Transaction to sign and claim and redeem
     const account = useAccount().address
     const { config, error } = usePrepareContractWrite({
         addressOrName: props.contractAddress,
         contractInterface: MultiMerkleRedeemer,
         functionName: 'signAndClaimAndRedeem',
-        args: [account, props.toRedeem],
+        args: [props.signedMessage, cTokens, amountsToClaim, amountsToRedeem, merkleProofs],
         onError(error) {
             console.log('Error prepareContractWrite', error)
         },
@@ -69,28 +93,37 @@ export default function SignClaimRedeemCall(props) {
         })
 
 
-        //function to be called by the button
-        function redeem(){
-            if(checkredeem() == true){
-                write()
+    //function to be called by the button
+    function redeem() {
+        setDisableButton(true)
+        if (checkredeem() == true) {
+            //GETTING THE MERKLE ROOTS
+            console.log("ctokens is", cTokens)
+            for (let i = 0; i < cTokens.length; i++) {
+                setMerkleProofs(merkleProofs => [...merkleProofs, roots[cTokens[i]]])
             }
-            else {
-                console.log("error trying to send transaction")
-            }
-
         }
+        write()
+    }
 
 
+    function log() {
+        console.log("signed message is", props.signedMessage)
+        console.log("to redeem is", props.toRedeem)
+        console.log("cTokens is", cTokens)
+        console.log("roots", roots)
+
+
+    }
 
 
     return (<div>
         {redeemState == false ? <span>You are trying to redeem more than you have.</span> : null}
-        <br/>
+        <br />
         <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
         <p>
-            <button  onClick={redeem}> Claim and Redeem </button>
-            </p>
+            <button disabled={disableButton} onClick={() => redeem()}> Claim and Redeem </button>
+        </p>
     </div>
-
     )
 }
