@@ -41,11 +41,12 @@ export function RariHackEligibility(props) {
     }
   }
 
+  const calculation = canRedeem()
+
 
   // render the data
   return (
     <div className="rarihackeligilibity">
-      <p><button onClick={canRedeem}> Check my eligibility </button></p>
       {
         loaded && redeemable.length == 0 ?
           <span>you are not eligible</span>
