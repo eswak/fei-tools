@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import MultiMerkleRedeemer from "../../../abi/MultiMerkleRedeemer.json"
 import roots from "../data/roots.json"
+import Call from "./call";
 
 
 
 export default function SignClaimRedeemCall(props) {
     const [redeemState, setRedeemState] = useState(true)
     const [merkleProofs, setMerkleProofs] = useState([])
-    const [disableButton, setDisableButton] = useState(false)
 
     ///SMART CONTRACT FUNCTION FOR REFERENCE
     /// @notice Combines sign, claim, and redeem into a single function
@@ -43,7 +43,6 @@ export default function SignClaimRedeemCall(props) {
 
     }
 
-
     /// DATA TRANSFORMATION INTO INPUTS
     ////0. signature
     //// signature is in props.signedMessage
@@ -64,45 +63,12 @@ export default function SignClaimRedeemCall(props) {
       }, props.toRedeem);
   
 
-
-
-
-
-    /// Transaction to sign and claim and redeem
-    const account = useAccount().address
-    const { config, error } = usePrepareContractWrite({
-        addressOrName: props.contractAddress,
-        contractInterface: MultiMerkleRedeemer,
-        functionName: 'signAndClaimAndRedeem',
-        args: [props.signedMessage, cTokens, amountsToClaim, amountsToRedeem, merkleProofs],
-        onError(error) {
-            console.log('Error prepareContractWrite', error)
-        },
-    })
-    const { signData, signIsLoading, signIsSuccess, write } = useContractWrite(
-        {
-            ...config,
-            onError(error) {
-                console.log("error", error)
-            },
-            onSettled(data, error) {
-                console.log("settled", data, error)
-            },
-            onSuccess(data) {
-                console.log("success", data)
-                props.liftApproveState()
-            }
-        })
-
-
-
-
     return (<div>
         {redeemState == false ? <span>You are trying to redeem more than you have.</span> : null}
         <br />
         <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
         <p>
-            <button disabled={disableButton} onClick={() => write?.()}> Claim and Redeem </button>
+            <Call contractAddress={props.contractAddress} signedMessage={props.signedMessage} cTokens={cTokens} amountsToClaim={amountsToClaim} amountsToRedeem={amountsToRedeem} merkleProofs={merkleProofs} />
         </p>
     </div>
     )
