@@ -4,7 +4,7 @@ import MultiMerkleRedeemer from "../../../abi/MultiMerkleRedeemer.json"
 
 
 
-const contractAddress = "0xB22C255250d74B0ADD1bfB936676D2a299BF48Bd"
+const contractAddress = "0xfd2cf3b56a73c75a7535ffe44ebabe7723c64719"
 
 
 export default function SigningTx(props){

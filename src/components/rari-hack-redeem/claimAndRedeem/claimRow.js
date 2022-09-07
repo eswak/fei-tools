@@ -6,6 +6,7 @@ import ApproveCToken, { CheckCToken } from "./approvecToken";
 export default function ClaimRow(props) {
     const [value, setValue] = useState(props.balance || 0)
     const [approve, setApprove] = useState(false)
+    const [disableButton, setDisableButton] = useState(false)
 
     function handleChange(event) {
         setValue(event.target.value)
@@ -15,7 +16,8 @@ export default function ClaimRow(props) {
 
     function approveCToken() {
         setApprove(true)
-        console.log(approve)
+        setDisableButton(true)
+        
     }
 
     return (
@@ -27,7 +29,7 @@ export default function ClaimRow(props) {
                 {props.balance}
             </td>
             <td>
-                <input type="string" id={props.cToken} value={value} onChange={handleChange} />
+                <input type="string" disabled={disableButton} id={props.cToken} value={value} onChange={handleChange} />
             </td>
             <td>
                 <ApproveCToken value={value} contractAddress={props.cToken} liftApproveState={approveCToken} />

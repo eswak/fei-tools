@@ -25,7 +25,7 @@ export function SigningMessage(props) {
 
 ///1. CHECKING FOR SIGNATURE
     ////Contract address :
-    const contractAddress = "0xB22C255250d74B0ADD1bfB936676D2a299BF48Bd"
+    const contractAddress = "0xfd2cf3b56a73c75a7535ffe44ebabe7723c64719"
     //// Contract instance to check for signature:
     const readContract = new ethers.Contract(contractAddress, MultiMerkleRedeemer, provider)
     /// Checking for signature
