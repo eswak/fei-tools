@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import ClaimRow from "./claimRow";
+import SignClaimRedeemCall from "./signClaimRedeemCall";
 
 
 export function ClaimAndRedeem(props) {
 
     const [redeemable, setRedeemable] = useState(props.redeemableTokens)
     const [wantRedeem, setWantRedeem] = useState(props.redeemableTokens)
-    const [redeemState, setRedeemState] = useState(null)
 
 
 
@@ -21,20 +21,6 @@ export function ClaimAndRedeem(props) {
     }
 
 
-    function redeem() {
-        console.log("button want redeem:", wantRedeem)
-        console.log("redeemable", redeemable)
-        ////check if inputed values are inferior or equal to redeemable
-        for (let i = 0; wantRedeem.length; i++) {
-            if (wantRedeem[i]["balance"] <= redeemable[i]["balance"]) {
-                console.log("ok")
-            }
-            else {
-                setRedeemState("error, you are trying to claim more than you can")
-            }
-        }
-
-    }
 
     return (
         <div>
@@ -56,8 +42,7 @@ export function ClaimAndRedeem(props) {
                     }
                 </tbody>
             </table>
-            <p><button onClick={redeem}> Claim and Redeem </button></p>
-            {redeemState !== null ? <span>{redeemState}</span> : null}
+            <SignClaimRedeemCall signedMessage={props.signedMessage} contractAddress={props.contractAddress} toRedeem={wantRedeem} redeemable={redeemable} />
 
         </div>
     )

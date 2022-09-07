@@ -9,7 +9,6 @@ import IERC20 from"../../../abi/IERC20.json"
 
 export default function ApproveCToken(props){
     const account = useAccount().address
-    console.log("value in approve is", props.value)
 
 
 /// check if approved already

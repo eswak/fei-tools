@@ -16,6 +16,9 @@ export default function RariHackRedeem() {
   const [signedMessage, setSignedMessage] = useState(null)
   const [redeemable, setRedeemable] = useState([])
 
+  //// CONTRACT ADDRESS
+  const contractAddress = "0xfd2cf3b56a73c75a7535ffe44ebabe7723c64719"
+
   //Keep track of eligibility by updating state
   const isEligible = (check, value) => {
     if (check) {
@@ -65,7 +68,7 @@ export default function RariHackRedeem() {
         {messageSigned ?
           <div>
             <h2>Claim and redeem</h2>
-            <ClaimAndRedeem redeemableTokens={redeemable} messageProof={signedMessage}/>
+            <ClaimAndRedeem redeemableTokens={redeemable} contractAddress={contractAddress} signedMessage={signedMessage}/>
           </div> : null}
 
           <div>
