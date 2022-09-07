@@ -85,7 +85,11 @@ export default function SignClaimRedeemCall(props) {
 
     return (<div>
         {redeemState == false ? <span>You are trying to redeem more than you have.</span> : null}
-        <button  onClick={redeem}> Claim and Redeem </button>
+        <br/>
+        <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
+        <p>
+            <button  onClick={redeem}> Claim and Redeem </button>
+            </p>
     </div>
 
     )

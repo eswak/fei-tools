@@ -32,3 +32,18 @@
   background: rgb(255, 255, 255);
   border-bottom: 1px solid #ccc;
 }
+.rarihackredeem button {
+  color: #fff;
+  background-color: #22996e;
+  border-color: #22996e;
+}
+.rarihackredeem button:hover {
+  color: #fff;
+  background-color: #218460;
+  border-color: #218460;
+}
+.rarihackredeem button:disabled {
+  color: #fff;
+  background-color: #eef5f271;
+  border-color: #218460;
+}

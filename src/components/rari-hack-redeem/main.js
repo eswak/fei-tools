@@ -70,7 +70,10 @@ export default function RariHackRedeem() {
             <h2>Claim and redeem</h2>
             <ClaimAndRedeem redeemableTokens={redeemable} contractAddress={contractAddress} signedMessage={signedMessage}/>
           </div> : null}
-
+          <br/>
+          <br/>
+          <hr/>
+          
           <div>
             <h2>Redemption stats</h2>
             <PastRedemptions userAddress={address}/>
