@@ -4,37 +4,32 @@ import RariHackEligibility from './eligibility/eligibility';
 import { SigningMessage } from './SigningMessage/signing';
 import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
 import { PastRedemptions } from './pastRedemptions/pastRedemptions';
-import './main.css'
-
-
+import './main.css';
 
 export default function RariHackRedeem() {
 
-  const { address, isConnected, isDisconnected } = useAccount()
-  const [eligible, setEligible] = useState(false)
-  const [messageSigned, setMessageSigned] = useState(false)
-  const [signedMessage, setSignedMessage] = useState(null)
-  const [redeemable, setRedeemable] = useState([])
+  const { address, isConnected, isDisconnected } = useAccount();
+  const [eligible, setEligible] = useState(false);
+  const [messageSigned, setMessageSigned] = useState(false);
+  const [signedMessage, setSignedMessage] = useState(null);
+  const [redeemable, setRedeemable] = useState([]);
 
   //// CONTRACT ADDRESS
-  const contractAddress = "0xfd2cf3b56a73c75a7535ffe44ebabe7723c64719"
+  const contractAddress = '0xB22C255250d74B0ADD1bfB936676D2a299BF48Bd';
 
   //Keep track of eligibility by updating state
   const isEligible = (check, value) => {
     if (check) {
-      setEligible(true)
-      setRedeemable(value)
+      setEligible(true);
+      setRedeemable(value);
     }
   }
 
   //Is the message signed? update message data to the main state
   const liftMessageData = (data) => {
-    setMessageSigned(true)
-    setSignedMessage(data)
-
+    setMessageSigned(true);
+    setSignedMessage(data);
   }
-
-
 
   // render the data
   return (
