@@ -33,10 +33,7 @@ export default function ClaimRow(props) {
                 <input type="string" disabled={disableButton} id={props.cToken} value={value} onChange={handleChange} />
             </td>
             <td>
-                <ApproveCToken value={value} contractAddress={props.cToken} liftApproveState={approveCToken} />
-            </td>
-            <td>
-            {approve == true ? <span>✅</span> : <span>❌</span>}
+                <button disabled={disableButton} onClick={()=>approveCToken()}>Lock</button>
             </td>
         </tr>
     )
