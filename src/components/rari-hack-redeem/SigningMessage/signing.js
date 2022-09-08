@@ -26,6 +26,7 @@ export function SigningMessage(props) {
         if (userSignature === '0x') return;
         setSignedMessage(userSignature);
         props.liftMessageData(userSignature);
+        props.liftAlreadySigned();
     }).catch((err) => {
         console.error('Error fetching user signature:', err);
     });

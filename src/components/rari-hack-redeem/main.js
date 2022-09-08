@@ -13,6 +13,7 @@ export default function RariHackRedeem() {
   const [messageSigned, setMessageSigned] = useState(false);
   const [signedMessage, setSignedMessage] = useState(null);
   const [redeemable, setRedeemable] = useState([]);
+  const [alreadySigned, setAlreadySigned] = useState(true)
 
   //// CONTRACT ADDRESS
   const contractAddress = '0xB22C255250d74B0ADD1bfB936676D2a299BF48Bd';
@@ -29,6 +30,11 @@ export default function RariHackRedeem() {
   const liftMessageData = (data) => {
     setMessageSigned(true);
     setSignedMessage(data);
+  }
+
+  // was the message signed before?
+  const liftAlreadySigned = () => {
+    setAlreadySigned(true)
   }
 
   // render the data
@@ -55,7 +61,7 @@ export default function RariHackRedeem() {
         {eligible && isConnected ?
           <div>
             <h2>Signing message</h2>
-            <SigningMessage liftMessageData={liftMessageData} contractAddress={contractAddress} />
+            <SigningMessage liftMessageData={liftMessageData} liftAlreadySigned={liftAlreadySigned} contractAddress={contractAddress} />
           </div>
           :
           null}
@@ -64,6 +70,9 @@ export default function RariHackRedeem() {
           <div>
             <h2>Approve</h2>
             <ApproveTable redeemableTokens={redeemable} contractAddress={contractAddress} signedMessage={signedMessage}/>
+
+            <h2>Claim and redeem</h2>
+            <ClaimAndRedeem redeemableTokens={redeemable} alreadySigned={alreadySigned} contractAddress={contractAddress} signedMessage={signedMessage}/>
           </div> : null}
           
           <div>
