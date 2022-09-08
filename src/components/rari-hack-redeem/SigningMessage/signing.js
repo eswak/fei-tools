@@ -42,10 +42,10 @@ export function SigningMessage(props) {
         <div>{signed==false ?
             <div>
                 <p>
-                    <span>Please sign the following message:</span>
+                    <span>In order to be eligible for compensation, please sign the following message:</span>
                 </p>
-                <p>
-                    <span>"Sample message, please update."</span>
+                <p style={{'background':'#eee', 'borderLeft':'5px solid #aaa', 'padding': '5px', 'whiteSpace': 'pre-line'}}>
+                    Sample message, please update
                 </p>
                 <div>
                     <button disabled={isLoading} onClick={() => signMessage()}>
@@ -56,8 +56,10 @@ export function SigningMessage(props) {
             :
             <div>
                 {isSuccess && <div>
-                    <p>Message signed, thank you.</p>
-
+                    <p>You have signed the following message:</p>
+                    <p style={{'background':'#eee', 'borderLeft':'5px solid #aaa', 'padding': '5px', 'whiteSpace': 'pre-line'}}>
+                        Sample message, please update
+                    </p>
                 </div>}
                 {isError && <div>Error signing message, please reload and retry or contact us</div>}
             </div>}
