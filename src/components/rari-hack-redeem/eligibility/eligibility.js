@@ -11,6 +11,11 @@ export function RariHackEligibility(props) {
   const [redeemable, setRedeemable] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
+  // temporary fix for rates, make sure every keys are lowercase
+  for (var key in rates) {
+    rates[key.toLocaleLowerCase()] = rates[key];
+  }
+
   // finding out what the user can redeem
   function canRedeem() {
     let eligibilityCheck = false;
@@ -23,6 +28,7 @@ export function RariHackEligibility(props) {
             const instance = {
               cToken: cTokenAddress,
               balance: userRedeemableBalance,
+              rate: rates[cTokenAddress],
               fei: userRedeemableBalance * rates[cTokenAddress] / 1e18,
               cTokenLabel: labels[cTokenAddress]
             };
@@ -58,12 +64,13 @@ export function RariHackEligibility(props) {
           <tr>
             <th>cToken</th>
             <th className="text-right">cToken balance</th>
+            <th className="text-right">Rate</th>
             <th className="text-right">Redeemable FEI</th>
           </tr>
         </thead>
         <tbody>
           {redeemable.map((instance, i) => {
-            return <Row key={i} rowkey={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} fei={instance.fei} />
+            return <Row key={i} rowkey={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} rate={instance.rate} fei={instance.fei} />
           })}
         </tbody>
       </table> : null}
