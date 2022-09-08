@@ -36,7 +36,6 @@ export default function ApproveRow(props) {
             setApproved(true);
         }
     });
-
     return (
         <tr className={(props.rowkey % 2 ? 'odd' : 'even')}>
             <td style={{'whiteSpace':'nowrap'}}>{props.cTokenLabel}</td>

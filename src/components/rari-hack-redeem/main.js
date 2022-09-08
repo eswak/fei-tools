@@ -5,6 +5,8 @@ import { SigningMessage } from './SigningMessage/signing';
 import { ApproveTable } from './approve/approveTable';
 import { PastRedemptions } from './pastRedemptions/pastRedemptions';
 import './main.css';
+import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
+
 
 export default function RariHackRedeem() {
 
