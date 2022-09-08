@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import proofs from "../../data/proofs.json"
 import Call from "./call";
+import { RedeemingCheck } from "./isReady";
 
 
 
 export default function SignClaimRedeemCall(props) {
     const [redeemState, setRedeemState] = useState(true)
     const [merkleProofs, setMerkleProofs] = useState([])
+    const [isReady, setIsReady] = useState(false)
     const address = useAccount().address
 
 
@@ -49,20 +51,20 @@ export default function SignClaimRedeemCall(props) {
     ////0. signature
     //// signature is in props.signedMessage
     ////1. _cTokens
-    const cTokens = props.toRedeem.reduce(function(accu, curr){
-        if(curr.approved == true) accu.push(curr.cToken);
+    const cTokens = props.toRedeem.reduce(function (accu, curr) {
+        if (curr.approved == true) accu.push(curr.cToken);
         return accu;
     }, []);
 
     ////2. _amountsToClaim
-    const amountsToClaim = props.toRedeem.reduce(function(accu, curr){
-        if(curr.approved == true) accu.push(curr.balance);
+    const amountsToClaim = props.toRedeem.reduce(function (accu, curr) {
+        if (curr.approved == true) accu.push(curr.balance);
         return accu;
     }, []);
 
     ////3. _amountsToRedeem
-    const amountsToRedeem = props.toRedeem.reduce(function(accu, curr){
-        if(curr.approved == true) accu.push(curr.balance);
+    const amountsToRedeem = props.toRedeem.reduce(function (accu, curr) {
+        if (curr.approved == true) accu.push(curr.balance);
         return accu;
     }, []);
 
@@ -73,13 +75,23 @@ export default function SignClaimRedeemCall(props) {
         }
     }, props.toRedeem);
 
-    return (<div>
-        {redeemState == false ? <span>You are trying to redeem more than you have.</span> : null}
-        <br />
-        <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
-        <p>
-            <Call contractAddress={props.contractAddress} signedMessage={props.signedMessage} cTokens={cTokens} amountsToClaim={amountsToClaim} amountsToRedeem={amountsToRedeem} merkleProofs={merkleProofs} />
-        </p>
-    </div>
+
+
+    function handleIsReady() {
+        setIsReady(true)
+    }
+
+    return (
+        <div>{isReady == false ? <RedeemingCheck isReady={handleIsReady} />
+            :
+            <div>
+                {redeemState == false ? <span>You are trying to redeem more than you have.</span> : null}
+                <br />
+                <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
+                <p>
+                    <Call contractAddress={props.contractAddress} signedMessage={props.signedMessage} cTokens={cTokens} amountsToClaim={amountsToClaim} amountsToRedeem={amountsToRedeem} merkleProofs={merkleProofs} />
+                </p>
+            </div>}
+        </div>
     )
 }
