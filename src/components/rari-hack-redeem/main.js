@@ -60,7 +60,7 @@ export default function RariHackRedeem() {
         {eligible && isConnected ?
           <div>
             <h2>Signing message</h2>
-            <SigningMessage liftMessageData={liftMessageData} />
+            <SigningMessage liftMessageData={liftMessageData} contractAddress={contractAddress} />
           </div>
           :
           null}
