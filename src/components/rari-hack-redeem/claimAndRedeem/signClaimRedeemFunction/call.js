@@ -1,12 +1,12 @@
 import React from "react";
 import { useAccount, usePrepareContractWrite, useContractWrite } from "wagmi";
-import MultiMerkleRedeemer from "../../../abi/MultiMerkleRedeemer.json"
+import MultiMerkleRedeemer from "../../../../abi/MultiMerkleRedeemer.json"
 
 
 export default function Call(props){
 
-    console.log("cTokens are", props.cTokens)
-    console.log("merkleproofs are", JSON.stringify(props.merkleProofs, null, 2))
+    // console.log("cTokens are", props.cTokens)
+    // console.log("merkleproofs are", JSON.stringify(props.merkleProofs, null, 2))
 
 
 

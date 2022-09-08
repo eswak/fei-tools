@@ -23,7 +23,8 @@ export function RariHackEligibility(props) {
             const instance = {
               cToken: cTokenAddress,
               balance: userRedeemableBalance,
-              cTokenLabel: labels[cTokenAddress]
+              cTokenLabel: labels[cTokenAddress],
+              approved: false,
             };
             // add instance to array
             liftUpValue.push(instance);

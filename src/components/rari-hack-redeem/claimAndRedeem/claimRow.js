@@ -17,6 +17,7 @@ export default function ClaimRow(props) {
     function approveCToken() {
         setApprove(true)
         setDisableButton(true)
+        props.approve(props.cToken)
         
     }
 

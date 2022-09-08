@@ -1,7 +1,7 @@
 import { checkProperties } from "ethers/lib/utils";
 import React, { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import proofs from "../data/proofs.json"
+import proofs from "../../data/proofs.json"
 import Call from "./call";
 
 
