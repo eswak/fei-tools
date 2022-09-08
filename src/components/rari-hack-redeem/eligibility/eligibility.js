@@ -23,6 +23,7 @@ export function RariHackEligibility(props) {
             const instance = {
               cToken: cTokenAddress,
               balance: userRedeemableBalance,
+              fei: userRedeemableBalance * rates[cTokenAddress] / 1e18,
               cTokenLabel: labels[cTokenAddress]
             };
             // add instance to array
@@ -56,12 +57,13 @@ export function RariHackEligibility(props) {
         <thead>
           <tr>
             <th>cToken</th>
-            <th className="text-center">Balance</th>
+            <th className="text-right">cToken balance</th>
+            <th className="text-right">Redeemable FEI</th>
           </tr>
         </thead>
         <tbody>
           {redeemable.map((instance, i) => {
-            return <Row key={i} rowkey={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
+            return <Row key={i} rowkey={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} fei={instance.fei} />
           })}
         </tbody>
       </table> : null}
