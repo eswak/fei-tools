@@ -13,7 +13,7 @@ export default function RariHackRedeem() {
   const [messageSigned, setMessageSigned] = useState(false);
   const [signedMessage, setSignedMessage] = useState(null);
   const [redeemable, setRedeemable] = useState([]);
-  const [alreadySigned, setAlreadySigned] = useState(false)
+  const [alreadySigned, setAlreadySigned] = useState(true)
 
   //// CONTRACT ADDRESS
   const contractAddress = '0xB22C255250d74B0ADD1bfB936676D2a299BF48Bd';

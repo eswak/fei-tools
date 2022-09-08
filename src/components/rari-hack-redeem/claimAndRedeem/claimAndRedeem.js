@@ -49,7 +49,7 @@ export function ClaimAndRedeem(props) {
                     }
                 </tbody>
             </table>
-            <SignClaimRedeemCall signedMessage={props.signedMessage} contractAddress={props.contractAddress} toRedeem={wantRedeem} redeemable={redeemable} />
+            <SignClaimRedeemCall alreadySigned={props.alreadySigned} signedMessage={props.signedMessage} contractAddress={props.contractAddress} toRedeem={wantRedeem} redeemable={redeemable} />
 
 
         </div>

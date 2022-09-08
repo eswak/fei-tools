@@ -3,12 +3,7 @@ import { useAccount, usePrepareContractWrite, useContractWrite } from "wagmi";
 import MultiMerkleRedeemer from "../../../../abi/MultiMerkleRedeemer.json"
 
 
-export default function Call(props){
-
-    console.log("cTokens are", props.cTokens)
-    console.log("merkleproofs are", JSON.stringify(props.merkleProofs, null, 2))
-
-
+export default function PartialCall(props){
 
 
  /// Transaction to sign and claim and redeem
@@ -17,8 +12,8 @@ export default function Call(props){
  const { config, error } = usePrepareContractWrite({
      addressOrName: props.contractAddress,
      contractInterface: MultiMerkleRedeemer,
-     functionName: 'signAndClaimAndRedeem',
-     args: [props.signedMessage, props.cTokens, props.amountsToClaim, props.amountsToRedeem, props.merkleProofs],
+     functionName: 'multiRedeem',
+     args: [props.cTokens, props.amountsToRedeem],
      onError(error) {
          console.log('Error prepareContractWrite', error)
      },
@@ -38,5 +33,5 @@ export default function Call(props){
      })
 
 
-     return(<button onClick={() => write()}> Claim and Redeem </button>)
+     return(<button onClick={() => write()}> Redeem </button>)
     }
