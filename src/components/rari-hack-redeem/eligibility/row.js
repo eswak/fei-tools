@@ -6,7 +6,7 @@ export default function Row(props) {
             <td title={props.cToken}>
                 {props.cTokenLabel}
             </td>
-            <td className="text-center" title="tooltip tavu2">
+            <td className="text-center" title="your balance">
                 {props.balance}
             </td>
         </tr>

@@ -1,7 +1,7 @@
+import { checkProperties } from "ethers/lib/utils";
 import React, { useEffect, useState } from "react";
-import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
-import MultiMerkleRedeemer from "../../../abi/MultiMerkleRedeemer.json"
-import roots from "../data/roots.json"
+import { useAccount } from "wagmi";
+import proofs from "../data/proofs.json"
 import Call from "./call";
 
 
@@ -9,6 +9,8 @@ import Call from "./call";
 export default function SignClaimRedeemCall(props) {
     const [redeemState, setRedeemState] = useState(true)
     const [merkleProofs, setMerkleProofs] = useState([])
+    const address = useAccount().address
+
 
     ///SMART CONTRACT FUNCTION FOR REFERENCE
     /// @notice Combines sign, claim, and redeem into a single function
@@ -58,10 +60,9 @@ export default function SignClaimRedeemCall(props) {
     ////4. _merkeProofs
     useEffect(() => {
         for (let i = 0; i < cTokens.length; i++) {
-            setMerkleProofs(merkleProofs => [...merkleProofs, [cTokens[i],roots[cTokens[i]]]])
+            setMerkleProofs(merkleProofs => [...merkleProofs, proofs[cTokens[i]][address]])
         }
-      }, props.toRedeem);
-  
+    }, props.toRedeem);
 
     return (<div>
         {redeemState == false ? <span>You are trying to redeem more than you have.</span> : null}
