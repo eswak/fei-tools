@@ -7,10 +7,10 @@ export function RedeemingCheck(props){
 
 
     return(
-        <p>
-        <span>Did you double check you redeemed all you wanted?</span>
-        <p><button onClick={()=>props.isReady()}> Yes </button></p>
-        </p>
+        <div>
+        <span>Did you double check the amounts and approved transfers for all cTokens you wanted?</span>
+        <p><button onClick={()=>props.isReady()}> Yes, claim and redeem </button></p>
+        </div>
 
     )
 }

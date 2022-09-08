@@ -1,9 +1,10 @@
 import { checkProperties } from "ethers/lib/utils";
 import React, { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { ChainDoesNotSupportMulticallError, useAccount } from "wagmi";
 import proofs from "../../data/proofs.json"
 import Call from "./call";
 import { RedeemingCheck } from "./isReady";
+import RedeemRow from "./row";
 
 
 
@@ -52,9 +53,13 @@ export default function SignClaimRedeemCall(props) {
     //// signature is in props.signedMessage
     ////1. _cTokens
     const cTokens = props.toRedeem.reduce(function (accu, curr) {
+        console.log("curr is", curr)
         if (curr.approved == true) accu.push(curr.cToken);
+        console.log("accu is", accu)
         return accu;
     }, []);
+    console.log("ctokens is", cTokens)
+    console.log("props to redeem is", props.toRedeem)
 
     ////2. _amountsToClaim
     const amountsToClaim = props.toRedeem.reduce(function (accu, curr) {
@@ -85,8 +90,20 @@ export default function SignClaimRedeemCall(props) {
         <div>{isReady == false ? <RedeemingCheck isReady={handleIsReady} />
             :
             <div>
-                {redeemState == false ? <span>You are trying to redeem more than you have.</span> : null}
-                <br />
+                <h3>You are redeeming:</h3>
+                 <table className="mb-3">
+        <thead>
+          <tr>
+            <th>cToken</th>
+            <th className="text-right">Redeeming</th>
+          </tr>
+        </thead>
+        <tbody>
+        {cTokens.map((instance, i) => {
+            return <RedeemRow key={i} rowkey={i} cToken={instance} cTokenLabel={props.toRedeem[i].cTokenLabel} balance={amountsToClaim[i]} />
+          })}
+        </tbody>
+      </table>
                 <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
                 <p>
                     <Call contractAddress={props.contractAddress} signedMessage={props.signedMessage} cTokens={cTokens} amountsToClaim={amountsToClaim} amountsToRedeem={amountsToRedeem} merkleProofs={merkleProofs} />
