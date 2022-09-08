@@ -49,14 +49,7 @@ export default function ApproveCToken(props) {
 
 
     return (
-        <span>
-            {done == false ?
-                <div><button onClick={() => write()}>Approve</button></div>
-                :
-                <span> -- </span>
-            }
-        </span>
-
+        <button onClick={() => write()} disabled={done}>Approve</button>
     )
 }
 
