@@ -43,7 +43,11 @@
   border-color: #218460;
 }
 .rarihackredeem button:disabled {
-  color: #fff;
-  background-color: #eef5f271;
-  border-color: #218460;
+  opacity: .6;
+  color: #eee;
+}
+.rarihackredeem button:disabled:hover {
+  color: #eee;
+  background-color: #22996e;
+  border-color: #22996e;
 }
