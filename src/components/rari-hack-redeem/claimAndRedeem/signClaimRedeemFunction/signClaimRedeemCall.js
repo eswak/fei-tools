@@ -94,7 +94,7 @@ export default function SignClaimRedeemCall(props) {
         </thead>
         <tbody>
         {cTokens.map((instance, i) => {
-            return <RedeemRow key={i} rowkey={i} cToken={instance} cTokenLabel={props.toRedeem[i].cTokenLabel} balance={amountsToClaim[i]} />
+            return <RedeemRow key={i} rowkey={i} cToken={instance} cTokenLabel={props.toRedeem[i].cTokenLabel} balance={amountsToRedeem[i]} />
           })}
         </tbody>
       </table>
