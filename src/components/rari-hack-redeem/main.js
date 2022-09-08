@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import { useAccount } from 'wagmi';
 import RariHackEligibility from './eligibility/eligibility';
 import { SigningMessage } from './SigningMessage/signing';
-import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
+import { ApproveTable } from './approve/approveTable';
 import { PastRedemptions } from './pastRedemptions/pastRedemptions';
 import './main.css';
 
@@ -62,8 +62,8 @@ export default function RariHackRedeem() {
 
         {messageSigned && isConnected ?
           <div>
-            <h2>Claim and redeem</h2>
-            <ClaimAndRedeem redeemableTokens={redeemable} contractAddress={contractAddress} signedMessage={signedMessage}/>
+            <h2>Approve</h2>
+            <ApproveTable redeemableTokens={redeemable} contractAddress={contractAddress} signedMessage={signedMessage}/>
           </div> : null}
           
           <div>
