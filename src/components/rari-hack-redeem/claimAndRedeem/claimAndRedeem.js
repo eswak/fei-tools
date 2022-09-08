@@ -25,7 +25,6 @@ export function ClaimAndRedeem(props) {
             return item.cToken === cToken ? { ...item, approved:true } : item
         })
     })
-    console.log("Token in wantRedeem is now approved?", wantRedeem)
 
     }
 
