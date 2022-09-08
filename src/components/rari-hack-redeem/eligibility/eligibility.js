@@ -30,7 +30,8 @@ export function RariHackEligibility(props) {
               balance: userRedeemableBalance,
               rate: rates[cTokenAddress],
               fei: userRedeemableBalance * rates[cTokenAddress] / 1e18,
-              cTokenLabel: labels[cTokenAddress]
+              cTokenLabel: labels[cTokenAddress],
+              approved: false,
             };
             // add instance to array
             liftUpValue.push(instance);

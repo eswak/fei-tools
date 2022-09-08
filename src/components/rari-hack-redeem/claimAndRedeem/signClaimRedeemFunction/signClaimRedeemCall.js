@@ -1,14 +1,16 @@
 import { checkProperties } from "ethers/lib/utils";
 import React, { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
-import proofs from "../data/proofs.json"
+import { ChainDoesNotSupportMulticallError, useAccount } from "wagmi";
+import proofs from "../../data/proofs.json"
 import Call from "./call";
+import { RedeemingCheck } from "./isReady";
+import RedeemRow from "./row";
 
 
 
 export default function SignClaimRedeemCall(props) {
     const [redeemState, setRedeemState] = useState(true)
-    const [merkleProofs, setMerkleProofs] = useState([])
+    const [isReady, setIsReady] = useState(false)
     const address = useAccount().address
 
 
@@ -49,28 +51,57 @@ export default function SignClaimRedeemCall(props) {
     ////0. signature
     //// signature is in props.signedMessage
     ////1. _cTokens
-    const cTokens = props.toRedeem.map(item => item.cToken)
+    const cTokens = props.toRedeem.reduce(function (accu, curr) {
+        if (curr.approved == true) accu.push(curr.cToken);
+        return accu;
+    }, []);
+
 
     ////2. _amountsToClaim
-    const amountsToClaim = props.toRedeem.map(item => item.balance)
+    const amountsToClaim = props.toRedeem.reduce(function (accu, curr) {
+        if (curr.approved == true) accu.push(curr.balance);
+        return accu;
+    }, []);
 
     ////3. _amountsToRedeem
-    const amountsToRedeem = props.toRedeem.map(item => item.balance)
+    const amountsToRedeem = props.toRedeem.reduce(function (accu, curr) {
+        if (curr.approved == true) accu.push(curr.balance);
+        return accu;
+    }, []);
 
     ////4. _merkeProofs
-    useEffect(() => {
-        for (let i = 0; i < cTokens.length; i++) {
-            setMerkleProofs(merkleProofs => [...merkleProofs, proofs[cTokens[i]][address]])
-        }
-    }, props.toRedeem);
+    const merkleProofs = cTokens.map((instance, i) => {
+        return proofs[instance][address]
+    })
 
-    return (<div>
-        {redeemState == false ? <span>You are trying to redeem more than you have.</span> : null}
-        <br />
-        <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
-        <p>
-            <Call contractAddress={props.contractAddress} signedMessage={props.signedMessage} cTokens={cTokens} amountsToClaim={amountsToClaim} amountsToRedeem={amountsToRedeem} merkleProofs={merkleProofs} />
-        </p>
-    </div>
+
+    function handleIsReady() {
+        setIsReady(true)
+    }
+
+    return (
+        <div>{isReady == false ? <RedeemingCheck isReady={handleIsReady} />
+            :
+            <div>
+                <h3>You are redeeming:</h3>
+                 <table className="mb-3">
+        <thead>
+          <tr>
+            <th>cToken</th>
+            <th className="text-right">Redeeming</th>
+          </tr>
+        </thead>
+        <tbody>
+        {cTokens.map((instance, i) => {
+            return <RedeemRow key={i} rowkey={i} cToken={instance} cTokenLabel={props.toRedeem[i].cTokenLabel} balance={amountsToClaim[i]} />
+          })}
+        </tbody>
+      </table>
+                <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
+                <p>
+                    <Call contractAddress={props.contractAddress} signedMessage={props.signedMessage} cTokens={cTokens} amountsToClaim={amountsToClaim} amountsToRedeem={amountsToRedeem} merkleProofs={merkleProofs} />
+                </p>
+            </div>}
+        </div>
     )
 }

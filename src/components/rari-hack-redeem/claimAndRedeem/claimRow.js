@@ -17,6 +17,7 @@ export default function ClaimRow(props) {
     function approveCToken() {
         setApprove(true)
         setDisableButton(true)
+        props.approve(props.cToken)
         
     }
 
@@ -25,7 +26,7 @@ export default function ClaimRow(props) {
             <td title={props.cToken}>
                 {props.cTokenLabel}
             </td>
-            <td className="text-center" title="tooltip tavu2">
+            <td className="text-center">
                 {props.balance}
             </td>
             <td>
