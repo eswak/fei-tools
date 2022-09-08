@@ -8,8 +8,7 @@ import snapshot from '../data/snapshot.json';
 export function PastRedemptions(props) {
 
     const provider = useProvider();
-    const redeemerAddress = '0x6ef71cA9cD708883E129559F5edBFb9d9D5C6148'; // TODO update (also update getSignedEvents() etc below)
-    const redeemer = new ethers.Contract(redeemerAddress, MultiMerkleRedeemerAbi, provider);
+    const redeemer = new ethers.Contract(props.contractAddress, MultiMerkleRedeemerAbi, provider);
 
     const [userData, setUserData] = useState([]);
     const [totalClaimable, setTotalClaimable] = useState('0');
@@ -129,49 +128,16 @@ export function PastRedemptions(props) {
 
     // fetch event Signed(address indexed signer, bytes signature);
     async function getSignedEvents() {
-        //return await redeemer.queryFilter(redeemer.filters.Signed());
-        return new Promise((resolve, reject) => {
-            setTimeout(function() {
-                resolve([
-                    // mock data
-                    { args: { signer: '0xb027658e189f9814663631b12b9cdf8dd7cc977c', signature: '0xabcdef'}},
-                ]);
-            }, Math.random() * 3000);
-        });
+        return await redeemer.queryFilter(redeemer.filters.Signed());
     }
 
     // fetch event Claimed(address indexed claimant, address indexed cToken, uint256 claimAmount);
     async function getClaimedEvents() {
-        //return await redeemer.queryFilter(redeemer.filters.Claimed());
-        return new Promise((resolve, reject) => {
-            setTimeout(function() {
-                resolve([
-                    // mock data
-                    { args: {
-                        claimant: '0xb027658e189f9814663631b12b9cdf8dd7cc977c',
-                        cToken: '0xd8553552f8868c1ef160eedf031cf0bcf9686945',
-                        claimAmount: '12300000000000000000000'
-                    }},
-                ]);
-            }, Math.random() * 3000);
-        });
+        return await redeemer.queryFilter(redeemer.filters.Claimed());
     }
 
     // fetch event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
     async function getRedeemedEvents() {
-        //return await redeemer.queryFilter(redeemer.filters.Redeemed());
-        return new Promise((resolve, reject) => {
-            setTimeout(function() {
-                resolve([
-                    // mock data
-                    { args: {
-                        recipient: '0xb027658e189f9814663631b12b9cdf8dd7cc977c',
-                        cToken: '0xd8553552f8868c1ef160eedf031cf0bcf9686945',
-                        cTokenAmount: '12300000000000000000000',
-                        baseTokenAmount: '12300000000000000000000'
-                    }},
-                ]);
-            }, Math.random() * 3000);
-        });
+        return await redeemer.queryFilter(redeemer.filters.Redeemed());
     }
 }
