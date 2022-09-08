@@ -49,13 +49,22 @@ export default function SignClaimRedeemCall(props) {
     ////0. signature
     //// signature is in props.signedMessage
     ////1. _cTokens
-    const cTokens = props.toRedeem.map(item => item.cToken)
+    const cTokens = props.toRedeem.reduce(function(accu, curr){
+        if(curr.approved == true) accu.push(curr.cToken);
+        return accu;
+    }, []);
 
     ////2. _amountsToClaim
-    const amountsToClaim = props.toRedeem.map(item => item.balance)
+    const amountsToClaim = props.toRedeem.reduce(function(accu, curr){
+        if(curr.approved == true) accu.push(curr.balance);
+        return accu;
+    }, []);
 
     ////3. _amountsToRedeem
-    const amountsToRedeem = props.toRedeem.map(item => item.balance)
+    const amountsToRedeem = props.toRedeem.reduce(function(accu, curr){
+        if(curr.approved == true) accu.push(curr.balance);
+        return accu;
+    }, []);
 
     ////4. _merkeProofs
     useEffect(() => {
