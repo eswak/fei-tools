@@ -12,6 +12,7 @@ export default function Call(props){
 
 
  /// Transaction to sign and claim and redeem
+ console.log("merkleproofs are",props.merkleProofs)
  const account = useAccount().address
 
  const { config, error } = usePrepareContractWrite({

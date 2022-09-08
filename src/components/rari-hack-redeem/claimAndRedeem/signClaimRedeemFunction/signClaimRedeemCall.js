@@ -10,7 +10,6 @@ import RedeemRow from "./row";
 
 export default function SignClaimRedeemCall(props) {
     const [redeemState, setRedeemState] = useState(true)
-    const [merkleProofs, setMerkleProofs] = useState([])
     const [isReady, setIsReady] = useState(false)
     const address = useAccount().address
 
@@ -53,13 +52,10 @@ export default function SignClaimRedeemCall(props) {
     //// signature is in props.signedMessage
     ////1. _cTokens
     const cTokens = props.toRedeem.reduce(function (accu, curr) {
-        console.log("curr is", curr)
         if (curr.approved == true) accu.push(curr.cToken);
-        console.log("accu is", accu)
         return accu;
     }, []);
-    console.log("ctokens is", cTokens)
-    console.log("props to redeem is", props.toRedeem)
+
 
     ////2. _amountsToClaim
     const amountsToClaim = props.toRedeem.reduce(function (accu, curr) {
@@ -74,12 +70,9 @@ export default function SignClaimRedeemCall(props) {
     }, []);
 
     ////4. _merkeProofs
-    useEffect(() => {
-        for (let i = 0; i < cTokens.length; i++) {
-            setMerkleProofs(merkleProofs => [...merkleProofs, proofs[cTokens[i]][address]])
-        }
-    }, props.toRedeem);
-
+    const merkleProofs = cTokens.map((instance, i) => {
+        return proofs[instance][address]
+    })
 
 
     function handleIsReady() {
