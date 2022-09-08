@@ -43,12 +43,12 @@ export default function RariHackRedeem() {
         <h1 className="mb-3">Rari hack redeem</h1>
         <div className="info">
           <p>
-            Pursuant to  <a href="https://tribe.fei.money/t/tip-121-proposal-for-the-future-of-the-tribe-dao/4475/37" target="_blank">
+            Pursuant to  <a href="https://snapshot.org/#/fei.eth/proposal/0xd5359654b34bba833843fb64ad38e813b4ff6cc21e6f5ea323b704d2ceb25d96" target="_blank">
               TIP-121
-            </a> the Tribe DAO has decided to make whole retail investors affected by the RARI hack.
+            </a>, the Tribe DAO has decided to reimburse users of the Fuse platform affected by the May 2022 hack.
           </p>
           <p>
-            This interface lets you interact with the smart contract deployed to process the reimbursments.
+            This interface lets you interact with the <a href={'https://etherscan.io/address/' + contractAddress}>smart contract deployed</a> to process the reimbursments.
           </p>
         </div>
         <h2>Eligibility</h2>
@@ -70,13 +70,10 @@ export default function RariHackRedeem() {
             <h2>Claim and redeem</h2>
             <ClaimAndRedeem redeemableTokens={redeemable} contractAddress={contractAddress} signedMessage={signedMessage}/>
           </div> : null}
-          <br/>
-          <br/>
-          <hr/>
           
           <div>
             <h2>Redemption stats</h2>
-            <PastRedemptions userAddress={address}/>
+            <PastRedemptions userAddress={address} contractAddress={contractAddress}/>
           </div>
       </div>
     </div>
