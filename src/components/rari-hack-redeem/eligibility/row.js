@@ -18,7 +18,7 @@ export default function Row(props) {
         <td className="text-right" title={'Wei: ' + props.rate}>
             {formatRate(props.rate)}
         </td>
-        <td className="text-right" title={'Wei: ' + props.fei}>
+        <td className="text-right">
             {formatNumber(props.fei)}
         </td>
     </tr>
