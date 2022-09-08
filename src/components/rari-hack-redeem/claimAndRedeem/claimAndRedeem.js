@@ -37,7 +37,7 @@ export function ClaimAndRedeem(props) {
                     <tr>
                         <th>cToken</th>
                         <th className="text-center">Balance</th>
-                        <th>Claiming</th>
+                        <th>Redeeming</th>
                         <th>Lock Amount</th>
                     </tr>
                 </thead>
