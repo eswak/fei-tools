@@ -5,14 +5,13 @@ import MultiMerkleRedeemer from "../../../../abi/MultiMerkleRedeemer.json"
 
 export default function Call(props){
 
-    // console.log("cTokens are", props.cTokens)
-    // console.log("merkleproofs are", JSON.stringify(props.merkleProofs, null, 2))
+    console.log("cTokens are", props.cTokens)
+    console.log("merkleproofs are", JSON.stringify(props.merkleProofs, null, 2))
 
 
 
 
  /// Transaction to sign and claim and redeem
- console.log("merkleproofs are",props.merkleProofs)
  const account = useAccount().address
 
  const { config, error } = usePrepareContractWrite({

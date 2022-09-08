@@ -71,7 +71,7 @@ export default function SignClaimRedeemCall(props) {
 
     ////4. _merkeProofs
     const merkleProofs = cTokens.map((instance, i) => {
-        return proofs[instance][address]
+        return proofs[instance][address.toLowerCase()]
     })
 
 
