@@ -51,20 +51,20 @@ export default function SignClaimRedeemCall(props) {
     //// signature is in props.signedMessage
     ////1. _cTokens
     const cTokens = props.toRedeem.reduce(function (accu, curr) {
-        if (curr.approved == true) accu.push(curr.cToken);
+        accu.push(curr.cToken);
         return accu;
     }, []);
 
 
     ////2. _amountsToClaim
     const amountsToClaim = props.redeemable.reduce(function (accu, curr) {
-        if (curr.approved == true) accu.push(curr.balance);
+        accu.push(curr.balance);
         return accu;
     }, []);
 
     ////3. _amountsToRedeem
     const amountsToRedeem = props.toRedeem.reduce(function (accu, curr) {
-        if (curr.approved == true) accu.push(curr.balance);
+        accu.push(curr.balance);
         return accu;
     }, []);
 
@@ -86,7 +86,7 @@ export default function SignClaimRedeemCall(props) {
         </thead>
         <tbody>
         {cTokens.map((instance, i) => {
-            return <RedeemRow key={i} rowkey={i} cToken={instance} cTokenLabel={props.toRedeem[i].cTokenLabel} balance={amountsToRedeem[i]} />
+            return <RedeemRow key={i} rowkey={i} cToken={instance} fei={props.toRedeem[i].fei} cTokenLabel={props.toRedeem[i].cTokenLabel} balance={amountsToRedeem[i]} />
           })}
         </tbody>
       </table>
