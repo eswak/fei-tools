@@ -1,20 +1,30 @@
 import { checkProperties } from 'ethers/lib/utils';
 import React, { Component, useState, useEffect } from 'react';
-import { useAccount, useContractRead } from 'wagmi';
+import { useAccount, useContractRead, useProvider } from 'wagmi';
 import snapshot from '../data/snapshot.json';
 import labels from '../data/labels.json';
 import rates from '../data/rates.json';
+import MultiMerkleRedeemerAbi from '../../../abi/MultiMerkleRedeemer.json';
+import { ethers } from 'ethers';
 
 export function RariHackEligibility(props) {
   const account = useAccount().address;
   const [redeemable, setRedeemable] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
+  const provider = useProvider();
+  const redeemer = new ethers.Contract(props.contractAddress, MultiMerkleRedeemerAbi, provider);
+    // fetch event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
+    async function getRedeemedEvents() {
+      return await redeemer.queryFilter(redeemer.filters.Redeemed());
+    }
+
   // temporary fix for rates, make sure every keys are lowercase
   for (var key in rates) {
     rates[key.toLocaleLowerCase()] = rates[key];
   }
 
+  
   // finding out what the user can redeem
   function canRedeem() {
     let eligibilityCheck = false;
@@ -26,7 +36,9 @@ export function RariHackEligibility(props) {
             const userRedeemableBalance = snapshot[cTokenAddress][userAddress];
             const instance = {
               cToken: cTokenAddress,
+              eligible: userRedeemableBalance,
               balance: userRedeemableBalance,
+              redeemed: null,
               rate: rates[cTokenAddress],
               fei: (userRedeemableBalance * rates[cTokenAddress]) / 1e18,
               cTokenLabel: labels[cTokenAddress],
@@ -38,10 +50,26 @@ export function RariHackEligibility(props) {
           }
         }
       }
+
+
+          /// UPDATING INFO FROM THE JSON WITH PAST REDEEM EVENTS
+    Promise.all([getRedeemedEvents()]).then(function (data) {
+      const [redeemedEvents] = data;
+    // for each Redeemed events, diminish the cToken amount available to the user
+    // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
+    redeemedEvents.forEach(function (redeemedEvent) {
+      if (redeemedEvent.args.recipient == account) {
+        liftUpValue.map((item, i) => {
+          return item.cToken === redeemedEvent.args.cToken ? { ...item, balance: item.balance - redeemedEvent.args.cTokenAmount, redeemed: redeemedEvent.args.cTokenAmount} : item 
+      } );
+      }
+    }
+    );
       // set loaded state as true
       setRedeemable(liftUpValue);
       setLoaded(true);
       props.onCompute(eligibilityCheck, liftUpValue);
+    })
     }
   }
   useEffect(() => {
