@@ -14,7 +14,6 @@ export default function ClaimRow(props) {
     setValue(event.target.value);
     props.updateNumber(props.cToken, event.target.value);
   }
-
   function setPercent(percent) {
     if (percent == 0) {
       setDisplayValue(0);
