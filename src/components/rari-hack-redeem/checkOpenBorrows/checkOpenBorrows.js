@@ -45,7 +45,7 @@ export function CheckOpenBorrows(props) {
   return (
     fuseState && Object.keys(fuseState).length ? (
       <div>
-        <h2>Close open loans</h2>
+        <h2>Step 2b: Close open loans</h2>
         <div className="fuse-openborrows">
           <div>
             ⚠️ Please visit the <a href="https://app.rari.capital/fuse">Fuse webapp</a> to close all outstanding Borrow
