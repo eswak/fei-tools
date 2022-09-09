@@ -4,10 +4,9 @@ import { ChainDoesNotSupportMulticallError, useAccount } from 'wagmi';
 import proofs from '../../data/proofs.json';
 import SignAndClaim from './signAndClaimCall';
 import MultiRedeemCall from './multiRedeemCall';
-import RedeemRow from './row';
+import rates from "../../data/rates.json";
 
 export default function SignClaimRedeemCall(props) {
-  const [redeemState, setRedeemState] = useState(true);
   const address = useAccount().address;
 
   ///SMART CONTRACT FUNCTION FOR REFERENCE
@@ -93,7 +92,6 @@ export default function SignClaimRedeemCall(props) {
         </table>
         <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
         <p>
-          {props.alreadySigned ? (
             <MultiRedeemCall
               contractAddress={props.contractAddress}
               signedMessage={props.signedMessage}
@@ -102,16 +100,6 @@ export default function SignClaimRedeemCall(props) {
               amountsToRedeem={amountsToRedeem}
               merkleProofs={merkleProofs}
             />
-          ) : (
-            <SignAndClaim
-              contractAddress={props.contractAddress}
-              signedMessage={props.signedMessage}
-              cTokens={cTokens}
-              amountsToClaim={amountsToClaim}
-              amountsToRedeem={amountsToRedeem}
-              merkleProofs={merkleProofs}
-            />
-          )}
         </p>
       </div>
     </div>
