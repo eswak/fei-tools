@@ -4,7 +4,6 @@ import { useAccount, useContractRead } from 'wagmi';
 import snapshot from '../data/snapshot.json';
 import labels from '../data/labels.json';
 import rates from '../data/rates.json';
-import Row from './row';
 
 export function RariHackEligibility(props) {
   const account = useAccount().address;
@@ -68,23 +67,40 @@ export function RariHackEligibility(props) {
               <th>cToken</th>
               <th className="text-right">cToken balance</th>
               <th className="text-right">Rate</th>
-              <th className="text-right">Redeemable FEI</th>
+              <th className="text-right">Redeemable</th>
             </tr>
           </thead>
           <tbody>
             {redeemable.map((instance, i) => {
               return (
-                <Row
-                  key={i}
-                  rowkey={i}
-                  cToken={instance.cToken}
-                  cTokenLabel={instance.cTokenLabel}
-                  balance={instance.balance}
-                  rate={instance.rate}
-                  fei={instance.fei}
-                />
+                <tr kei={i} className={i % 2 ? 'odd' : 'even'}>
+                  <td title={instance.cToken}>
+                    <a href={'https://etherscan.io/address/' + instance.cToken}>{instance.cTokenLabel}</a>
+                  </td>
+                  <td className="text-right" title={'Wei: ' + instance.balance}>
+                    <a href={'https://etherscan.io/token/' + instance.cToken + '?a=' + account}>{formatNumber(instance.balance)}</a>
+                  </td>
+                  <td className="text-right" title={'Wei: ' + instance.rate}>
+                    {formatRate(instance.rate)}
+                  </td>
+                  <td className="text-right">{formatNumber(instance.fei)} FEI</td>
+                </tr>
               );
             })}
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td className="text-right">
+                <span style={{'borderTop':'1px solid'}}>
+                  <strong>Total: </strong>
+                  {formatNumber(redeemable.reduce((sum, instance, i) => {
+                    sum += instance.fei;
+                    return sum;
+                  }, 0))} FEI
+                </span>
+              </td>
+            </tr>
           </tbody>
         </table>
       ) : null}
@@ -93,3 +109,20 @@ export function RariHackEligibility(props) {
 }
 
 export default RariHackEligibility;
+
+// format a number to XX,XXX,XXX
+function formatNumber(n) {
+  return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+}
+
+// format a rate with 6 decimals
+function formatRate(n) {
+  var ret = Math.floor(n / 1e12) / 1e6;
+  ret = ret.toString();
+  while (ret.length < 8) ret = ret + '0';
+  if (ret > 2) ret = Math.floor(ret * 1000) / 1000;
+  if (ret > 10) ret = Math.floor(ret * 100) / 100;
+  if (ret > 100) ret = Math.floor(ret * 10) / 10;
+  if (ret > 1000) ret = Math.floor(ret);
+  return ret;
+}
