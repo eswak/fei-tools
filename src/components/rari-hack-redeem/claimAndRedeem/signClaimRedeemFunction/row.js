@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import rates from '../../data/rates.json';
 
 
 
 export default function RedeemRow(props) {
+
+    console.log("props.balance is", props.balance)
 
 // format a number to XX,XXX,XXX
 function formatNumber(n) {
@@ -15,7 +18,7 @@ function formatNumber(n) {
                 {props.cTokenLabel}
             </td>
             <td align="right">
-            {formatNumber(props.fei) + " fei"}
+            {formatNumber(props.balance * rates[props.cToken] / 1e18) + " fei"}
             </td>
         </tr>
     )
