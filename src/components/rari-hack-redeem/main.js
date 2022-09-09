@@ -6,6 +6,7 @@ import { ApproveTable } from './approve/approveTable';
 import { PastRedemptions } from './pastRedemptions/pastRedemptions';
 import './main.css';
 import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
+import { CheckOpenBorrows } from './checkOpenBorrows/checkOpenBorrows';
 
 export default function RariHackRedeem() {
   const { address, isConnected, isDisconnected } = useAccount();
@@ -79,6 +80,8 @@ export default function RariHackRedeem() {
 
         {messageSigned && isConnected ? (
           <div>
+            <CheckOpenBorrows redeemableTokens={redeemable} />
+
             <h2>Approve</h2>
             <ApproveTable
               redeemableTokens={redeemable}
