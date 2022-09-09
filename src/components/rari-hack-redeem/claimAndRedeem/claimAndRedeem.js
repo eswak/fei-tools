@@ -32,16 +32,16 @@ export function ClaimAndRedeem(props) {
     return (
         <div>
             <p>How many tokens do you want to redeem?</p>
-            <table className="mb-3">
+            <table className="mb-3" style={{'maxWidth':'800px'}}>
                 <thead>
                     <tr>
                         <th>cToken</th>
                         <th className="text-center">Balance</th>
                         <th>Redeeming</th>
-                        <th>Preset</th>
+                        <th>Presets</th>
                     </tr>
                 </thead>
-                <tbody white-space="nowrap">
+                <tbody>
                     {props.redeemableTokens.map((instance, i) => {
                         return <ClaimRow updateNumber={updateWantRedeem} approve={approve} rowkey={i} key={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
                     })
