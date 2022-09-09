@@ -38,10 +38,10 @@ export function ClaimAndRedeem(props) {
                         <th>cToken</th>
                         <th className="text-center">Balance</th>
                         <th>Redeeming</th>
-                        <th>Lock Amount</th>
+                        <th>Preset</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody white-space="nowrap">
                     {props.redeemableTokens.map((instance, i) => {
                         return <ClaimRow updateNumber={updateWantRedeem} approve={approve} rowkey={i} key={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} />
                     })
