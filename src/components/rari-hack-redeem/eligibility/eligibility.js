@@ -73,12 +73,14 @@ export function RariHackEligibility(props) {
           <tbody>
             {redeemable.map((instance, i) => {
               return (
-                <tr kei={i} className={i % 2 ? 'odd' : 'even'}>
+                <tr key={i} className={i % 2 ? 'odd' : 'even'}>
                   <td title={instance.cToken}>
                     <a href={'https://etherscan.io/address/' + instance.cToken}>{instance.cTokenLabel}</a>
                   </td>
                   <td className="text-right" title={'Wei: ' + instance.balance}>
-                    <a href={'https://etherscan.io/token/' + instance.cToken + '?a=' + account}>{formatNumber(instance.balance)}</a>
+                    <a href={'https://etherscan.io/token/' + instance.cToken + '?a=' + account}>
+                      {formatNumber(instance.balance)}
+                    </a>
                   </td>
                   <td className="text-right" title={'Wei: ' + instance.rate}>
                     {formatRate(instance.rate)}
@@ -92,12 +94,15 @@ export function RariHackEligibility(props) {
               <td></td>
               <td></td>
               <td className="text-right">
-                <span style={{'borderTop':'1px solid'}}>
+                <span style={{ borderTop: '1px solid' }}>
                   <strong>Total: </strong>
-                  {formatNumber(redeemable.reduce((sum, instance, i) => {
-                    sum += instance.fei;
-                    return sum;
-                  }, 0))} FEI
+                  {formatNumber(
+                    redeemable.reduce((sum, instance, i) => {
+                      sum += instance.fei;
+                      return sum;
+                    }, 0)
+                  )}{' '}
+                  FEI
                 </span>
               </td>
             </tr>
