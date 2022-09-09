@@ -62,7 +62,7 @@ export default function RariHackRedeem() {
         </div>
         <h2>Eligibility</h2>
         {isConnected == true ? (
-          <RariHackEligibility onCompute={isEligible} />
+          <RariHackEligibility onCompute={isEligible} contractAddress={contractAddress} />
         ) : (
           <span className="connectprompt">Please connect your wallet.</span>
         )}
