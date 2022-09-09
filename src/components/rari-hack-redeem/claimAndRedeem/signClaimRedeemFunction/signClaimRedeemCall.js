@@ -2,8 +2,8 @@ import { checkProperties } from 'ethers/lib/utils';
 import React, { useEffect, useState } from 'react';
 import { ChainDoesNotSupportMulticallError, useAccount } from 'wagmi';
 import proofs from '../../data/proofs.json';
-import FullCall from './fullCall';
-import PartialCall from './partialCall';
+import SignAndClaim from './signAndClaimCall';
+import MultiRedeemCall from './multiRedeemCall';
 import RedeemRow from './row';
 
 export default function SignClaimRedeemCall(props) {
@@ -26,20 +26,6 @@ export default function SignClaimRedeemCall(props) {
   //     bytes32[][] calldata _merkleProofs
   // ) external virtual;
   ///////////////////////////////////
-
-  //// Function to check if the user is trying to redeem more than he can
-  function checkredeem() {
-    ////check if inputed values are inferior or equal to redeemable
-    for (let i = 0; props.toRedeem.length; i++) {
-      if (props.toRedeem[i]['balance'] <= props.redeemable[i]['balance']) {
-        setRedeemState(true);
-        return true;
-      } else {
-        setRedeemState(false);
-        return false;
-      }
-    }
-  }
 
   /// DATA TRANSFORMATION INTO INPUTS
   ////0. signature
@@ -96,7 +82,7 @@ export default function SignClaimRedeemCall(props) {
         <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
         <p>
           {props.alreadySigned ? (
-            <PartialCall
+            <MultiRedeemCall
               contractAddress={props.contractAddress}
               signedMessage={props.signedMessage}
               cTokens={cTokens}
@@ -105,7 +91,7 @@ export default function SignClaimRedeemCall(props) {
               merkleProofs={merkleProofs}
             />
           ) : (
-            <FullCall
+            <SignAndClaim
               contractAddress={props.contractAddress}
               signedMessage={props.signedMessage}
               cTokens={cTokens}

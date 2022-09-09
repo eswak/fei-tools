@@ -2,7 +2,7 @@ import React from 'react';
 import { useAccount, usePrepareContractWrite, useContractWrite } from 'wagmi';
 import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
 
-export default function PartialCall(props) {
+export default function MultiRedeemCall(props) {
   /// Transaction to sign and claim and redeem
   const account = useAccount().address;
 
