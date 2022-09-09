@@ -25,5 +25,13 @@
   "0x001e407f497e024b9fb1cb93ef841f43d645ca4f": "Fuse Pool 156 FEI",
   "0x5cadc2a04921213de60b237688776e0f1a7155e6": "Fuse Pool 156 FRAX",
   "0x88d3557eb6280cc084ca36e425d6bc52d0a04429": "Fuse Pool 156 USDC",
-  "0xe92a3db67e4b6ac86114149f522644b34264f858": "Fuse Pool 156 ETH"
+  "0xe92a3db67e4b6ac86114149f522644b34264f858": "Fuse Pool 156 ETH",
+
+  "0xc54172e34046c1653d1920d40333dd358c7a1af4": "Fuse Pool 8 (Tribe FeiRari)",
+  "0x621579dd26774022f33147d3852ef4e00024b763": "Fuse Pool 18 (Olympus)",
+  "0x35de88f04ad31a396aedb33f19aebe7787c02560": "Fuse Pool 27 (Stake DAO)",
+  "0x3f2d1bc6d02522dbcdb216b2e75edddafe04b16f": "Fuse Pool 127 (0xb1)",
+  "0xc7125e3a2925877c7371d579d29dae4729ac9033": "Fuse Pool 144 (Babylon)",
+  "0x88f7c23ea6c4c404da463bc9ae03b012b32def9e": "Fuse Pool 146 (Tribe ETH)",
+  "0x07cd53380fe9b2a5e64099591b498c73f0efaa66": "Fuse Pool 156 (Tribe Convex)"
 }
