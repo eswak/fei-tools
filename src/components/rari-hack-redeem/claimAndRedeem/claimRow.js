@@ -19,6 +19,7 @@ export default function ClaimRow(props) {
     if (percent == 0) {
       setDisplayValue(0);
       setValue('0');
+      props.updateNumber(props.cToken, "0");
       setDisable0Button(true);
       setDisable25Button(false);
       setDisable50Button(false);
@@ -29,7 +30,8 @@ export default function ClaimRow(props) {
       let x = toNumber(props.balance);
       x = x / 4;
       setDisplayValue(x);
-      setValue(BigInt(x).toString());
+      setValue();
+      props.updateNumber(props.cToken, BigInt(x).toString());
       setDisable0Button(false);
       setDisable25Button(true);
       setDisable50Button(false);
@@ -41,6 +43,7 @@ export default function ClaimRow(props) {
       x = x / 2;
       setDisplayValue(x);
       setValue(BigInt(x).toString());
+      props.updateNumber(props.cToken, BigInt(x).toString());
       setDisable0Button(false);
       setDisable25Button(false);
       setDisable50Button(true);
@@ -52,6 +55,7 @@ export default function ClaimRow(props) {
       x = (x / 4) * 3;
       setDisplayValue(x);
       setValue(BigInt(x).toString());
+      props.updateNumber(props.cToken, BigInt(x).toString());
       setDisable0Button(false);
       setDisable25Button(false);
       setDisable50Button(false);
@@ -61,7 +65,7 @@ export default function ClaimRow(props) {
     if (percent == 100) {
       setValue(props.balance);
       setDisplayValue(props.balance);
-      console.log('value after 100 is', value);
+      props.updateNumber(props.cToken, props.balance);
       setDisable0Button(false);
       setDisable25Button(false);
       setDisable50Button(false);
