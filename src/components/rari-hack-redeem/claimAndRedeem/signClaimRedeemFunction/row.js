@@ -14,7 +14,7 @@ function formatNumber(n) {
             <td title={props.cToken}>
                 {props.cTokenLabel}
             </td>
-            <td className="text-center">
+            <td align="right">
             {formatNumber(props.fei) + " fei"}
             </td>
         </tr>
