@@ -8,6 +8,7 @@ export function SigningMessage(props) {
   const account = useAccount();
   const provider = useProvider();
   const message = `Sample message, please update.`;
+  //const message = `By signing and submitting this message to the Ethereum network, I represent that I have read and agree to the Fuse Hack Settlement Agreement and Release, as set forth here: https://fusehacksettlement.com/waiver.pdf`;
 
   // Sign message
   let { isLoading, signMessage } = useSignMessage({
