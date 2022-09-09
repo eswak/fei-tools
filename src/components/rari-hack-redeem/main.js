@@ -60,7 +60,7 @@ export default function RariHackRedeem() {
             reimbursments.
           </p>
         </div>
-        <h2>Eligibility</h2>
+        <h2>Step 1: Check your Eligibility</h2>
         {isConnected == true ? (
           <RariHackEligibility onCompute={isEligible} contractAddress={contractAddress} />
         ) : (
@@ -69,7 +69,7 @@ export default function RariHackRedeem() {
 
         {eligible && isConnected ? (
           <div>
-            <h2>Signing message</h2>
+            <h2>Step 2: Sign Waiver and Claim your Eligiblity</h2>
             <Signing
               liftMessageData={liftMessageData}
               liftAlreadySigned={liftAlreadySigned}
@@ -81,7 +81,8 @@ export default function RariHackRedeem() {
         {messageSigned && isConnected ? (
           <div>
             <CheckOpenBorrows redeemableTokens={redeemable} />
-            <h2>Redeem</h2>
+
+            <h2>Step 3: Redeem your cTokens for FEI</h2>
             <ClaimAndRedeem
               redeemableTokens={redeemable}
               alreadySigned={alreadySigned}
@@ -92,7 +93,7 @@ export default function RariHackRedeem() {
         ) : null}
 
         <div>
-          <h2>Redemption stats</h2>
+          <h2>Stats: Full Eligibility List and Redemption Status</h2>
           <PastRedemptions userAddress={address} contractAddress={contractAddress} />
         </div>
       </div>

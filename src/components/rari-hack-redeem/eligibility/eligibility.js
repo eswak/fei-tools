@@ -38,7 +38,7 @@ export function RariHackEligibility(props) {
               cToken: cTokenAddress,
               eligible: userRedeemableBalance,
               balance: userRedeemableBalance,
-              redeemed: null,
+              redeemed: 0,
               rate: rates[cTokenAddress],
               fei: (userRedeemableBalance * rates[cTokenAddress]) / 1e18,
               cTokenLabel: labels[cTokenAddress],
@@ -60,7 +60,7 @@ export function RariHackEligibility(props) {
     redeemedEvents.forEach(function (redeemedEvent) {
       if (redeemedEvent.args.recipient == account) {
         liftUpValue.map((item, i) => {
-          return item.cToken === redeemedEvent.args.cToken ? { ...item, balance: item.balance - redeemedEvent.args.cTokenAmount, redeemed: redeemedEvent.args.cTokenAmount} : item 
+          return item.cToken === redeemedEvent.args.cToken ? { ...item, balance: item.balance - redeemedEvent.args.cTokenAmount, redeemed: item.redeemed + redeemedEvent.args.cTokenAmount} : item 
       } );
       }
     }
@@ -93,9 +93,9 @@ export function RariHackEligibility(props) {
           <thead>
             <tr>
               <th>cToken</th>
-              <th className="text-right">cToken balance</th>
-              <th className="text-right">Rate</th>
-              <th className="text-right">Redeemable</th>
+              <th className="text-right">Eligible</th>
+              <th className="text-right">Already redeemed</th>
+              <th className="text-right">Eligible FEI</th>
             </tr>
           </thead>
           <tbody>
@@ -106,12 +106,10 @@ export function RariHackEligibility(props) {
                     <a href={'https://etherscan.io/address/' + instance.cToken}>{instance.cTokenLabel}</a>
                   </td>
                   <td className="text-right" title={'Wei: ' + instance.balance}>
-                    <a href={'https://etherscan.io/token/' + instance.cToken + '?a=' + account}>
-                      {formatNumber(instance.balance)}
-                    </a>
+                    {formatNumber(instance.eligible)}
                   </td>
-                  <td className="text-right" title={'Wei: ' + instance.rate}>
-                    {formatRate(instance.rate)}
+                  <td className="text-right" title={'Wei: ' + instance.balance}>
+                    {formatPercent(instance.redeemed / instance.eligible)}
                   </td>
                   <td className="text-right">{formatNumber(instance.fei)} FEI</td>
                 </tr>
@@ -148,14 +146,7 @@ function formatNumber(n) {
   return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
 }
 
-// format a rate with 6 decimals
-function formatRate(n) {
-  var ret = Math.floor(n / 1e12) / 1e6;
-  ret = ret.toString();
-  while (ret.length < 8) ret = ret + '0';
-  if (ret > 2) ret = Math.floor(ret * 1000) / 1000;
-  if (ret > 10) ret = Math.floor(ret * 100) / 100;
-  if (ret > 100) ret = Math.floor(ret * 10) / 10;
-  if (ret > 1000) ret = Math.floor(ret);
-  return ret;
-}
+  // format a [0, 1] number to a %
+  function formatPercent(n) {
+    return Math.floor(n * 100) + '%';
+  }
