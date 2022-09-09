@@ -651,11 +651,12 @@ class c extends Component {
                     <td>CR of FEI not backed by stables</td>
                     <td>
                       <strong>
-                        {Math.round(
-                          (100 * (this.state.pcv - this.state.stableBacking)) /
-                            (this.state.circulatingFei - this.state.stableBacking)
-                        )}{' '}
-                        %
+                        {this.state.stableBacking < this.state.circulatingFei
+                          ? Math.round(
+                              (100 * (this.state.pcv - this.state.stableBacking)) /
+                                (this.state.circulatingFei - this.state.stableBacking)
+                            ) + ' %'
+                          : '∞'}
                       </strong>
                     </td>
                   </tr>
