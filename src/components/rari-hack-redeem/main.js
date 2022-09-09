@@ -7,16 +7,13 @@ import { PastRedemptions } from './pastRedemptions/pastRedemptions';
 import './main.css';
 import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
 
-
 export default function RariHackRedeem() {
-
   const { address, isConnected, isDisconnected } = useAccount();
   const [eligible, setEligible] = useState(false);
   const [messageSigned, setMessageSigned] = useState(false);
   const [signedMessage, setSignedMessage] = useState(null);
   const [redeemable, setRedeemable] = useState([]);
-  const [alreadySigned, setAlreadySigned] = useState(false)
-
+  const [alreadySigned, setAlreadySigned] = useState(false);
 
   //// CONTRACT ADDRESS
   const contractAddress = '0xB22C255250d74B0ADD1bfB936676D2a299BF48Bd';
@@ -27,18 +24,18 @@ export default function RariHackRedeem() {
       setEligible(true);
       setRedeemable(value);
     }
-  }
+  };
 
   //Is the message signed? update message data to the main state
   const liftMessageData = (data) => {
     setMessageSigned(true);
     setSignedMessage(data);
-  }
+  };
 
   // was the message signed before?
   const liftAlreadySigned = () => {
-    setAlreadySigned(true)
-  }
+    setAlreadySigned(true);
+  };
 
   // render the data
   return (
@@ -47,41 +44,62 @@ export default function RariHackRedeem() {
         <h1 className="mb-3">Rari hack redeem</h1>
         <div className="info">
           <p>
-            Pursuant to  <a href="https://snapshot.org/#/fei.eth/proposal/0xd5359654b34bba833843fb64ad38e813b4ff6cc21e6f5ea323b704d2ceb25d96" target="_blank">
+            Pursuant to{' '}
+            <a
+              href="https://snapshot.org/#/fei.eth/proposal/0xd5359654b34bba833843fb64ad38e813b4ff6cc21e6f5ea323b704d2ceb25d96"
+              target="_blank"
+            >
               TIP-121
-            </a>, the Tribe DAO has decided to reimburse users of the Fuse platform affected by the May 2022 hack.
+            </a>
+            , the Tribe DAO has decided to reimburse users of the Fuse platform affected by the May 2022 hack.
           </p>
           <p>
-            This interface lets you interact with the <a href={'https://etherscan.io/address/' + contractAddress}>smart contract deployed</a> to process the reimbursments.
+            This interface lets you interact with the{' '}
+            <a href={'https://etherscan.io/address/' + contractAddress}>smart contract deployed</a> to process the
+            reimbursments.
           </p>
         </div>
         <h2>Eligibility</h2>
-        {isConnected == true ?
+        {isConnected == true ? (
           <RariHackEligibility onCompute={isEligible} />
-          :
-          <span className='connectprompt'>Please connect your wallet.</span>}
+        ) : (
+          <span className="connectprompt">Please connect your wallet.</span>
+        )}
 
-        {eligible && isConnected ?
+        {eligible && isConnected ? (
           <div>
             <h2>Signing message</h2>
-            <SigningMessage liftMessageData={liftMessageData} liftAlreadySigned={liftAlreadySigned} contractAddress={contractAddress} />
+            <SigningMessage
+              liftMessageData={liftMessageData}
+              liftAlreadySigned={liftAlreadySigned}
+              contractAddress={contractAddress}
+            />
           </div>
-          :
-          null}
+        ) : null}
 
-        {messageSigned && isConnected ?
+        {messageSigned && isConnected ? (
           <div>
             <h2>Approve</h2>
-            <ApproveTable redeemableTokens={redeemable} contractAddress={contractAddress} signedMessage={signedMessage}/>
+            <ApproveTable
+              redeemableTokens={redeemable}
+              contractAddress={contractAddress}
+              signedMessage={signedMessage}
+            />
 
             <h2>Redeem</h2>
-            <ClaimAndRedeem redeemableTokens={redeemable} alreadySigned={alreadySigned} contractAddress={contractAddress} signedMessage={signedMessage}/>
-          </div> : null}
-          
-          <div>
-            <h2>Redemption stats</h2>
-            <PastRedemptions userAddress={address} contractAddress={contractAddress}/>
+            <ClaimAndRedeem
+              redeemableTokens={redeemable}
+              alreadySigned={alreadySigned}
+              contractAddress={contractAddress}
+              signedMessage={signedMessage}
+            />
           </div>
+        ) : null}
+
+        <div>
+          <h2>Redemption stats</h2>
+          <PastRedemptions userAddress={address} contractAddress={contractAddress} />
+        </div>
       </div>
     </div>
   );

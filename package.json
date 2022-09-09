@@ -6,7 +6,8 @@
   "scripts": {
     "start": "./node_modules/webpack/bin/webpack.js serve --config webpack.dev.js",
     "build": "rm -Rf ./dist/* ; ./node_modules/webpack/bin/webpack.js --color --no-devtool --config webpack.prod.js",
-    "prettier": "prettier --config .prettierrc './src/**/*.js' --write"
+    "prettier": "prettier --config .prettierrc './src/**/*.js' --write",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
@@ -23,6 +24,7 @@
     "css-loader": "^5.0.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^4.5.1",
+    "husky": "^8.0.1",
     "json-loader": "^0.5.7",
     "prettier": "^2.7.1",
     "react-dev-utils": "^11.0.1",
