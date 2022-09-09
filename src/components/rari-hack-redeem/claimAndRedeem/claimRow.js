@@ -1,101 +1,103 @@
-import { toNumber } from "lodash";
-import React, { useState } from "react";
-
-
-
+import { toNumber } from 'lodash';
+import React, { useState } from 'react';
 
 export default function ClaimRow(props) {
-    const [value, setValue] = useState(props.balance || 0)
-    const [displayValue, setDisplayValue] = useState(props.balance || 0)
-    const [disable0Button, setDisable0Button] = useState(false)
-    const [disable25Button, setDisable25Button] = useState(false)
-    const [disable50Button, setDisable50Button] = useState(false)
-    const [disable75Button, setDisable75Button] = useState(false)
-    const [disable100Button, setDisable100Button] = useState(true)
+  const [value, setValue] = useState(props.balance || 0);
+  const [displayValue, setDisplayValue] = useState(props.balance || 0);
+  const [disable0Button, setDisable0Button] = useState(false);
+  const [disable25Button, setDisable25Button] = useState(false);
+  const [disable50Button, setDisable50Button] = useState(false);
+  const [disable75Button, setDisable75Button] = useState(false);
+  const [disable100Button, setDisable100Button] = useState(true);
 
-    function handleChange(event) {
-        setValue(event.target.value)
-        props.updateNumber(props.cToken, event.target.value)
-    }
+  function handleChange(event) {
+    setValue(event.target.value);
+    props.updateNumber(props.cToken, event.target.value);
+  }
 
-    function setPercent(percent) {
-        if(percent == 0){
-            setDisplayValue(0)
-            setValue("0")
-            setDisable0Button(true)
-            setDisable25Button(false)
-            setDisable50Button(false)
-            setDisable75Button(false)
-            setDisable100Button(false)
-        }
-        if(percent == 25){
-            let x = toNumber(props.balance)
-            x = x / 4
-            setDisplayValue(x)
-            setValue(BigInt(x).toString())
-            setDisable0Button(false)
-            setDisable25Button(true)
-            setDisable50Button(false)
-            setDisable75Button(false)
-            setDisable100Button(false)
-        }
-        if(percent == 50){
-            let x = toNumber(props.balance)
-            x = x / 2
-            setDisplayValue(x)
-            setValue(BigInt(x).toString())
-            setDisable0Button(false)
-            setDisable25Button(false)
-            setDisable50Button(true)
-            setDisable75Button(false)
-            setDisable100Button(false)
-        }
-        if(percent == 75){
-            let x = toNumber(props.balance)
-            x = x / 4 * 3
-            setDisplayValue(x)
-            setValue(BigInt(x).toString())
-            setDisable0Button(false)
-            setDisable25Button(false)
-            setDisable50Button(false)
-            setDisable75Button(true)
-            setDisable100Button(false)
-        }
-        if(percent == 100){
-            setValue(props.balance)
-            setDisplayValue(props.balance)
-            console.log("value after 100 is", value)
-            setDisable0Button(false)
-            setDisable25Button(false)
-            setDisable50Button(false)
-            setDisable75Button(false)
-            setDisable100Button(true)
-        }
-        
+  function setPercent(percent) {
+    if (percent == 0) {
+      setDisplayValue(0);
+      setValue('0');
+      setDisable0Button(true);
+      setDisable25Button(false);
+      setDisable50Button(false);
+      setDisable75Button(false);
+      setDisable100Button(false);
     }
-    // format a number to XX,XXX,XXX
-function formatNumber(n) {
+    if (percent == 25) {
+      let x = toNumber(props.balance);
+      x = x / 4;
+      setDisplayValue(x);
+      setValue(BigInt(x).toString());
+      setDisable0Button(false);
+      setDisable25Button(true);
+      setDisable50Button(false);
+      setDisable75Button(false);
+      setDisable100Button(false);
+    }
+    if (percent == 50) {
+      let x = toNumber(props.balance);
+      x = x / 2;
+      setDisplayValue(x);
+      setValue(BigInt(x).toString());
+      setDisable0Button(false);
+      setDisable25Button(false);
+      setDisable50Button(true);
+      setDisable75Button(false);
+      setDisable100Button(false);
+    }
+    if (percent == 75) {
+      let x = toNumber(props.balance);
+      x = (x / 4) * 3;
+      setDisplayValue(x);
+      setValue(BigInt(x).toString());
+      setDisable0Button(false);
+      setDisable25Button(false);
+      setDisable50Button(false);
+      setDisable75Button(true);
+      setDisable100Button(false);
+    }
+    if (percent == 100) {
+      setValue(props.balance);
+      setDisplayValue(props.balance);
+      console.log('value after 100 is', value);
+      setDisable0Button(false);
+      setDisable25Button(false);
+      setDisable50Button(false);
+      setDisable75Button(false);
+      setDisable100Button(true);
+    }
+  }
+  // format a number to XX,XXX,XXX
+  function formatNumber(n) {
     return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
-}
+  }
 
-    return (
-        <tr key={props.rowkey} className={(props.rowkey % 2 ? 'odd' : 'even')}>
-            <td title={props.cToken}>
-                {props.cTokenLabel}
-            </td>
-            <td className="text-center">
-                {formatNumber(props.balance)}
-            </td>
-            <td>
-                <input type="string" id={props.cToken} value={formatNumber(displayValue)} onChange={handleChange} />
-            </td>
-            <td>
-                <button disabled={disable0Button} onClick={()=>setPercent(0)}>0%</button>
-                <button disabled={disable25Button} onClick={()=>setPercent(25)}>25%</button>
-                <button disabled={disable50Button} onClick={()=>setPercent(50)}>50%</button>
-                <button disabled={disable75Button} onClick={()=>setPercent(75)}>75%</button>
-                <button disabled={disable100Button} onClick={()=>setPercent(100)}>100%</button>
-            </td>
-        </tr>
-    )
+  return (
+    <tr key={props.rowkey} className={props.rowkey % 2 ? 'odd' : 'even'}>
+      <td title={props.cToken}>{props.cTokenLabel}</td>
+      <td className="text-center">{formatNumber(props.balance)}</td>
+      <td>
+        <input type="string" id={props.cToken} value={formatNumber(displayValue)} onChange={handleChange} />
+      </td>
+      <td>
+        <button disabled={disable0Button} onClick={() => setPercent(0)}>
+          0%
+        </button>
+        <button disabled={disable25Button} onClick={() => setPercent(25)}>
+          25%
+        </button>
+        <button disabled={disable50Button} onClick={() => setPercent(50)}>
+          50%
+        </button>
+        <button disabled={disable75Button} onClick={() => setPercent(75)}>
+          75%
+        </button>
+        <button disabled={disable100Button} onClick={() => setPercent(100)}>
+          100%
+        </button>
+      </td>
+    </tr>
+  );
 }

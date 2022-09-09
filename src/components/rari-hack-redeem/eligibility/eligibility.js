@@ -29,9 +29,9 @@ export function RariHackEligibility(props) {
               cToken: cTokenAddress,
               balance: userRedeemableBalance,
               rate: rates[cTokenAddress],
-              fei: userRedeemableBalance * rates[cTokenAddress] / 1e18,
+              fei: (userRedeemableBalance * rates[cTokenAddress]) / 1e18,
               cTokenLabel: labels[cTokenAddress],
-              approved: false,
+              approved: false
             };
             // add instance to array
             liftUpValue.push(instance);
@@ -46,38 +46,50 @@ export function RariHackEligibility(props) {
     }
   }
   useEffect(() => {
-    canRedeem()
+    canRedeem();
   }, []);
-
 
   // render the data
   return (
     <div className="rarihackeligilibity">
-      { !loaded ? <div>Checking Eligibility...</div> : null }
-      { loaded && !redeemable.length ? <div>
-        <p>
-          Your address is not eligible for the Fuse Hack Payment. <br/>
-          Please check the table below to see if one of your other addresses are eligible.
-        </p>
-      </div> : null }
-      { loaded && redeemable.length ? <table className="mb-3">
-        <thead>
-          <tr>
-            <th>cToken</th>
-            <th className="text-right">cToken balance</th>
-            <th className="text-right">Rate</th>
-            <th className="text-right">Redeemable FEI</th>
-          </tr>
-        </thead>
-        <tbody>
-          {redeemable.map((instance, i) => {
-            return <Row key={i} rowkey={i} cToken={instance.cToken} cTokenLabel={instance.cTokenLabel} balance={instance.balance} rate={instance.rate} fei={instance.fei} />
-          })}
-        </tbody>
-      </table> : null}
+      {!loaded ? <div>Checking Eligibility...</div> : null}
+      {loaded && !redeemable.length ? (
+        <div>
+          <p>
+            Your address is not eligible for the Fuse Hack Payment. <br />
+            Please check the table below to see if one of your other addresses are eligible.
+          </p>
+        </div>
+      ) : null}
+      {loaded && redeemable.length ? (
+        <table className="mb-3">
+          <thead>
+            <tr>
+              <th>cToken</th>
+              <th className="text-right">cToken balance</th>
+              <th className="text-right">Rate</th>
+              <th className="text-right">Redeemable FEI</th>
+            </tr>
+          </thead>
+          <tbody>
+            {redeemable.map((instance, i) => {
+              return (
+                <Row
+                  key={i}
+                  rowkey={i}
+                  cToken={instance.cToken}
+                  cTokenLabel={instance.cTokenLabel}
+                  balance={instance.balance}
+                  rate={instance.rate}
+                  fei={instance.fei}
+                />
+              );
+            })}
+          </tbody>
+        </table>
+      ) : null}
     </div>
   );
-
 }
 
-export default RariHackEligibility; 
+export default RariHackEligibility;

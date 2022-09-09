@@ -32,8 +32,8 @@ class MainContent extends React.Component {
         return <TimelockTransactions />;
       case '/FeiProtocolRoles':
         return <FeiProtocolRoles />;
-        case '/RariHackRedeem':
-          return <RariHackRedeem />;
+      case '/RariHackRedeem':
+        return <RariHackRedeem />;
       default:
         return (
           <div className="card section">

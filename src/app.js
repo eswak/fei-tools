@@ -11,37 +11,31 @@ import MainContent from './components/main-content/main-content';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 ///WAGMI IMPORTS
-import {
-  chain,
-  WagmiConfig,
-  createClient,
-  defaultChains,
-  configureChains,
-} from 'wagmi'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
-import { publicProvider } from 'wagmi/providers/public'
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
-import { InjectedConnector } from 'wagmi/connectors/injected'
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+import { chain, WagmiConfig, createClient, defaultChains, configureChains } from 'wagmi';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { publicProvider } from 'wagmi/providers/public';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 //IMPORT CONNECTKIT
-import { ConnectKitProvider, ConnectKitButton, getDefaultClient } from "connectkit";
-
-
+import { ConnectKitProvider, ConnectKitButton, getDefaultClient } from 'connectkit';
 
 //WAGMI CONFIG
 // Configure chains & providers with the Alchemy provider.
-const { chains, provider, webSocketProvider } = configureChains([chain.localhost], [
-  alchemyProvider({ apiKey: '2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT' }),
-  publicProvider(),
-  jsonRpcProvider({
-    rpc: (chain) => ({
-      http: `http://127.0.0.1:8545`,
-    }),
-  }),
-
-])
+const { chains, provider, webSocketProvider } = configureChains(
+  [chain.localhost],
+  [
+    alchemyProvider({ apiKey: '2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT' }),
+    publicProvider(),
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        http: `http://127.0.0.1:8545`
+      })
+    })
+  ]
+);
 
 // Set up client
 const client = createClient({
@@ -51,26 +45,26 @@ const client = createClient({
     new CoinbaseWalletConnector({
       chains,
       options: {
-        appName: 'wagmi',
-      },
+        appName: 'wagmi'
+      }
     }),
     new WalletConnectConnector({
       chains,
       options: {
-        qrcode: true,
-      },
+        qrcode: true
+      }
     }),
     new InjectedConnector({
       chains,
       options: {
         name: 'Injected',
-        shimDisconnect: true,
-      },
-    }),
+        shimDisconnect: true
+      }
+    })
   ],
   provider,
-  webSocketProvider,
-})
+  webSocketProvider
+});
 
 //END WAGMI CONFIG
 
@@ -107,8 +101,13 @@ class App extends Component {
   }
 
   render() {
-    return <WagmiConfig client={client}><ConnectKitProvider theme="retro">
-      <SidePanel /> <MainContent content={this.state.content} key={window.location.hash} /></ConnectKitProvider></WagmiConfig>;
+    return (
+      <WagmiConfig client={client}>
+        <ConnectKitProvider theme="retro">
+          <SidePanel /> <MainContent content={this.state.content} key={window.location.hash} />
+        </ConnectKitProvider>
+      </WagmiConfig>
+    );
   }
 }
 
@@ -118,7 +117,7 @@ const wrapper = document.createElement('div');
 wrapper.className = 'app';
 document.body.appendChild(wrapper);
 const root = createRoot(wrapper);
-root.render(<App/>);
+root.render(<App />);
 
 // Favicon
 document.head.innerHTML +=
