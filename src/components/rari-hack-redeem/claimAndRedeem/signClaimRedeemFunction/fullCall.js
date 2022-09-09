@@ -31,5 +31,9 @@ export default function FullCall(props) {
     }
   });
 
-  return <button onClick={() => write()} disabled={props.disable}>Claim and Redeem</button>;
+  return (
+    <button onClick={() => write()} disabled={props.disable}>
+      Claim and Redeem
+    </button>
+  );
 }

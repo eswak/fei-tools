@@ -69,7 +69,7 @@ export default function SignClaimRedeemCall(props) {
 
   // Total of redeemed FEI
   const redeemingTotalFei = cTokens.reduce((acc, cur, i) => {
-    acc += amountsToRedeem[i] * rates[cur] / 1e18;
+    acc += (amountsToRedeem[i] * rates[cur]) / 1e18;
     return acc;
   }, 0);
 
@@ -87,20 +87,16 @@ export default function SignClaimRedeemCall(props) {
           <tbody>
             {cTokens.map((instance, i) => {
               return (
-                <tr key={i} className={(i % 2 ? 'odd' : 'even')}>
-                  <td title={instance}>
-                      {props.toRedeem[i].cTokenLabel}
-                  </td>
-                  <td align="right">
-                    {formatNumber(amountsToRedeem[i] * rates[instance] / 1e18)} FEI
-                  </td>
+                <tr key={i} className={i % 2 ? 'odd' : 'even'}>
+                  <td title={instance}>{props.toRedeem[i].cTokenLabel}</td>
+                  <td align="right">{formatNumber((amountsToRedeem[i] * rates[instance]) / 1e18)} FEI</td>
                 </tr>
               );
             })}
             <tr>
               <td></td>
-              <td style={{'textAlign':'right'}}>
-                <span style={{'borderTop':'1px solid'}}>
+              <td style={{ textAlign: 'right' }}>
+                <span style={{ borderTop: '1px solid' }}>
                   <strong>Total:</strong>
                   &nbsp;
                   {formatNumber(redeemingTotalFei)} FEI
