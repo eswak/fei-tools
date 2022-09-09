@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { ChainDoesNotSupportMulticallError, useAccount } from "wagmi";
 import proofs from "../../data/proofs.json"
 import FullCall from "./fullCall";
-import { RedeemingCheck } from "./isReady";
 import PartialCall from "./partialCall";
 import RedeemRow from "./row";
 
@@ -11,7 +10,6 @@ import RedeemRow from "./row";
 
 export default function SignClaimRedeemCall(props) {
     const [redeemState, setRedeemState] = useState(true)
-    const [isReady, setIsReady] = useState(false)
     const address = useAccount().address
 
 
@@ -53,20 +51,20 @@ export default function SignClaimRedeemCall(props) {
     //// signature is in props.signedMessage
     ////1. _cTokens
     const cTokens = props.toRedeem.reduce(function (accu, curr) {
-        if (curr.approved == true) accu.push(curr.cToken);
+        accu.push(curr.cToken);
         return accu;
     }, []);
 
 
     ////2. _amountsToClaim
     const amountsToClaim = props.redeemable.reduce(function (accu, curr) {
-        if (curr.approved == true) accu.push(curr.balance);
+        accu.push(curr.balance);
         return accu;
     }, []);
 
     ////3. _amountsToRedeem
     const amountsToRedeem = props.toRedeem.reduce(function (accu, curr) {
-        if (curr.approved == true) accu.push(curr.balance);
+        accu.push(curr.balance);
         return accu;
     }, []);
 
@@ -75,14 +73,8 @@ export default function SignClaimRedeemCall(props) {
         return proofs[instance][address.toLowerCase()]
     })
 
-
-    function handleIsReady() {
-        setIsReady(true)
-    }
-
     return (
-        <div>{isReady == false ? <RedeemingCheck isReady={handleIsReady} />
-            :
+        <div>
             <div>
                 <h3>You are redeeming:</h3>
                  <table className="mb-3">
@@ -94,7 +86,7 @@ export default function SignClaimRedeemCall(props) {
         </thead>
         <tbody>
         {cTokens.map((instance, i) => {
-            return <RedeemRow key={i} rowkey={i} cToken={instance} cTokenLabel={props.toRedeem[i].cTokenLabel} balance={amountsToRedeem[i]} />
+            return <RedeemRow key={i} rowkey={i} cToken={instance} fei={props.toRedeem[i].fei} cTokenLabel={props.toRedeem[i].cTokenLabel} balance={amountsToRedeem[i]} />
           })}
         </tbody>
       </table>
@@ -105,7 +97,7 @@ export default function SignClaimRedeemCall(props) {
                     :
                     <FullCall contractAddress={props.contractAddress} signedMessage={props.signedMessage} cTokens={cTokens} amountsToClaim={amountsToClaim} amountsToRedeem={amountsToRedeem} merkleProofs={merkleProofs} />}
                 </p>
-            </div>}
+            </div>
         </div>
     )
 }
