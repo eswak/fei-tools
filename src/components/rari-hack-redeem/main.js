@@ -81,14 +81,6 @@ export default function RariHackRedeem() {
         {messageSigned && isConnected ? (
           <div>
             <CheckOpenBorrows redeemableTokens={redeemable} />
-
-            <h2>Approve</h2>
-            <ApproveTable
-              redeemableTokens={redeemable}
-              contractAddress={contractAddress}
-              signedMessage={signedMessage}
-            />
-
             <h2>Redeem</h2>
             <ClaimAndRedeem
               redeemableTokens={redeemable}

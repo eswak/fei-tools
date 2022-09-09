@@ -28,7 +28,7 @@ export default function ApproveCToken(props) {
     },
     onSuccess(data) {
       console.log('success', data);
-      props.liftApproveState();
+      props.liftState();
       setDone(true);
     }
   });

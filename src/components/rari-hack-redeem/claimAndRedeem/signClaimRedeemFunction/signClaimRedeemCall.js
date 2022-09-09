@@ -5,9 +5,14 @@ import proofs from '../../data/proofs.json';
 import SignAndClaim from './signAndClaimCall';
 import MultiRedeemCall from './multiRedeemCall';
 import rates from "../../data/rates.json";
+import ApproveCToken from '../approvecToken';
 
 export default function SignClaimRedeemCall(props) {
   const address = useAccount().address;
+  // tracking number of cTokens approved
+  const [tokensApproved, setTokensApproved] = useState(0)
+  //disable redeem button
+  const [disableRedeem, setDisableRedeem] = useState(true)
 
   ///SMART CONTRACT FUNCTION FOR REFERENCE
   /// @notice Combines sign, claim, and redeem into a single function
@@ -34,6 +39,7 @@ export default function SignClaimRedeemCall(props) {
     accu.push(curr.cToken);
     return accu;
   }, []);
+  const cTokensNumber = cTokens.length
 
   ////2. _amountsToClaim
   const amountsToClaim = props.redeemable.reduce(function (accu, curr) {
@@ -58,15 +64,29 @@ export default function SignClaimRedeemCall(props) {
     return acc;
   }, 0);
 
+
+  /// When a token is approved, increment tokensApproved
+  function handleCTokenApproved(){
+    setTokensApproved(tokensApproved + 1);
+  }
+
+  useEffect(()=>{
+    if(tokensApproved == cTokensNumber){
+      setDisableRedeem(false);
+    };
+  }, [tokensApproved])
+
+
   return (
     <div>
       <div>
         <h3>You are redeeming:</h3>
-        <table className="mb-3">
+        <table className="mb-3" style={{ maxWidth: '800px' }}>
           <thead>
             <tr>
               <th>cToken</th>
               <th className="text-right">Redeeming</th>
+              <th>Approve</th>
             </tr>
           </thead>
           <tbody>
@@ -75,6 +95,7 @@ export default function SignClaimRedeemCall(props) {
                 <tr key={i} className={i % 2 ? 'odd' : 'even'}>
                   <td title={instance}>{props.toRedeem[i].cTokenLabel}</td>
                   <td align="right">{formatNumber((amountsToRedeem[i] * rates[instance]) / 1e18)} FEI</td>
+                  <td align="center"><ApproveCToken liftState={handleCTokenApproved} value={amountsToRedeem[i]} contractAddress={cTokens[i]} /></td>
                 </tr>
               );
             })}
@@ -99,6 +120,7 @@ export default function SignClaimRedeemCall(props) {
               amountsToClaim={amountsToClaim}
               amountsToRedeem={amountsToRedeem}
               merkleProofs={merkleProofs}
+              disable={disableRedeem}
             />
         </p>
       </div>
