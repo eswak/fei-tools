@@ -29,5 +29,9 @@ export default function SignAndClaim(props) {
     }
   });
 
-  return <button onClick={() => write()}> Sign and Claim </button>;
+  return (
+    <button onClick={() => write()} disabled={props.disable}>
+      Claim and Redeem
+    </button>
+  );
 }

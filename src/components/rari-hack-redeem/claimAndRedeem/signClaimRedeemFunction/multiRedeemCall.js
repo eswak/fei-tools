@@ -28,5 +28,10 @@ export default function MultiRedeemCall(props) {
     }
   });
 
-  return <button onClick={() => write()}> Redeem </button>;
+  return (
+    <button onClick={() => write()} disabled={props.disable}>
+      {' '}
+      Redeem{' '}
+    </button>
+  );
 }

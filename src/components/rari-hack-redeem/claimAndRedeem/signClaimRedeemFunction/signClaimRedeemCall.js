@@ -53,6 +53,12 @@ export default function SignClaimRedeemCall(props) {
     return proofs[instance][address.toLowerCase()];
   });
 
+  // Total of redeemed FEI
+  const redeemingTotalFei = cTokens.reduce((acc, cur, i) => {
+    acc += (amountsToRedeem[i] * rates[cur]) / 1e18;
+    return acc;
+  }, 0);
+
   return (
     <div>
       <div>
@@ -67,16 +73,22 @@ export default function SignClaimRedeemCall(props) {
           <tbody>
             {cTokens.map((instance, i) => {
               return (
-                <RedeemRow
-                  key={i}
-                  rowkey={i}
-                  cToken={instance}
-                  fei={props.toRedeem[i].fei}
-                  cTokenLabel={props.toRedeem[i].cTokenLabel}
-                  balance={amountsToRedeem[i]}
-                />
+                <tr key={i} className={i % 2 ? 'odd' : 'even'}>
+                  <td title={instance}>{props.toRedeem[i].cTokenLabel}</td>
+                  <td align="right">{formatNumber((amountsToRedeem[i] * rates[instance]) / 1e18)} FEI</td>
+                </tr>
               );
             })}
+            <tr>
+              <td></td>
+              <td style={{ textAlign: 'right' }}>
+                <span style={{ borderTop: '1px solid' }}>
+                  <strong>Total:</strong>
+                  &nbsp;
+                  {formatNumber(redeemingTotalFei)} FEI
+                </span>
+              </td>
+            </tr>
           </tbody>
         </table>
         <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
@@ -104,4 +116,9 @@ export default function SignClaimRedeemCall(props) {
       </div>
     </div>
   );
+}
+
+// format a number to XX,XXX,XXX
+function formatNumber(n) {
+  return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
 }
