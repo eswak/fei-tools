@@ -14,9 +14,7 @@ export default function ClaimRow(props) {
   function handleChange(event) {
     setDisplayValue(event.target.value);
     var toWrite = event.target.value;
-    toWrite = BigInt(toWrite * 1e18)
-    console.log("to write is", toWrite);
-    console.log("to write to string is", toWrite.toString())
+    toWrite = BigInt(toWrite * 1e18);
     props.updateNumber(props.cToken, toWrite.toString());
   }
 
@@ -82,10 +80,10 @@ export default function ClaimRow(props) {
   function formatNumber(n) {
     return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
   }
-    // format a number to no decimal place
-    function formatDisplayNumber(n) {
-      return Math.floor(n / 1e18);
-    }
+  // format a number to no decimal place
+  function formatDisplayNumber(n) {
+    return Math.floor(n / 1e18);
+  }
 
   return (
     <tr key={props.rowkey} className={props.rowkey % 2 ? 'odd' : 'even'}>

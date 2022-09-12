@@ -13,17 +13,16 @@ export function RariHackEligibility(props) {
 
   const provider = useProvider();
   const redeemer = new ethers.Contract(props.contractAddress, MultiMerkleRedeemerAbi, provider);
-    // fetch event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
-    async function getRedeemedEvents() {
-      return await redeemer.queryFilter(redeemer.filters.Redeemed());
-    }
+  // fetch event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
+  async function getRedeemedEvents() {
+    return await redeemer.queryFilter(redeemer.filters.Redeemed());
+  }
 
   // temporary fix for rates, make sure every keys are lowercase
   for (var key in rates) {
     rates[key.toLocaleLowerCase()] = rates[key];
   }
 
-  
   // finding out what the user can redeem
   function canRedeem() {
     let eligibilityCheck = false;
@@ -49,16 +48,16 @@ export function RariHackEligibility(props) {
           }
         }
       }
-      
+
       /// UPDATING INFO FROM THE JSON WITH PAST REDEEM EVENTS
       Promise.all([getRedeemedEvents()]).then(function (data) {
         const [redeemedEvents] = data;
-        
+
         // for each Redeemed events, diminish the cToken amount available to the user
         // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
         redeemedEvents.forEach(function (redeemedEvent) {
           if (redeemedEvent.args.recipient == account) {
-            liftUpValue.forEach(function(liftUpValueItem) {
+            liftUpValue.forEach(function (liftUpValueItem) {
               if (liftUpValueItem.cToken.toLowerCase() == redeemedEvent.args.cToken.toLowerCase()) {
                 liftUpValueItem.balance = liftUpValueItem.balance - redeemedEvent.args.cTokenAmount;
                 liftUpValueItem.redeemed = redeemedEvent.args.cTokenAmount;
@@ -148,7 +147,7 @@ function formatNumber(n) {
   return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
 }
 
-  // format a [0, 1] number to a %
-  function formatPercent(n) {
-    return Math.floor(n * 100) + '%';
-  }
+// format a [0, 1] number to a %
+function formatPercent(n) {
+  return Math.floor(n * 100) + '%';
+}

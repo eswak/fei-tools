@@ -2,25 +2,25 @@ import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import { useAccount } from 'wagmi';
 import MultiRedeemCall from './multiRedeemCall';
-import rates from "../../data/rates.json";
+import rates from '../../data/rates.json';
 import ApproveCToken from '../approvecToken';
 
 export default function SignClaimRedeemCall(props) {
   // Array of approve status, e.g. [false, true, false]
   const [approveStatus, setApproveStatus] = useState(
-    props.toRedeem.reduce(function(acc, cur) {
+    props.toRedeem.reduce(function (acc, cur) {
       acc.push(false);
       return acc;
     }, [])
   );
   // Total FEI to redeem
-  const redeemingTotalFei = props.toRedeem.reduce(function(sum, cur, i) {
+  const redeemingTotalFei = props.toRedeem.reduce(function (sum, cur, i) {
     sum += (cur.balance * rates[cur.cToken]) / 1e18;
     return sum;
   }, 0);
 
   /// When a token is approved, approveInfo = { cTokenAddress: string, approved: bool }
-  function handleCTokenApproved(approveInfo){
+  function handleCTokenApproved(approveInfo) {
     setApproveStatus((previousArray) => {
       return previousArray.map((approved, i) => {
         return props.toRedeem[i].cToken === approveInfo.cTokenAddress ? approveInfo.approved : approved;
@@ -29,7 +29,7 @@ export default function SignClaimRedeemCall(props) {
   }
 
   // false if any of the ctokens are not approved
-  const allApproved = approveStatus.reduce(function(allApproved, cTokenApproved) {
+  const allApproved = approveStatus.reduce(function (allApproved, cTokenApproved) {
     return allApproved && cTokenApproved;
   }, true);
 
@@ -51,7 +51,16 @@ export default function SignClaimRedeemCall(props) {
                 <tr key={i} className={i % 2 ? 'odd' : 'even'}>
                   <td title={toRedeem.cToken}>{toRedeem.cTokenLabel}</td>
                   <td align="right">{formatNumber((toRedeem.balance * rates[toRedeem.cToken]) / 1e18)} FEI</td>
-                  <td align="center"><ApproveCToken liftState={handleCTokenApproved} approved={approveStatus[i]} value={toRedeem.balance} eligible={toRedeem.eligible} cTokenAddress={toRedeem.cToken} contractAddress={props.contractAddress} /></td>
+                  <td align="center">
+                    <ApproveCToken
+                      liftState={handleCTokenApproved}
+                      approved={approveStatus[i]}
+                      value={toRedeem.balance}
+                      eligible={toRedeem.eligible}
+                      cTokenAddress={toRedeem.cToken}
+                      contractAddress={props.contractAddress}
+                    />
+                  </td>
                 </tr>
               );
             })}
@@ -68,13 +77,13 @@ export default function SignClaimRedeemCall(props) {
           </tbody>
         </table>
         <MultiRedeemCall
-              contractAddress={props.contractAddress}
-              cTokens={_.map(props.toRedeem, 'cToken')}
-              amountsToRedeem={_.map(props.toRedeem, 'balance')}
-              allApproved={allApproved}
-              redeemingTotalFei={redeemingTotalFei}
-              handleRedeemed={props.handleRedeemed}
-            />
+          contractAddress={props.contractAddress}
+          cTokens={_.map(props.toRedeem, 'cToken')}
+          amountsToRedeem={_.map(props.toRedeem, 'balance')}
+          allApproved={allApproved}
+          redeemingTotalFei={redeemingTotalFei}
+          handleRedeemed={props.handleRedeemed}
+        />
       </div>
     </div>
   );

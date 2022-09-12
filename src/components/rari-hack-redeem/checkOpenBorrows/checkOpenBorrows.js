@@ -41,26 +41,25 @@ export function CheckOpenBorrows(props) {
     setFuseState(fuseState);
   })(fuseState, setFuseState);
 
-  return (
-    fuseState && Object.keys(fuseState).length ? (
-      <div>
-        <h2>Step 2b: Close open loans</h2>
-        <div className="fuse-openborrows">
-          <div>
-            ⚠️ Please visit the <a href="https://app.rari.capital/fuse">Fuse webapp</a> to close all outstanding Borrow
-            Balance.
+  return fuseState && Object.keys(fuseState).length ? (
+    <div>
+      <h2>Step 2b: Close open loans</h2>
+      <div className="fuse-openborrows">
+        <div>
+          ⚠️ Please visit the <a href="https://app.rari.capital/fuse">Fuse webapp</a> to close all outstanding Borrow
+          Balance.
+        </div>
+        {Object.keys(fuseState).map((cTokenAddress, i) => (
+          <div key={i}>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- You have an open debt that prevents you from redeeming all your [
+            {labels[cTokenAddress.toLowerCase()]}]
           </div>
-          {Object.keys(fuseState).map((cTokenAddress, i) => (
-            <div key={i}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- You have an open debt that prevents you from redeeming all your [
-              {labels[cTokenAddress.toLowerCase()]}]
-            </div>
-          ))}
-          <div>
-            To redeem your FEI, you will need to transfer your cTokens (your collateral with bad debt), and this will fail if you have open borrows.
-          </div>
+        ))}
+        <div>
+          To redeem your FEI, you will need to transfer your cTokens (your collateral with bad debt), and this will fail
+          if you have open borrows.
         </div>
       </div>
-    ) : null
-  );
+    </div>
+  ) : null;
 }

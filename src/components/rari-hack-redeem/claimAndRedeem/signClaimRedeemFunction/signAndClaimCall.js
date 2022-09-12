@@ -3,7 +3,6 @@ import { useAccount, usePrepareContractWrite, useContractWrite } from 'wagmi';
 import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
 
 export default function SignAndClaim(props) {
-
   /// Transaction to sign and claim
   const account = useAccount().address;
 

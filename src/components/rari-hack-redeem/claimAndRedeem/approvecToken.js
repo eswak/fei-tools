@@ -30,7 +30,7 @@ export default function ApproveCToken(props) {
   if (!loadingAllowance && currentAllowance === null) {
     setLoadingAllowance(true);
     const cToken = new ethers.Contract(props.cTokenAddress, IERC20, provider);
-    cToken.allowance(account, props.contractAddress).then(function(allowance) {
+    cToken.allowance(account, props.contractAddress).then(function (allowance) {
       setCurrentAllowance(allowance.toString());
       if (allowance.toString() >= props.value) {
         props.liftState({
@@ -75,7 +75,11 @@ export default function ApproveCToken(props) {
   });
 
   return (
-    <button onClick={() => write()} disabled={props.approved} title={'Expect ' + props.value + ', current allowance is ' + currentAllowance}>
+    <button
+      onClick={() => write()}
+      disabled={props.approved}
+      title={'Expect ' + props.value + ', current allowance is ' + currentAllowance}
+    >
       Approve
     </button>
   );
