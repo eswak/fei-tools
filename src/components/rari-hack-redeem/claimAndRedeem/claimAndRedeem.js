@@ -13,7 +13,6 @@ export function ClaimAndRedeem(props) {
         return item.cToken === cToken ? { ...item, balance: value } : item;
       });
     });
-    console.log('WantRedeem is now', wantRedeem);
   }
 
   function approve(cToken) {

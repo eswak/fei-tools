@@ -1,9 +1,10 @@
+import { checkProperties } from 'ethers/lib/utils';
 import { toNumber } from 'lodash';
 import React, { useState } from 'react';
 
 export default function ClaimRow(props) {
   const [value, setValue] = useState(props.balance || 0);
-  const [displayValue, setDisplayValue] = useState(props.balance || 0);
+  const [displayValue, setDisplayValue] = useState(formatDisplayNumber(props.balance) || 0);
   const [disable0Button, setDisable0Button] = useState(false);
   const [disable25Button, setDisable25Button] = useState(false);
   const [disable50Button, setDisable50Button] = useState(false);
@@ -11,9 +12,14 @@ export default function ClaimRow(props) {
   const [disable100Button, setDisable100Button] = useState(true);
 
   function handleChange(event) {
-    setValue(event.target.value);
-    props.updateNumber(props.cToken, event.target.value);
+    setDisplayValue(event.target.value);
+    var toWrite = event.target.value;
+    toWrite = BigInt(toWrite * 1e18)
+    console.log("to write is", toWrite);
+    console.log("to write to string is", toWrite.toString())
+    props.updateNumber(props.cToken, toWrite.toString());
   }
+
   function setPercent(percent) {
     if (percent == 0) {
       setDisplayValue(0);
@@ -28,7 +34,7 @@ export default function ClaimRow(props) {
     if (percent == 25) {
       let x = toNumber(props.balance);
       x = x / 4;
-      setDisplayValue(x);
+      setDisplayValue(formatDisplayNumber(x));
       setValue();
       props.updateNumber(props.cToken, BigInt(x).toString());
       setDisable0Button(false);
@@ -40,7 +46,7 @@ export default function ClaimRow(props) {
     if (percent == 50) {
       let x = toNumber(props.balance);
       x = x / 2;
-      setDisplayValue(x);
+      setDisplayValue(formatDisplayNumber(x));
       setValue(BigInt(x).toString());
       props.updateNumber(props.cToken, BigInt(x).toString());
       setDisable0Button(false);
@@ -52,7 +58,7 @@ export default function ClaimRow(props) {
     if (percent == 75) {
       let x = toNumber(props.balance);
       x = (x / 4) * 3;
-      setDisplayValue(x);
+      setDisplayValue(formatDisplayNumber(x));
       setValue(BigInt(x).toString());
       props.updateNumber(props.cToken, BigInt(x).toString());
       setDisable0Button(false);
@@ -76,13 +82,17 @@ export default function ClaimRow(props) {
   function formatNumber(n) {
     return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
   }
+    // format a number to no decimal place
+    function formatDisplayNumber(n) {
+      return Math.floor(n / 1e18);
+    }
 
   return (
     <tr key={props.rowkey} className={props.rowkey % 2 ? 'odd' : 'even'}>
       <td title={props.cToken}>{props.cTokenLabel}</td>
       <td className="text-center">{formatNumber(props.balance)}</td>
       <td>
-        <input type="string" id={props.cToken} value={formatNumber(displayValue)} onChange={handleChange} />
+        <input type="number" id={props.cToken} value={displayValue} onChange={handleChange} />
       </td>
       <td>
         <button disabled={disable0Button} onClick={() => setPercent(0)}>
