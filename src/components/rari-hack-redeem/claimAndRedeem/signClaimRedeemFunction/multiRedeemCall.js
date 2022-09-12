@@ -17,7 +17,7 @@ export default function MultiRedeemCall(props) {
       })
     ],
     onError(error) {
-      console.log('Error prepareContractWrite', error);
+      //console.log('Error prepareContractWrite', error);
     }
   });
 

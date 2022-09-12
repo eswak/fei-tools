@@ -1,6 +1,5 @@
-import { checkProperties } from 'ethers/lib/utils';
-import React, { Component, useState, useEffect } from 'react';
-import { useAccount, useContractRead, useProvider } from 'wagmi';
+import React, { useState, useEffect } from 'react';
+import { useAccount, useProvider } from 'wagmi';
 import snapshot from '../data/snapshot.json';
 import labels from '../data/labels.json';
 import rates from '../data/rates.json';
@@ -50,29 +49,29 @@ export function RariHackEligibility(props) {
           }
         }
       }
-          /// UPDATING INFO FROM THE JSON WITH PAST REDEEM EVENTS
-    Promise.all([getRedeemedEvents()]).then(function (data) {
-      const [redeemedEvents] = data;
-          // for each Redeemed events, increment the amount redeemed
-      // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
-      redeemedEvents.forEach(function (redeemedEvent) {
-        userData[redeemedEvent.args.recipient.toLowerCase()].redeemed +=
-          (rates[redeemedEvent.args.cToken.toLowerCase()] / 1e18) * redeemedEvent.args.cTokenAmount;
+      
+      /// UPDATING INFO FROM THE JSON WITH PAST REDEEM EVENTS
+      Promise.all([getRedeemedEvents()]).then(function (data) {
+        const [redeemedEvents] = data;
+        
+        // for each Redeemed events, diminish the cToken amount available to the user
+        // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
+        redeemedEvents.forEach(function (redeemedEvent) {
+          if (redeemedEvent.args.recipient == account) {
+            liftUpValue.forEach(function(liftUpValueItem) {
+              if (liftUpValueItem.cToken.toLowerCase() == redeemedEvent.args.cToken.toLowerCase()) {
+                liftUpValueItem.balance = liftUpValueItem.balance - redeemedEvent.args.cTokenAmount;
+                liftUpValueItem.redeemed = redeemedEvent.args.cTokenAmount;
+              }
+            });
+          }
+        });
+
+        // set loaded state as true
+        setRedeemable(liftUpValue);
+        setLoaded(true);
+        props.onCompute(eligibilityCheck, liftUpValue);
       });
-    // for each Redeemed events, diminish the cToken amount available to the user
-    // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
-    redeemedEvents.forEach(function (redeemedEvent) {
-      if (redeemedEvent.args.recipient == account) {
-        liftUpValue[redeemedEvent.args.cToken][balance] = liftUpValue.balance - redeemedEvent.args.cTokenAmount;
-        liftUpValue[redeemedEvent.args.cToken][redeemed] = redeemedEvent.args.cTokenAmount;
-      }
-    }
-    );
-      // set loaded state as true
-      setRedeemable(liftUpValue);
-      setLoaded(true);
-      props.onCompute(eligibilityCheck, liftUpValue);
-    })
     }
   }
   useEffect(() => {
