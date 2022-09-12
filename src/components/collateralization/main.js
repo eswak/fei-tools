@@ -697,7 +697,7 @@ class c extends Component {
                 <tbody>
                   {this.state.pcvComposition.map((entry, i) => (
                     <tr key={i}>
-                      <td>{entry.token}</td>
+                      <td>{entry.token.replace('WETH', 'stETH')}</td>
                       <td>{formatNumber(entry.balance)}</td>
                       <td>
                         <strong>{formatNumber(entry.balanceUSD, '$ ')}</strong>
