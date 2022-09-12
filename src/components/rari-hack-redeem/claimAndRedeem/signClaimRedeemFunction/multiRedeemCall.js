@@ -31,6 +31,7 @@ export default function MultiRedeemCall(props) {
     },
     onSuccess(data) {
       console.log('success', data);
+      props.handleRedeemed()
     }
   });
 

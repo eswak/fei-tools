@@ -14,6 +14,7 @@ export default function RariHackRedeem() {
   const [signedMessage, setSignedMessage] = useState(null);
   const [redeemable, setRedeemable] = useState([]);
   const [alreadySigned, setAlreadySigned] = useState(false);
+  const [redeemed, setRedeemed] = useState(false)
 
   //// CONTRACT ADDRESS
   const contractAddress = '0xB22C255250d74B0ADD1bfB936676D2a299BF48Bd';
@@ -25,6 +26,11 @@ export default function RariHackRedeem() {
       setRedeemable(value);
     }
   };
+
+
+  function handleRedeemed(){
+    setRedeemed(true)
+  }
 
   //Is the message signed? update message data to the main state
   const liftMessageData = (data) => {
@@ -61,7 +67,7 @@ export default function RariHackRedeem() {
         </div>
         <h2>Step 1: Check your Eligibility</h2>
         {isConnected == true ? (
-          <RariHackEligibility onCompute={isEligible} contractAddress={contractAddress} />
+          <RariHackEligibility redeemed={redeemed} onCompute={isEligible} contractAddress={contractAddress} />
         ) : (
           <span className="connectprompt">Please connect your wallet.</span>
         )}
@@ -87,6 +93,7 @@ export default function RariHackRedeem() {
               alreadySigned={alreadySigned}
               contractAddress={contractAddress}
               signedMessage={signedMessage}
+              handleRedeemed={handleRedeemed}
             />
           </div>
         ) : null}
