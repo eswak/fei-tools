@@ -69,7 +69,7 @@ export default function ClaimRow(props) {
     }
     if (percent == 100) {
       setValue(props.balance);
-      setDisplayValue(props.balance);
+      setDisplayValue(formatDisplayNumber(props.balance));
       props.updateNumber(props.cToken, props.balance);
       setDisable0Button(false);
       setDisable25Button(false);
