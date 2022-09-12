@@ -3,21 +3,25 @@ import { useAccount, usePrepareContractWrite, useContractWrite } from 'wagmi';
 import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
 
 export default function MultiRedeemCall(props) {
-  /// Transaction to sign and claim and redeem
-  const account = useAccount().address;
-  const [disabled, setDisabled] = useState(props.disable)
 
   const { config, error } = usePrepareContractWrite({
     addressOrName: props.contractAddress,
     contractInterface: MultiMerkleRedeemer,
     functionName: 'multiRedeem',
-    args: [props.cTokens, props.amountsToRedeem],
+    args: [
+      props.cTokens.filter(function(address, i) {
+        return Number(props.amountsToRedeem[i]) != 0
+      }),
+      props.amountsToRedeem.filter(function(amount) {
+        return Number(amount) != 0
+      })
+    ],
     onError(error) {
       console.log('Error prepareContractWrite', error);
-      setDisabled(true)
     }
   });
-  const { signData, signIsLoading, signIsSuccess, write } = useContractWrite({
+
+  const { write } = useContractWrite({
     ...config,
     onError(error) {
       console.log('error', error);
@@ -30,10 +34,17 @@ export default function MultiRedeemCall(props) {
     }
   });
 
+  let errorMessage = '';
+  if (!props.allApproved) errorMessage = 'You must approve all cTokens before redeeming.';
+  else if (!Number(props.redeemingTotalFei)) errorMessage = 'You cannot redeem 0 FEI.';
+  else if (error) errorMessage = error.reason.replace('execution reverted', 'The transaction will revert with the following error');
+
   return (
-    <button onClick={() => write()} disabled={disabled}>
-      {' '}
-      Redeem{' '}
-    </button>
+    <div>
+      { errorMessage.length ? <div style={{'color':'red'}}>{errorMessage}</div> : null }
+      <button onClick={() => write()} disabled={errorMessage.length != 0}>
+        Redeem
+      </button>
+    </div>
   );
 }
