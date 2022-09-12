@@ -1,81 +1,37 @@
-import { checkProperties } from 'ethers/lib/utils';
-import React, { useEffect, useState } from 'react';
-import { ChainDoesNotSupportMulticallError, useAccount } from 'wagmi';
-import proofs from '../../data/proofs.json';
-import SignAndClaim from './signAndClaimCall';
+import React, { useState, useEffect } from 'react';
+import _ from 'lodash';
+import { useAccount } from 'wagmi';
 import MultiRedeemCall from './multiRedeemCall';
 import rates from "../../data/rates.json";
 import ApproveCToken from '../approvecToken';
 
 export default function SignClaimRedeemCall(props) {
-  const address = useAccount().address;
-  // tracking number of cTokens approved
-  const [tokensApproved, setTokensApproved] = useState(0)
-  //disable redeem button
-  const [disableRedeem, setDisableRedeem] = useState(true)
-
-  ///SMART CONTRACT FUNCTION FOR REFERENCE
-  /// @notice Combines sign, claim, and redeem into a single function
-  /// @param _signature the user's signature, encoded as a 65-length bytes: bytes.concat(bytes32(r), bytes32(s), bytes1(v));
-  /// @param _cTokens the cTokens being claimed
-  /// @param _amountsToClaim the amounts of each cToken to claim; should match the merkle proofs
-  /// @param _amountsToRedeem the amounts of each cToken to redeem; must be greater than 0 for each cToken provided
-  /// @param _merkleProofs the merkle proofs for each claim
-  ///////////////////////////////////
-  // function signAndClaimAndRedeem(
-  //     bytes calldata _signature,
-  //     address[] calldata _cTokens,
-  //     uint256[] calldata _amountsToClaim,
-  //     uint256[] calldata _amountsToRedeem,
-  //     bytes32[][] calldata _merkleProofs
-  // ) external virtual;
-  ///////////////////////////////////
-
-  /// DATA TRANSFORMATION INTO INPUTS
-  ////0. signature
-  //// signature is in props.signedMessage
-  ////1. _cTokens
-  const cTokens = props.toRedeem.reduce(function (accu, curr) {
-    accu.push(curr.cToken);
-    return accu;
-  }, []);
-  const cTokensNumber = cTokens.length
-
-  ////2. _amountsToClaim
-  const amountsToClaim = props.redeemable.reduce(function (accu, curr) {
-    accu.push(curr.balance);
-    return accu;
-  }, []);
-
-  ////3. _amountsToRedeem
-  const amountsToRedeem = props.toRedeem.reduce(function (accu, curr) {
-    accu.push(curr.balance);
-    return accu;
-  }, []);
-
-  ////4. _merkeProofs
-  const merkleProofs = cTokens.map((instance, i) => {
-    return proofs[instance][address.toLowerCase()];
-  });
-
-  // Total of redeemed FEI
-  const redeemingTotalFei = cTokens.reduce((acc, cur, i) => {
-    acc += (amountsToRedeem[i] * rates[cur]) / 1e18;
-    return acc;
+  // Array of approve status, e.g. [false, true, false]
+  const [approveStatus, setApproveStatus] = useState(
+    props.toRedeem.reduce(function(acc, cur) {
+      acc.push(false);
+      return acc;
+    }, [])
+  );
+  // Total FEI to redeem
+  const redeemingTotalFei = props.toRedeem.reduce(function(sum, cur, i) {
+    if (approveStatus[i]) sum += (cur.balance * rates[cur.cToken]) / 1e18;
+    return sum;
   }, 0);
 
-
-  /// When a token is approved, increment tokensApproved
-  function handleCTokenApproved(){
-    setTokensApproved(tokensApproved + 1);
+  /// When a token is approved, approveInfo = { cTokenAddress: string, approved: bool }
+  function handleCTokenApproved(approveInfo){
+    setApproveStatus((previousArray) => {
+      return previousArray.map((approved, i) => {
+        return props.toRedeem[i].cToken === approveInfo.cTokenAddress ? approveInfo.approved : approved;
+      });
+    });
   }
 
-  useEffect(()=>{
-    if(tokensApproved == cTokensNumber){
-      setDisableRedeem(false);
-    };
-  }, [tokensApproved])
-
+  // false if any of the ctokens are not approved
+  const allApproved = approveStatus.reduce(function(allApproved, cTokenApproved) {
+    return allApproved && cTokenApproved;
+  }, true);
 
   return (
     <div>
@@ -90,12 +46,12 @@ export default function SignClaimRedeemCall(props) {
             </tr>
           </thead>
           <tbody>
-            {cTokens.map((instance, i) => {
+            {props.toRedeem.map((toRedeem, i) => {
               return (
                 <tr key={i} className={i % 2 ? 'odd' : 'even'}>
-                  <td title={instance}>{props.toRedeem[i].cTokenLabel}</td>
-                  <td align="right">{formatNumber((amountsToRedeem[i] * rates[instance]) / 1e18)} FEI</td>
-                  <td align="center"><ApproveCToken liftState={handleCTokenApproved} value={amountsToRedeem[i]} contractAddress={cTokens[i]} /></td>
+                  <td title={toRedeem.cToken}>{toRedeem.cTokenLabel}</td>
+                  <td align="right">{formatNumber((toRedeem.balance * rates[toRedeem.cToken]) / 1e18)} FEI</td>
+                  <td align="center"><ApproveCToken liftState={handleCTokenApproved} approved={approveStatus[i]} value={toRedeem.balance} cTokenAddress={toRedeem.cToken} contractAddress={props.contractAddress} /></td>
                 </tr>
               );
             })}
@@ -111,18 +67,13 @@ export default function SignClaimRedeemCall(props) {
             </tr>
           </tbody>
         </table>
-        <p>Before clicking make sure you have approved all cToken transfers, else the transaction will fail.</p>
-        <p>
-            <MultiRedeemCall
+        <MultiRedeemCall
               contractAddress={props.contractAddress}
-              signedMessage={props.signedMessage}
-              cTokens={cTokens}
-              amountsToClaim={amountsToClaim}
-              amountsToRedeem={amountsToRedeem}
-              merkleProofs={merkleProofs}
-              disable={disableRedeem}
+              cTokens={_.map(props.toRedeem, 'cToken')}
+              amountsToRedeem={_.map(props.toRedeem, 'balance')}
+              allApproved={allApproved}
+              redeemingTotalFei={redeemingTotalFei}
             />
-        </p>
       </div>
     </div>
   );
