@@ -73,6 +73,7 @@ export default function SignClaimRedeemCall(props) {
               amountsToRedeem={_.map(props.toRedeem, 'balance')}
               allApproved={allApproved}
               redeemingTotalFei={redeemingTotalFei}
+              handleRedeemed={props.handleRedeemed}
             />
       </div>
     </div>

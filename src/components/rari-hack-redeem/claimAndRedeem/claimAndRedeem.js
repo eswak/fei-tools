@@ -57,6 +57,7 @@ export function ClaimAndRedeem(props) {
         contractAddress={props.contractAddress}
         toRedeem={wantRedeem}
         redeemable={redeemable}
+        handleRedeemed={props.handleRedeemed}
       />
     </div>
   );

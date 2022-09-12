@@ -50,18 +50,21 @@ export function RariHackEligibility(props) {
           }
         }
       }
-
-
           /// UPDATING INFO FROM THE JSON WITH PAST REDEEM EVENTS
     Promise.all([getRedeemedEvents()]).then(function (data) {
       const [redeemedEvents] = data;
+          // for each Redeemed events, increment the amount redeemed
+      // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
+      redeemedEvents.forEach(function (redeemedEvent) {
+        userData[redeemedEvent.args.recipient.toLowerCase()].redeemed +=
+          (rates[redeemedEvent.args.cToken.toLowerCase()] / 1e18) * redeemedEvent.args.cTokenAmount;
+      });
     // for each Redeemed events, diminish the cToken amount available to the user
     // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
     redeemedEvents.forEach(function (redeemedEvent) {
       if (redeemedEvent.args.recipient == account) {
-        liftUpValue.map((item, i) => {
-          return item.cToken === redeemedEvent.args.cToken ? { ...item, balance: item.balance - redeemedEvent.args.cTokenAmount, redeemed: item.redeemed + redeemedEvent.args.cTokenAmount} : item 
-      } );
+        liftUpValue[redeemedEvent.args.cToken][balance] = liftUpValue.balance - redeemedEvent.args.cTokenAmount;
+        liftUpValue[redeemedEvent.args.cToken][redeemed] = redeemedEvent.args.cTokenAmount;
       }
     }
     );
@@ -74,7 +77,7 @@ export function RariHackEligibility(props) {
   }
   useEffect(() => {
     canRedeem();
-  }, []);
+  }, [props.redeemed]);
 
   // render the data
   return (
