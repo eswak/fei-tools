@@ -5,12 +5,12 @@ import EventEmitter from '../../../../modules/event-emitter';
 import { formatNumber } from '../../../../modules/utils';
 
 export default function MultiRedeemCall(props) {
-  
   const cTokensToRedeem = [];
   const amountsToRedeem = [];
-  props.amountsToRedeem.forEach(function(amountToRedeem, i) {
+  props.amountsToRedeem.forEach(function (amountToRedeem, i) {
     const amountToRedeemString = BigInt(amountToRedeem).toString();
-    if (amountToRedeemString != '0') { // need to filter out 0 values in contract call
+    if (amountToRedeemString != '0') {
+      // need to filter out 0 values in contract call
       cTokensToRedeem.push(props.cTokens[i]);
       amountsToRedeem.push(amountToRedeemString);
     }

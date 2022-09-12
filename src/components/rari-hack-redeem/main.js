@@ -17,7 +17,7 @@ export default function RariHackRedeem() {
   const [redeemed, setRedeemed] = useState(false);
 
   //// CONTRACT ADDRESS
-  const contractAddress = '0xB22C255250d74B0ADD1bfB936676D2a299BF48Bd';
+  const contractAddress = '0xFD2Cf3b56a73c75A7535fFe44EBABe7723c64719';
 
   //Keep track of eligibility by updating state
   const isEligible = (check, value) => {

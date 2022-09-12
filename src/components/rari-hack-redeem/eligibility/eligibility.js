@@ -109,7 +109,19 @@ export function RariHackEligibility(props) {
                   <td className="text-right" title={'Wei: ' + BigInt(instance.eligible).toString()}>
                     {formatNumber(instance.eligible)}
                   </td>
-                  <td className="text-right" title={'Eligible: ' + formatNumber(instance.eligible) + '\nRedeemed: -' + formatNumber(instance.redeemed) + '\n---------------\nRedeemable: ' + formatNumber(instance.balance) + '\nWei: ' + BigInt(instance.balance).toString()}>
+                  <td
+                    className="text-right"
+                    title={
+                      'Eligible: ' +
+                      formatNumber(instance.eligible) +
+                      '\nRedeemed: -' +
+                      formatNumber(instance.redeemed) +
+                      '\n---------------\nRedeemable: ' +
+                      formatNumber(instance.balance) +
+                      '\nWei: ' +
+                      BigInt(instance.balance).toString()
+                    }
+                  >
                     {formatPercent(instance.redeemed / instance.eligible)}
                   </td>
                   <td className="text-right">{formatNumber(instance.fei)} FEI</td>
