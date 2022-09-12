@@ -12,13 +12,13 @@ export default function ApproveCToken(props) {
   // if currentAllowance is already loaded, and approve
   // state is incorrect, lift the change of state
   if (currentAllowance !== null) {
-    if (props.value <= currentAllowance && !props.approved) {
+    if (Number(props.value) <= Number(currentAllowance) && !props.approved) {
       props.liftState({
         cTokenAddress: props.cTokenAddress,
         approved: true
       });
     }
-    if (props.value > currentAllowance && props.approved) {
+    if (Number(props.value) > Number(currentAllowance) && props.approved) {
       props.liftState({
         cTokenAddress: props.cTokenAddress,
         approved: false
