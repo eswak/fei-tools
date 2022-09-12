@@ -3,18 +3,22 @@ import { useAccount, usePrepareContractWrite, useContractWrite } from 'wagmi';
 import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
 
 export default function MultiRedeemCall(props) {
+  
+  const cTokensToRedeem = [];
+  const amountsToRedeem = [];
+  props.amountsToRedeem.forEach(function(amountToRedeem, i) {
+    const amountToRedeemString = BigInt(amountToRedeem).toString();
+    if (amountToRedeemString != '0') { // need to filter out 0 values in contract call
+      cTokensToRedeem.push(props.cTokens[i]);
+      amountsToRedeem.push(amountToRedeemString);
+    }
+  });
+
   const { config, error } = usePrepareContractWrite({
     addressOrName: props.contractAddress,
     contractInterface: MultiMerkleRedeemer,
     functionName: 'multiRedeem',
-    args: [
-      props.cTokens.filter(function (address, i) {
-        return Number(props.amountsToRedeem[i]) != 0;
-      }),
-      props.amountsToRedeem.filter(function (amount) {
-        return Number(amount) != 0;
-      })
-    ],
+    args: [cTokensToRedeem, amountsToRedeem],
     onError(error) {
       //console.log('Error prepareContractWrite', error);
     }
@@ -43,7 +47,7 @@ export default function MultiRedeemCall(props) {
   return (
     <div>
       {errorMessage.length ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
-      <button onClick={() => write()} disabled={errorMessage.length != 0}>
+      <button onClick={() => write()} disabled={!write || errorMessage.length != 0}>
         Redeem
       </button>
     </div>
