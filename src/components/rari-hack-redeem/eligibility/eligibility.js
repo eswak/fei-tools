@@ -106,10 +106,10 @@ export function RariHackEligibility(props) {
                   <td title={instance.cToken}>
                     <a href={'https://etherscan.io/address/' + instance.cToken}>{instance.cTokenLabel}</a>
                   </td>
-                  <td className="text-right" title={'Wei: ' + instance.balance}>
+                  <td className="text-right" title={'Wei: ' + BigInt(instance.eligible).toString()}>
                     {formatNumber(instance.eligible)}
                   </td>
-                  <td className="text-right" title={'Wei: ' + instance.balance}>
+                  <td className="text-right" title={'Eligible: ' + formatNumber(instance.eligible) + '\nRedeemed: -' + formatNumber(instance.redeemed) + '\n---------------\nRedeemable: ' + formatNumber(instance.balance) + '\nWei: ' + BigInt(instance.balance).toString()}>
                     {formatPercent(instance.redeemed / instance.eligible)}
                   </td>
                   <td className="text-right">{formatNumber(instance.fei)} FEI</td>
