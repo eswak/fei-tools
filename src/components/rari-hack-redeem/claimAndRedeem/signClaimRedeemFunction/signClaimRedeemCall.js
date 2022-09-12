@@ -51,7 +51,7 @@ export default function SignClaimRedeemCall(props) {
                 <tr key={i} className={i % 2 ? 'odd' : 'even'}>
                   <td title={toRedeem.cToken}>{toRedeem.cTokenLabel}</td>
                   <td align="right">{formatNumber((toRedeem.balance * rates[toRedeem.cToken]) / 1e18)} FEI</td>
-                  <td align="center"><ApproveCToken liftState={handleCTokenApproved} approved={approveStatus[i]} value={toRedeem.balance} cTokenAddress={toRedeem.cToken} contractAddress={props.contractAddress} /></td>
+                  <td align="center"><ApproveCToken liftState={handleCTokenApproved} approved={approveStatus[i]} value={toRedeem.balance} eligible={toRedeem.eligible} cTokenAddress={toRedeem.cToken} contractAddress={props.contractAddress} /></td>
                 </tr>
               );
             })}

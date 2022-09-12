@@ -51,7 +51,7 @@ export default function ApproveCToken(props) {
     addressOrName: props.cTokenAddress,
     contractInterface: IERC20,
     functionName: 'approve',
-    args: [props.contractAddress, props.value],
+    args: [props.contractAddress, props.eligible],
     onError(error) {
       //console.log('Error prepareContractWrite', error);
     }
@@ -75,7 +75,7 @@ export default function ApproveCToken(props) {
   });
 
   return (
-    <button onClick={() => write()} disabled={props.approved}>
+    <button onClick={() => write()} disabled={props.approved} title={'Expect ' + props.value + ', current allowance is ' + currentAllowance}>
       Approve
     </button>
   );
