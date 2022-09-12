@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAccount, usePrepareContractWrite, useContractWrite } from 'wagmi';
 import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
+import EventEmitter from '../../../../modules/event-emitter';
+import { formatNumber } from '../../../../modules/utils';
 
 export default function MultiRedeemCall(props) {
   
@@ -26,15 +28,14 @@ export default function MultiRedeemCall(props) {
 
   const { write } = useContractWrite({
     ...config,
-    onError(error) {
-      console.log('error', error);
-    },
-    onSettled(data, error) {
-      console.log('settled', data, error);
-    },
     onSuccess(data) {
-      console.log('success', data);
       props.handleRedeemed();
+
+      // If broadcasting a new TX, display the toast
+      EventEmitter.dispatch('tx', {
+        hash: data.hash,
+        label: 'Redeem cTokens for ' + formatNumber(redeemingTotalFei) + ' FEI'
+      });
     }
   });
 

@@ -4,6 +4,7 @@ import { useProvider, useSignMessage, useAccount, usePrepareContractWrite, useCo
 import MultiMerkleRedeemer from '../../../abi/MultiMerkleRedeemer.json';
 import snapshot from '../data/snapshot.json';
 import proofs from '../data/proofs.json';
+import EventEmitter from '../../../modules/event-emitter';
 
 export function Signing(props) {
   const [signedMessage, setSignedMessage] = useState(null);
@@ -49,7 +50,7 @@ export function Signing(props) {
     }
   }
 
-  const { config, error } = usePrepareContractWrite({
+  const { config } = usePrepareContractWrite({
     addressOrName: props.contractAddress,
     contractInterface: MultiMerkleRedeemer,
     functionName: 'signAndClaim',
@@ -58,14 +59,18 @@ export function Signing(props) {
 
   const { isLoading: isLoadingSignAndClaim, write: signAndClaim } = useContractWrite({
     ...config,
-    onError(/*error*/) {},
-    onSettled(/*data, error*/) {},
-    onSuccess(/*data*/) {
+    onSuccess(data) {
       let msg = pendingSignedMessage;
       setPendingSignedMessage(null);
       setSignedMessage(msg);
       props.liftMessageData(msg);
       props.liftAlreadySigned();
+
+      // If broadcasting a new TX, display the toast
+      EventEmitter.dispatch('tx', {
+        hash: data.hash,
+        label: 'Sign and Claim transaction'
+      });
     }
   });
 

@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import { useAccount, useProvider, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import IERC20 from '../../../abi/IERC20.json';
+import EventEmitter from '../../../modules/event-emitter';
+import labels from '../data/labels.json';
+import { formatNumber } from '../../../modules/utils';
 
 export default function ApproveCToken(props) {
   const [loadingAllowance, setLoadingAllowance] = useState(false);
@@ -56,21 +59,20 @@ export default function ApproveCToken(props) {
       //console.log('Error prepareContractWrite', error);
     }
   });
-  const { signData, signIsLoading, signIsSuccess, write } = useContractWrite({
+  const { write } = useContractWrite({
     ...config,
-    onError(error) {
-      console.log('error', error);
-    },
-    onSettled(data, error) {
-      console.log('settled', data, error);
-    },
     onSuccess(data) {
-      console.log('success', data);
       props.liftState({
         cTokenAddress: props.cTokenAddress,
         approved: true
       });
       setCurrentAllowance(props.value);
+
+      // If broadcasting a new TX, display the toast
+      EventEmitter.dispatch('tx', {
+        hash: data.hash,
+        label: 'Approve ' + formatNumber(props.eligible) + ' ' + labels[props.cTokenAddress] + ' on Redeemer contract.'
+      });
     }
   });
 
