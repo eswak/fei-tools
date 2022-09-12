@@ -15,7 +15,7 @@ export default function SignClaimRedeemCall(props) {
   );
   // Total FEI to redeem
   const redeemingTotalFei = props.toRedeem.reduce(function(sum, cur, i) {
-    if (approveStatus[i]) sum += (cur.balance * rates[cur.cToken]) / 1e18;
+    sum += (cur.balance * rates[cur.cToken]) / 1e18;
     return sum;
   }, 0);
 
