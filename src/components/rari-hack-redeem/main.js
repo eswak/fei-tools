@@ -2,11 +2,10 @@ import React, { Component, useState } from 'react';
 import { useAccount } from 'wagmi';
 import RariHackEligibility from './eligibility/eligibility';
 import { Signing } from './signing/signing';
-import { ApproveTable } from './approve/approveTable';
 import { PastRedemptions } from './pastRedemptions/pastRedemptions';
-import './main.css';
 import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
 import { CheckOpenBorrows } from './checkOpenBorrows/checkOpenBorrows';
+import './main.css';
 
 export default function RariHackRedeem() {
   const { address, isConnected, isDisconnected } = useAccount();
