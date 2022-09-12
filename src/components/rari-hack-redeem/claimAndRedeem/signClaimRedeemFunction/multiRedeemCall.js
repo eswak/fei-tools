@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAccount, usePrepareContractWrite, useContractWrite } from 'wagmi';
 import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
 
 export default function MultiRedeemCall(props) {
   /// Transaction to sign and claim and redeem
   const account = useAccount().address;
+  const [disabled, setDisabled] = useState(props.disable)
 
   const { config, error } = usePrepareContractWrite({
     addressOrName: props.contractAddress,
@@ -13,6 +14,7 @@ export default function MultiRedeemCall(props) {
     args: [props.cTokens, props.amountsToRedeem],
     onError(error) {
       console.log('Error prepareContractWrite', error);
+      setDisabled(true)
     }
   });
   const { signData, signIsLoading, signIsSuccess, write } = useContractWrite({
@@ -29,7 +31,7 @@ export default function MultiRedeemCall(props) {
   });
 
   return (
-    <button onClick={() => write()} disabled={props.disable}>
+    <button onClick={() => write()} disabled={disabled}>
       {' '}
       Redeem{' '}
     </button>
