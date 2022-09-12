@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useAccount, useProvider } from 'wagmi';
-import ApproveRow from '../approve/approveRow';
 import Comptroller from '../../../abi/Comptroller.json';
 import CErc20Delegate from '../../../abi/CErc20Delegate.json';
 import labels from '../data/labels.json';
