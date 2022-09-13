@@ -5,7 +5,7 @@ import labels from '../data/labels.json';
 import rates from '../data/rates.json';
 import MultiMerkleRedeemerAbi from '../../../abi/MultiMerkleRedeemer.json';
 import { ethers } from 'ethers';
-import decimals from  '../data/decimals.json';
+import decimals from '../data/decimals.json';
 import { formatNumber, formatPercent } from '../../../modules/utils';
 
 export function RariHackEligibility(props) {

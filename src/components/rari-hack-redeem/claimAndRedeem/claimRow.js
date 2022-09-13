@@ -1,11 +1,13 @@
 import { toNumber } from 'lodash';
 import React, { useState } from 'react';
 import { formatNumber, formatDisplayNumber } from '../../../modules/utils';
-import decimals from  '../data/decimals.json';
+import decimals from '../data/decimals.json';
 
 export default function ClaimRow(props) {
   const [value, setValue] = useState(props.balance || 0);
-  const [displayValue, setDisplayValue] = useState(formatDisplayNumber(props.balance, decimals[props.cToken.toLowerCase()]) || 0);
+  const [displayValue, setDisplayValue] = useState(
+    formatDisplayNumber(props.balance, decimals[props.cToken.toLowerCase()]) || 0
+  );
   const [disable0Button, setDisable0Button] = useState(false);
   const [disable25Button, setDisable25Button] = useState(false);
   const [disable50Button, setDisable50Button] = useState(false);

@@ -7,12 +7,12 @@ import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
 import { CheckOpenBorrows } from './checkOpenBorrows/checkOpenBorrows';
 import './main.css';
 
-import comptrollers from  './data/comptrollers.json';
-import labels from  './data/labels.json';
-import proofs from  './data/proofs.json';
-import rates from  './data/rates.json';
-import roots from  './data/roots.json';
-import snapshot from  './data/snapshot.json';
+import comptrollers from './data/comptrollers.json';
+import labels from './data/labels.json';
+import proofs from './data/proofs.json';
+import rates from './data/rates.json';
+import roots from './data/roots.json';
+import snapshot from './data/snapshot.json';
 // normalize all data object keys to lowercase
 for (var ctokenAddress in snapshot) {
   for (var userAddress in snapshot[ctokenAddress]) {

@@ -54,7 +54,7 @@ export function Signing(props) {
     addressOrName: props.contractAddress,
     contractInterface: MultiMerkleRedeemer,
     functionName: 'signAndClaim',
-    args: [(pendingSignedMessage || '0x'), cTokens, amounts, merkleProofs]
+    args: [pendingSignedMessage || '0x', cTokens, amounts, merkleProofs]
   });
 
   const { isLoading: isLoadingSignAndClaim, write: signAndClaim } = useContractWrite({

@@ -4,8 +4,8 @@ import { ethers } from 'ethers';
 import MultiMerkleRedeemerAbi from '../../../abi/MultiMerkleRedeemer.json';
 import rates from '../data/rates.json';
 import snapshot from '../data/snapshot.json';
-import labels from  '../data/labels.json';
-import decimals from  '../data/decimals.json';
+import labels from '../data/labels.json';
+import decimals from '../data/decimals.json';
 import { formatNumber, formatPercent } from '../../../modules/utils';
 
 export function PastRedemptions(props) {
@@ -65,15 +65,22 @@ export function PastRedemptions(props) {
       for (var userAddress in userData) {
         const d = userData[userAddress];
         userData[userAddress].title = [
-          d.sources.map(source => {
-            return [
-              labels[source.ctokenAddress.toLowerCase()], ': ',
-              formatNumber(source.amount, decimals[source.ctokenAddress.toLowerCase()]),
-              ' -> ', formatNumber(source.fei), ' FEI'
-            ].join('');
-          }).join('\n'),
-          '\nTotal FEI Claimable: ', formatNumber(d.claimable),
-          '\nTotal FEI wei Claimable: ', BigInt(Math.floor(d.claimable)).toString()
+          d.sources
+            .map((source) => {
+              return [
+                labels[source.ctokenAddress.toLowerCase()],
+                ': ',
+                formatNumber(source.amount, decimals[source.ctokenAddress.toLowerCase()]),
+                ' -> ',
+                formatNumber(source.fei),
+                ' FEI'
+              ].join('');
+            })
+            .join('\n'),
+          '\nTotal FEI Claimable: ',
+          formatNumber(d.claimable),
+          '\nTotal FEI wei Claimable: ',
+          BigInt(Math.floor(d.claimable)).toString()
         ].join('');
       }
 
@@ -127,13 +134,13 @@ export function PastRedemptions(props) {
         <tbody>
           {userData.map((d, i) => (
             <tr key={i} className={i % 2 ? 'odd' : 'even'}>
-              <td style={{ whiteSpace: 'nowrap' }}>
-                { labels[d.address.toLowerCase()] || '' }
-              </td>
+              <td style={{ whiteSpace: 'nowrap' }}>{labels[d.address.toLowerCase()] || ''}</td>
               <td style={{ fontFamily: 'monospace' }}>
                 <a href={'https://etherscan.io/address/' + d.address}>{d.address}</a>
               </td>
-              <td className="text-right" title={d.title}>{formatNumber(d.claimable)}</td>
+              <td className="text-right" title={d.title}>
+                {formatNumber(d.claimable)}
+              </td>
               <td className="text-center">{d.signed ? '✅' : '❌'}</td>
               <td className="text-center">{formatPercent(d.claimed / d.claimable)}</td>
               <td className="text-center">{formatPercent(d.redeemed / d.claimable)}</td>
