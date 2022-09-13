@@ -1,12 +1,20 @@
 module.exports = {
   formatNumber,
+  formatDisplayNumber,
   formatPercent,
   copyToClipboard
 };
 
-// format a number to XX,XXX,XXX
-function formatNumber(n) {
-  return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+// format a number to 'XX,XXX,XXX'
+function formatNumber(n, decimals) {
+  decimals = decimals || '18';
+  return String(Math.floor(n / Math.pow(10, decimals))).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+}
+
+// format a number to 'XXXXXXXX'
+function formatDisplayNumber(n, decimals) {
+  decimals = decimals || '18';
+  return String(Math.floor(n / Math.pow(10, decimals)));
 }
 
 // format a [0, 1] number to a %

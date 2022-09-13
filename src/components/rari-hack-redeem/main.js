@@ -7,6 +7,54 @@ import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
 import { CheckOpenBorrows } from './checkOpenBorrows/checkOpenBorrows';
 import './main.css';
 
+import comptrollers from  './data/comptrollers.json';
+import labels from  './data/labels.json';
+import proofs from  './data/proofs.json';
+import rates from  './data/rates.json';
+import roots from  './data/roots.json';
+import snapshot from  './data/snapshot.json';
+// normalize all data object keys to lowercase
+for (var ctokenAddress in snapshot) {
+  for (var userAddress in snapshot[ctokenAddress]) {
+    const amount = snapshot[ctokenAddress][userAddress];
+    delete snapshot[ctokenAddress][userAddress];
+    snapshot[ctokenAddress][userAddress.toLowerCase()] = amount;
+  }
+  const amounts = snapshot[ctokenAddress];
+  delete snapshot[ctokenAddress];
+  snapshot[ctokenAddress.toLowerCase()] = amounts;
+}
+for (var ctokenAddress in proofs) {
+  for (var userAddress in proofs[ctokenAddress]) {
+    const userProofs = proofs[ctokenAddress][userAddress];
+    delete proofs[ctokenAddress][userAddress];
+    proofs[ctokenAddress][userAddress.toLowerCase()] = userProofs;
+  }
+  const userProofs = proofs[ctokenAddress];
+  delete proofs[ctokenAddress];
+  proofs[ctokenAddress.toLowerCase()] = userProofs;
+}
+for (var key in comptrollers) {
+  var data = comptrollers[key];
+  delete comptrollers[key];
+  comptrollers[key.toLowerCase()] = data;
+}
+for (var key in labels) {
+  var data = labels[key];
+  delete labels[key];
+  labels[key.toLowerCase()] = data;
+}
+for (var key in rates) {
+  var data = rates[key];
+  delete rates[key];
+  rates[key.toLowerCase()] = data;
+}
+for (var key in roots) {
+  var data = roots[key];
+  delete roots[key];
+  roots[key.toLowerCase()] = data;
+}
+
 export default function RariHackRedeem() {
   const { address, isConnected, isDisconnected } = useAccount();
   const [eligible, setEligible] = useState(false);

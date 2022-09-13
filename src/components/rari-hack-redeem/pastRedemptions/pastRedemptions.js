@@ -4,6 +4,9 @@ import { ethers } from 'ethers';
 import MultiMerkleRedeemerAbi from '../../../abi/MultiMerkleRedeemer.json';
 import rates from '../data/rates.json';
 import snapshot from '../data/snapshot.json';
+import labels from  '../data/labels.json';
+import decimals from  '../data/decimals.json';
+import { formatNumber, formatPercent } from '../../../modules/utils';
 
 export function PastRedemptions(props) {
   const provider = useProvider();
@@ -30,9 +33,15 @@ export function PastRedemptions(props) {
             claimable: 0,
             signed: false,
             claimed: 0,
-            redeemed: 0
+            redeemed: 0,
+            sources: []
           };
           userData[userAddress].claimable += (rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress];
+          userData[userAddress].sources.push({
+            ctokenAddress,
+            amount: snapshot[ctokenAddress][userAddress],
+            fei: (rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress]
+          });
         }
       }
       // for each Signed events, set signed = true in userData
@@ -52,6 +61,21 @@ export function PastRedemptions(props) {
         userData[redeemedEvent.args.recipient.toLowerCase()].redeemed +=
           (rates[redeemedEvent.args.cToken.toLowerCase()] / 1e18) * redeemedEvent.args.cTokenAmount;
       });
+
+      for (var userAddress in userData) {
+        const d = userData[userAddress];
+        userData[userAddress].title = [
+          d.sources.map(source => {
+            return [
+              labels[source.ctokenAddress.toLowerCase()], ': ',
+              formatNumber(source.amount, decimals[source.ctokenAddress.toLowerCase()]),
+              ' -> ', formatNumber(source.fei), ' FEI'
+            ].join('');
+          }).join('\n'),
+          '\nTotal FEI Claimable: ', formatNumber(d.claimable),
+          '\nTotal FEI wei Claimable: ', BigInt(Math.floor(d.claimable)).toString()
+        ].join('');
+      }
 
       // array of user data sorted by claimable DESC
       setUserData(
@@ -93,7 +117,7 @@ export function PastRedemptions(props) {
       <table className="mb-3" style={{ maxWidth: '900px' }}>
         <thead>
           <tr>
-            <th>User</th>
+            <th colSpan="2">User</th>
             <th className="text-right">Claimable&nbsp;FEI</th>
             <th className="text-center">Signed</th>
             <th className="text-center">Claimed</th>
@@ -103,10 +127,13 @@ export function PastRedemptions(props) {
         <tbody>
           {userData.map((d, i) => (
             <tr key={i} className={i % 2 ? 'odd' : 'even'}>
+              <td style={{ whiteSpace: 'nowrap' }}>
+                { labels[d.address.toLowerCase()] || '' }
+              </td>
               <td style={{ fontFamily: 'monospace' }}>
                 <a href={'https://etherscan.io/address/' + d.address}>{d.address}</a>
               </td>
-              <td className="text-right">{formatNumber(d.claimable)}</td>
+              <td className="text-right" title={d.title}>{formatNumber(d.claimable)}</td>
               <td className="text-center">{d.signed ? '✅' : '❌'}</td>
               <td className="text-center">{formatPercent(d.claimed / d.claimable)}</td>
               <td className="text-center">{formatPercent(d.redeemed / d.claimable)}</td>
@@ -116,16 +143,6 @@ export function PastRedemptions(props) {
       </table>
     </div>
   );
-
-  // format a number to XX,XXX,XXX
-  function formatNumber(n) {
-    return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
-  }
-
-  // format a [0, 1] number to a %
-  function formatPercent(n) {
-    return Math.floor(n * 100) + '%';
-  }
 
   // fetch event Signed(address indexed signer, bytes signature);
   async function getSignedEvents() {

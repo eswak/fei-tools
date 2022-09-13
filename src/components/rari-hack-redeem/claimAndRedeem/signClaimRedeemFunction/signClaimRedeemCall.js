@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import _ from 'lodash';
-import { useAccount } from 'wagmi';
 import MultiRedeemCall from './multiRedeemCall';
 import rates from '../../data/rates.json';
 import ApproveCToken from '../approvecToken';
+import { formatNumber } from '../../../../modules/utils';
 
 export default function SignClaimRedeemCall(props) {
   // Array of approve status, e.g. [false, true, false]
@@ -87,9 +87,4 @@ export default function SignClaimRedeemCall(props) {
       </div>
     </div>
   );
-}
-
-// format a number to XX,XXX,XXX
-function formatNumber(n) {
-  return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
 }

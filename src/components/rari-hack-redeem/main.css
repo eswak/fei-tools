@@ -1,9 +1,12 @@
 .rarihackredeem {
   
 }
+.rarihackredeem .error {
+  color: #D32F2F;
+}
 .rarihackredeem table {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   min-width: 300px;
 }
 .rarihackredeem table th {
