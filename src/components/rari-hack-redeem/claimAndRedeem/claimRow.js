@@ -16,6 +16,11 @@ export default function ClaimRow(props) {
     var toWrite = event.target.value;
     toWrite = BigInt(toWrite * 1e18);
     props.updateNumber(props.cToken, toWrite.toString());
+    setDisable0Button(false);
+    setDisable25Button(false);
+    setDisable50Button(false);
+    setDisable75Button(false);
+    setDisable100Button(false);
   }
 
   function setPercent(percent) {
