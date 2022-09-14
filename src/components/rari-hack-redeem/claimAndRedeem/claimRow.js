@@ -1,6 +1,6 @@
 import { checkProperties } from 'ethers/lib/utils';
 import { toNumber } from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function ClaimRow(props) {
   const [value, setValue] = useState(props.balance || 0);
@@ -10,6 +10,10 @@ export default function ClaimRow(props) {
   const [disable50Button, setDisable50Button] = useState(false);
   const [disable75Button, setDisable75Button] = useState(false);
   const [disable100Button, setDisable100Button] = useState(true);
+
+  useEffect(() => {
+    setDisplayValue(formatDisplayNumber(props.balance) || 0);
+  }, [props]);
 
   function handleChange(event) {
     setDisplayValue(event.target.value);

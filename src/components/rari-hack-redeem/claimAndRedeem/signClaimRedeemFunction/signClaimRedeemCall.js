@@ -6,6 +6,7 @@ import rates from '../../data/rates.json';
 import ApproveCToken from '../approvecToken';
 
 export default function SignClaimRedeemCall(props) {
+  const [toRedeem, setToRedeem] = useState(props.toRedeem)
   // Array of approve status, e.g. [false, true, false]
   const [approveStatus, setApproveStatus] = useState(
     props.toRedeem.reduce(function (acc, cur) {
@@ -33,6 +34,10 @@ export default function SignClaimRedeemCall(props) {
     return allApproved && cTokenApproved;
   }, true);
 
+  useEffect(() => {
+    setToRedeem(props.toRedeem)
+  }, [props.toRedeem]);
+
   return (
     <div>
       <div>
@@ -46,7 +51,7 @@ export default function SignClaimRedeemCall(props) {
             </tr>
           </thead>
           <tbody>
-            {props.toRedeem.map((toRedeem, i) => {
+            {toRedeem.map((toRedeem, i) => {
               return (
                 <tr key={i} className={i % 2 ? 'odd' : 'even'}>
                   <td title={toRedeem.cToken}>{toRedeem.cTokenLabel}</td>
@@ -78,8 +83,8 @@ export default function SignClaimRedeemCall(props) {
         </table>
         <MultiRedeemCall
           contractAddress={props.contractAddress}
-          cTokens={_.map(props.toRedeem, 'cToken')}
-          amountsToRedeem={_.map(props.toRedeem, 'balance')}
+          cTokens={_.map(toRedeem, 'cToken')}
+          amountsToRedeem={_.map(toRedeem, 'balance')}
           allApproved={allApproved}
           redeemingTotalFei={redeemingTotalFei}
           handleRedeemed={props.handleRedeemed}

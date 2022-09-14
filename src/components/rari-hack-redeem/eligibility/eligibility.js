@@ -81,10 +81,12 @@ export function RariHackEligibility(props) {
     data.forEach(function (dataInstance, y){
       props.redeemed.forEach(function (redeemedInstance, i){
         if(redeemedInstance.cToken == dataInstance.cToken){
-          dataInstance.redeemed = dataInstance.redeemed + redeemedInstance.amount
+          dataInstance.redeemed = dataInstance.redeemed + redeemedInstance.amount;
+          dataInstance.balance = dataInstance.balance - redeemedInstance.amount;
         }
       })
       setRedeemable(data)
+      props.onCompute(true, data)
     });
     console.log(props.redeemed)
     console.log("redeemable is now", redeemable)

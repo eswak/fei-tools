@@ -22,6 +22,11 @@ export function ClaimAndRedeem(props) {
       });
     });
   }
+  useEffect(() => {
+    setRedeemable(props.redeemableTokens);
+    setWantRedeem(props.redeemableTokens);
+  }, [props.redeemableTokens]);
+
 
   return (
     <div>
@@ -36,7 +41,7 @@ export function ClaimAndRedeem(props) {
           </tr>
         </thead>
         <tbody>
-          {props.redeemableTokens.map((instance, i) => {
+          {redeemable.map((instance, i) => {
             return (
               <ClaimRow
                 updateNumber={updateWantRedeem}
