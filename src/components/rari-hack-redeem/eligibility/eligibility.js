@@ -5,6 +5,7 @@ import labels from '../data/labels.json';
 import rates from '../data/rates.json';
 import MultiMerkleRedeemerAbi from '../../../abi/MultiMerkleRedeemer.json';
 import { ethers } from 'ethers';
+import { checkProperties } from 'ethers/lib/utils';
 
 export function RariHackEligibility(props) {
   const account = useAccount().address;
@@ -80,8 +81,11 @@ export function RariHackEligibility(props) {
     data.forEach(function (dataInstance, y){
       props.redeemed.forEach(function (redeemedInstance, i){
         if(redeemedInstance.cToken == dataInstance.cToken){
-          dataInstance.redeemed = dataInstance.redeemed + redeemedInstance.amount;
-          dataInstance.balance = dataInstance.balance - redeemedInstance.amount;
+          let past = BigInt(dataInstance.redeemed)
+          let present = BigInt(redeemedInstance.amount)
+          let balance = BigInt(dataInstance.balance)
+          dataInstance.redeemed = (past + present).toString();
+          dataInstance.balance = (balance - present).toString();
         }
       })
       setRedeemable(data)
