@@ -1,10 +1,13 @@
-import { checkProperties } from 'ethers/lib/utils';
 import { toNumber } from 'lodash';
 import React, { useState, useEffect } from 'react';
+import { formatNumber, formatDisplayNumber } from '../../../modules/utils';
+import decimals from '../data/decimals.json';
 
 export default function ClaimRow(props) {
   const [value, setValue] = useState(props.balance || 0);
-  const [displayValue, setDisplayValue] = useState(formatDisplayNumber(props.balance) || 0);
+  const [displayValue, setDisplayValue] = useState(
+    formatDisplayNumber(props.balance, decimals[props.cToken.toLowerCase()]) || 0
+  );
   const [disable0Button, setDisable0Button] = useState(false);
   const [disable25Button, setDisable25Button] = useState(false);
   const [disable50Button, setDisable50Button] = useState(false);
@@ -42,7 +45,7 @@ export default function ClaimRow(props) {
     if (percent == 25) {
       let x = toNumber(props.balance);
       x = x / 4;
-      setDisplayValue(formatDisplayNumber(x));
+      setDisplayValue(formatDisplayNumber(x, decimals[props.cToken.toLowerCase()]));
       setValue();
       props.updateNumber(props.cToken, BigInt(x).toString());
       setDisable0Button(false);
@@ -54,7 +57,7 @@ export default function ClaimRow(props) {
     if (percent == 50) {
       let x = toNumber(props.balance);
       x = x / 2;
-      setDisplayValue(formatDisplayNumber(x));
+      setDisplayValue(formatDisplayNumber(x, decimals[props.cToken.toLowerCase()]));
       setValue(BigInt(x).toString());
       props.updateNumber(props.cToken, BigInt(x).toString());
       setDisable0Button(false);
@@ -66,7 +69,7 @@ export default function ClaimRow(props) {
     if (percent == 75) {
       let x = toNumber(props.balance);
       x = (x / 4) * 3;
-      setDisplayValue(formatDisplayNumber(x));
+      setDisplayValue(formatDisplayNumber(x, decimals[props.cToken.toLowerCase()]));
       setValue(BigInt(x).toString());
       props.updateNumber(props.cToken, BigInt(x).toString());
       setDisable0Button(false);
@@ -77,7 +80,7 @@ export default function ClaimRow(props) {
     }
     if (percent == 100) {
       setValue(props.balance);
-      setDisplayValue(formatDisplayNumber(props.balance));
+      setDisplayValue(formatDisplayNumber(props.balance, decimals[props.cToken.toLowerCase()]));
       props.updateNumber(props.cToken, props.balance);
       setDisable0Button(false);
       setDisable25Button(false);
@@ -86,19 +89,11 @@ export default function ClaimRow(props) {
       setDisable100Button(true);
     }
   }
-  // format a number to XX,XXX,XXX
-  function formatNumber(n) {
-    return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
-  }
-  // format a number to no decimal place
-  function formatDisplayNumber(n) {
-    return Math.floor(n / 1e18);
-  }
 
   return (
     <tr key={props.rowkey} className={props.rowkey % 2 ? 'odd' : 'even'}>
       <td title={props.cToken}>{props.cTokenLabel}</td>
-      <td className="text-center">{formatNumber(props.balance)}</td>
+      <td className="text-center">{formatNumber(props.balance, decimals[props.cToken.toLowerCase()])}</td>
       <td>
         <input type="number" id={props.cToken} value={displayValue} onChange={handleChange} />
       </td>

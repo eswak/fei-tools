@@ -54,7 +54,7 @@ export function Signing(props) {
     addressOrName: props.contractAddress,
     contractInterface: MultiMerkleRedeemer,
     functionName: 'signAndClaim',
-    args: [pendingSignedMessage, cTokens, amounts, merkleProofs]
+    args: [pendingSignedMessage || '0x', cTokens, amounts, merkleProofs]
   });
 
   const { isLoading: isLoadingSignAndClaim, write: signAndClaim } = useContractWrite({
@@ -95,7 +95,7 @@ export function Signing(props) {
           </p>
           {pendingSignedMessage ? (
             <p>
-              <button disabled={isLoadingSignAndClaim} onClick={() => signAndClaim()}>
+              <button disabled={isLoadingSignAndClaim || !signAndClaim} onClick={() => signAndClaim()}>
                 Commit my signature onchain in order to be able to claim my FEI
               </button>
             </p>
@@ -108,7 +108,7 @@ export function Signing(props) {
             {message}
           </p>
           <div>
-            <button disabled={isLoading} onClick={() => signMessage()}>
+            <button disabled={isLoading || !signMessage} onClick={() => signMessage()}>
               Sign message
             </button>
           </div>

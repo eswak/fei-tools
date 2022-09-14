@@ -5,7 +5,8 @@ import labels from '../data/labels.json';
 import rates from '../data/rates.json';
 import MultiMerkleRedeemerAbi from '../../../abi/MultiMerkleRedeemer.json';
 import { ethers } from 'ethers';
-import { checkProperties } from 'ethers/lib/utils';
+import decimals from '../data/decimals.json';
+import { formatNumber, formatPercent } from '../../../modules/utils';
 
 export function RariHackEligibility(props) {
   const account = useAccount().address;
@@ -123,18 +124,18 @@ export function RariHackEligibility(props) {
                     <a href={'https://etherscan.io/address/' + instance.cToken}>{instance.cTokenLabel}</a>
                   </td>
                   <td className="text-right" title={'Wei: ' + BigInt(instance.eligible).toString()}>
-                    {formatNumber(instance.eligible)}
+                    {formatNumber(instance.eligible, decimals[instance.cToken.toLowerCase()])}
                   </td>
                   <td
                     className="text-right"
                     title={
                       'Eligible: ' +
-                      formatNumber(instance.eligible) +
+                      formatNumber(instance.eligible, decimals[instance.cToken.toLowerCase()]) +
                       '\nRedeemed: -' +
-                      formatNumber(instance.redeemed) +
-                      '\n---------------\nRedeemable: ' +
+                      formatNumber(instance.redeemed, decimals[instance.cToken.toLowerCase()]) +
+                      '\n---------------\nRedeemable FEI: ' +
                       formatNumber(instance.balance) +
-                      '\nWei: ' +
+                      '\nRedeemable FEI Wei: ' +
                       BigInt(instance.balance).toString()
                     }
                   >
@@ -169,13 +170,3 @@ export function RariHackEligibility(props) {
 }
 
 export default RariHackEligibility;
-
-// format a number to XX,XXX,XXX
-function formatNumber(n) {
-  return String(Math.floor(n / 1e18)).replace(/(.)(?=(\d{3})+$)/g, '$1,');
-}
-
-// format a [0, 1] number to a %
-function formatPercent(n) {
-  return Math.floor(n * 100) + '%';
-}
