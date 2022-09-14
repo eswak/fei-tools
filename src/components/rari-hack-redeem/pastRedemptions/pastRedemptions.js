@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useProvider } from 'wagmi';
 import { ethers } from 'ethers';
 import MultiMerkleRedeemerAbi from '../../../abi/MultiMerkleRedeemer.json';
@@ -12,69 +12,78 @@ export function PastRedemptions(props) {
   const [userData, setUserData] = useState([]);
   const [totalClaimable, setTotalClaimable] = useState('0');
   const [totalClaimed, setTotalClaimed] = useState('0');
+  const [reload, setReload] = useState(false);
 
-  if (!userData.length) {
-    Promise.all([
-      // ask the 3 event types in parallel
-      getSignedEvents(),
-      getClaimedEvents(),
-      getRedeemedEvents()
-    ]).then(function (data) {
-      const [signedEvents, claimedEvents, redeemedEvents] = data;
-      // initialize user data with snapshot claimable amounts
-      const userData = {};
-      for (var ctokenAddress in snapshot) {
-        for (var userAddress in snapshot[ctokenAddress]) {
-          userData[userAddress] = userData[userAddress] || {
-            address: userAddress,
-            claimable: 0,
-            signed: false,
-            claimed: 0,
-            redeemed: 0
-          };
-          userData[userAddress].claimable += (rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress];
+
+  useEffect(() => {
+    setReload(!reload);
+    setUserData([]);
+    if (!userData.length) {
+      Promise.all([
+        // ask the 3 event types in parallel
+        getSignedEvents(),
+        getClaimedEvents(),
+        getRedeemedEvents()
+      ]).then(function (data) {
+        const [signedEvents, claimedEvents, redeemedEvents] = data;
+        // initialize user data with snapshot claimable amounts
+        const userData = {};
+        for (var ctokenAddress in snapshot) {
+          for (var userAddress in snapshot[ctokenAddress]) {
+            userData[userAddress] = userData[userAddress] || {
+              address: userAddress,
+              claimable: 0,
+              signed: false,
+              claimed: 0,
+              redeemed: 0
+            };
+            userData[userAddress].claimable += (rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress];
+          }
         }
-      }
-      // for each Signed events, set signed = true in userData
-      // event Signed(address indexed signer, bytes signature);
-      signedEvents.forEach(function (signedEvent) {
-        userData[signedEvent.args.signer.toLowerCase()].signed = true;
+        // for each Signed events, set signed = true in userData
+        // event Signed(address indexed signer, bytes signature);
+        signedEvents.forEach(function (signedEvent) {
+          userData[signedEvent.args.signer.toLowerCase()].signed = true;
+        });
+        // for each Claimed events, increment the amount claimed
+        // event Claimed(address indexed claimant, address indexed cToken, uint256 claimAmount);
+        claimedEvents.forEach(function (claimedEvent) {
+          userData[claimedEvent.args.claimant.toLowerCase()].claimed +=
+            (rates[claimedEvent.args.cToken.toLowerCase()] / 1e18) * claimedEvent.args.claimAmount;
+        });
+        // for each Redeemed events, increment the amount redeemed
+        // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
+        redeemedEvents.forEach(function (redeemedEvent) {
+          userData[redeemedEvent.args.recipient.toLowerCase()].redeemed +=
+            (rates[redeemedEvent.args.cToken.toLowerCase()] / 1e18) * redeemedEvent.args.cTokenAmount;
+        });
+  
+        // array of user data sorted by claimable DESC
+        setUserData(
+          Object.values(userData).sort(function (a, b) {
+            return a.claimable < b.claimable ? 1 : -1;
+          })
+        );
+        // sum of all claimed
+        setTotalClaimed(
+          Object.values(userData).reduce(function (acc, cur) {
+            acc += cur.claimed;
+            return acc;
+          }, 0)
+        );
+        // sum of all claimable
+        setTotalClaimable(
+          Object.values(userData).reduce(function (acc, cur) {
+            acc += cur.claimable;
+            return acc;
+          }, 0)
+        );
       });
-      // for each Claimed events, increment the amount claimed
-      // event Claimed(address indexed claimant, address indexed cToken, uint256 claimAmount);
-      claimedEvents.forEach(function (claimedEvent) {
-        userData[claimedEvent.args.claimant.toLowerCase()].claimed +=
-          (rates[claimedEvent.args.cToken.toLowerCase()] / 1e18) * claimedEvent.args.claimAmount;
-      });
-      // for each Redeemed events, increment the amount redeemed
-      // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
-      redeemedEvents.forEach(function (redeemedEvent) {
-        userData[redeemedEvent.args.recipient.toLowerCase()].redeemed +=
-          (rates[redeemedEvent.args.cToken.toLowerCase()] / 1e18) * redeemedEvent.args.cTokenAmount;
-      });
-
-      // array of user data sorted by claimable DESC
-      setUserData(
-        Object.values(userData).sort(function (a, b) {
-          return a.claimable < b.claimable ? 1 : -1;
-        })
-      );
-      // sum of all claimed
-      setTotalClaimed(
-        Object.values(userData).reduce(function (acc, cur) {
-          acc += cur.claimed;
-          return acc;
-        }, 0)
-      );
-      // sum of all claimable
-      setTotalClaimable(
-        Object.values(userData).reduce(function (acc, cur) {
-          acc += cur.claimable;
-          return acc;
-        }, 0)
-      );
-    });
   }
+  }, [props]);
+
+
+
 
   // If data is loading, display a loading state
   if (userData.length == 0) {
