@@ -57,7 +57,6 @@ export function RariHackEligibility(props) {
         // for each Redeemed events, diminish the cToken amount available to the user
         // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
         redeemedEvents.forEach(function (redeemedEvent) {
-          console.log("redeemed event is", redeemedEvent)
           if (redeemedEvent.args.recipient == account) {
             liftUpValue.forEach(function (liftUpValueItem) {
               if (liftUpValueItem.cToken.toLowerCase() == redeemedEvent.args.cToken.toLowerCase()) {
@@ -88,9 +87,6 @@ export function RariHackEligibility(props) {
       setRedeemable(data)
       props.onCompute(true, data)
     });
-    console.log(props.redeemed)
-    console.log("redeemable is now", redeemable)
-    console.log("eligibility useeffect is firing, rerender?")
   }, [props.redeemed]);
 
   // render the data
@@ -164,7 +160,6 @@ export function RariHackEligibility(props) {
           </tbody>
         </table>
       ) : null}
-      <button onClick={()=>console.log(redeemable)}>click</button>
     </div>
   );
 }

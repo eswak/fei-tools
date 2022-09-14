@@ -33,7 +33,6 @@ export default function MultiRedeemCall(props) {
 
   useEffect(() => {
     setTimeout(() => {setEffect(!effect);}, "1000")
-    console.log("useeffect is firing, rerender?")
   }, [props]);
 
   const { write } = useContractWrite({
@@ -47,7 +46,6 @@ export default function MultiRedeemCall(props) {
         }
         redeemed.push(instance)
       })
-      console.log("redeemed in multi is", redeemed)
       props.handleRedeemed(redeemed);
 
       // If broadcasting a new TX, display the toast
