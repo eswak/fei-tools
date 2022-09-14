@@ -9,7 +9,8 @@ export default function MultiRedeemCall(props) {
   const [effect, setEffect] = useState(false);
   const cTokensToRedeem = [];
   const amountsToRedeem = [];
-  props.amountsToRedeem.forEach(function (amountToRedeem, i) {
+  const [passedAmounts, setPassedAmounts] = useState(props.amountsToRedeem)
+  passedAmounts.forEach(function (amountToRedeem, i) {
     const amountToRedeemString = BigInt(amountToRedeem).toString();
     if (amountToRedeemString != '0') {
       // need to filter out 0 values in contract call
@@ -17,7 +18,6 @@ export default function MultiRedeemCall(props) {
       amountsToRedeem.push(amountToRedeemString);
     }
   });
-  console.log('call rerendering');
   const { config, error } = usePrepareContractWrite({
     addressOrName: props.contractAddress,
     contractInterface: MultiMerkleRedeemer,
@@ -32,10 +32,13 @@ export default function MultiRedeemCall(props) {
   });
 
   useEffect(() => {
-    console.log('rerendering?');
+    console.log("rerendering...")
+    setPassedAmounts(props.amountsToRedeem);
     setTimeout(() => {
+      console.log("rerendered")
+      setPassedAmounts(props.amountsToRedeem);
       setEffect(!effect);
-    }, '5000');
+    }, '6000');
   }, [props]);
 
   const { write } = useContractWrite({
