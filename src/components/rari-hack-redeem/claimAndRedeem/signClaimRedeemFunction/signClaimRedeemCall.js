@@ -6,7 +6,7 @@ import rates from '../../data/rates.json';
 import ApproveCToken from '../approvecToken';
 
 export default function SignClaimRedeemCall(props) {
-  const [toRedeem, setToRedeem] = useState(props.toRedeem)
+  const [toRedeem, setToRedeem] = useState(props.toRedeem);
   // Array of approve status, e.g. [false, true, false]
   const [approveStatus, setApproveStatus] = useState(
     props.toRedeem.reduce(function (acc, cur) {

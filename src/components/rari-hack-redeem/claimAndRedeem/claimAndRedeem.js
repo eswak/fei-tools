@@ -29,7 +29,6 @@ export function ClaimAndRedeem(props) {
     setReload(!reload);
   }, [props.redeemableTokens]);
 
-
   return (
     <div>
       <p>How many tokens do you want to redeem?</p>

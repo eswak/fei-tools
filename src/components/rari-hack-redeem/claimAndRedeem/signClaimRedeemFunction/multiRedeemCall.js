@@ -5,8 +5,8 @@ import EventEmitter from '../../../../modules/event-emitter';
 import { formatNumber } from '../../../../modules/utils';
 
 export default function MultiRedeemCall(props) {
-  const [errored, setErrored] = useState(false)
-  const [effect, setEffect] = useState(false)
+  const [errored, setErrored] = useState(false);
+  const [effect, setEffect] = useState(false);
   const cTokensToRedeem = [];
   const amountsToRedeem = [];
   props.amountsToRedeem.forEach(function (amountToRedeem, i) {
@@ -17,35 +17,38 @@ export default function MultiRedeemCall(props) {
       amountsToRedeem.push(amountToRedeemString);
     }
   });
-
+  console.log('call rerendering');
   const { config, error } = usePrepareContractWrite({
     addressOrName: props.contractAddress,
     contractInterface: MultiMerkleRedeemer,
     functionName: 'multiRedeem',
     args: [cTokensToRedeem, amountsToRedeem],
-    onSuccess(){
-      setErrored(false)
+    onSuccess() {
+      setErrored(false);
     },
     onError(error) {
-      setErrored(true)
+      setErrored(true);
     }
   });
 
   useEffect(() => {
-    setTimeout(() => {setEffect(!effect);}, "1000")
+    console.log('rerendering?');
+    setTimeout(() => {
+      setEffect(!effect);
+    }, '5000');
   }, [props]);
 
   const { write } = useContractWrite({
     ...config,
     onSuccess(data) {
-      let redeemed = []
-      cTokensToRedeem.forEach(function (cTokensToRedeem, i){
+      let redeemed = [];
+      cTokensToRedeem.forEach(function (cTokensToRedeem, i) {
         const instance = {
           cToken: cTokensToRedeem,
           amount: amountsToRedeem[i]
-        }
-        redeemed.push(instance)
-      })
+        };
+        redeemed.push(instance);
+      });
       props.handleRedeemed(redeemed);
 
       // If broadcasting a new TX, display the toast

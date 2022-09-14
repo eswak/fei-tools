@@ -76,20 +76,20 @@ export function RariHackEligibility(props) {
     }
   }
   useEffect(() => {
-    canRedeem()
+    canRedeem();
     let data = [...redeemable];
-    data.forEach(function (dataInstance, y){
-      props.redeemed.forEach(function (redeemedInstance, i){
-        if(redeemedInstance.cToken == dataInstance.cToken){
-          let past = BigInt(dataInstance.redeemed)
-          let present = BigInt(redeemedInstance.amount)
-          let balance = BigInt(dataInstance.balance)
+    data.forEach(function (dataInstance, y) {
+      props.redeemed.forEach(function (redeemedInstance, i) {
+        if (redeemedInstance.cToken == dataInstance.cToken) {
+          let past = BigInt(dataInstance.redeemed);
+          let present = BigInt(redeemedInstance.amount);
+          let balance = BigInt(dataInstance.balance);
           dataInstance.redeemed = (past + present).toString();
           dataInstance.balance = (balance - present).toString();
         }
-      })
-      setRedeemable(data)
-      props.onCompute(true, data)
+      });
+      setRedeemable(data);
+      props.onCompute(true, data);
     });
   }, [props.redeemed]);
 

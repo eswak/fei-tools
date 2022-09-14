@@ -14,7 +14,6 @@ export function PastRedemptions(props) {
   const [totalClaimed, setTotalClaimed] = useState('0');
   const [reload, setReload] = useState(false);
 
-
   useEffect(() => {
     setReload(!reload);
     setUserData([]);
@@ -57,7 +56,7 @@ export function PastRedemptions(props) {
           userData[redeemedEvent.args.recipient.toLowerCase()].redeemed +=
             (rates[redeemedEvent.args.cToken.toLowerCase()] / 1e18) * redeemedEvent.args.cTokenAmount;
         });
-  
+
         // array of user data sorted by claimable DESC
         setUserData(
           Object.values(userData).sort(function (a, b) {
@@ -79,11 +78,8 @@ export function PastRedemptions(props) {
           }, 0)
         );
       });
-  }
+    }
   }, [props]);
-
-
-
 
   // If data is loading, display a loading state
   if (userData.length == 0) {
