@@ -5,6 +5,7 @@ import SignClaimRedeemCall from './signClaimRedeemFunction/signClaimRedeemCall';
 export function ClaimAndRedeem(props) {
   const [redeemable, setRedeemable] = useState(props.redeemableTokens);
   const [wantRedeem, setWantRedeem] = useState(props.redeemableTokens);
+  const [reload, setReload] = useState(false);
 
   // function to handle value change in the form
   function updateWantRedeem(cToken, value) {
@@ -25,6 +26,7 @@ export function ClaimAndRedeem(props) {
   useEffect(() => {
     setRedeemable(props.redeemableTokens);
     setWantRedeem(props.redeemableTokens);
+    setReload(!reload);
   }, [props.redeemableTokens]);
 
 
@@ -51,6 +53,7 @@ export function ClaimAndRedeem(props) {
                 cToken={instance.cToken}
                 cTokenLabel={instance.cTokenLabel}
                 balance={instance.balance}
+                reload={reload}
               />
             );
           })}

@@ -35,7 +35,7 @@ export default function SignClaimRedeemCall(props) {
   }, true);
 
   useEffect(() => {
-    setToRedeem(props.toRedeem)
+    setToRedeem(props.toRedeem);
   }, [props.toRedeem]);
 
   return (

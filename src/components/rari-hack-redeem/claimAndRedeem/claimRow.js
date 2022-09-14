@@ -13,7 +13,8 @@ export default function ClaimRow(props) {
 
   useEffect(() => {
     setDisplayValue(formatDisplayNumber(props.balance) || 0);
-  }, [props]);
+    setPercent(100);
+  }, [props.reload]);
 
   function handleChange(event) {
     setDisplayValue(event.target.value);
