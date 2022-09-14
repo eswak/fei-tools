@@ -10,6 +10,7 @@ export function RariHackEligibility(props) {
   const account = useAccount().address;
   const [redeemable, setRedeemable] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [redeemed, setRedeemed] = useState(props.redeemed);
 
   const provider = useProvider();
   const redeemer = new ethers.Contract(props.contractAddress, MultiMerkleRedeemerAbi, provider);
@@ -56,11 +57,12 @@ export function RariHackEligibility(props) {
         // for each Redeemed events, diminish the cToken amount available to the user
         // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
         redeemedEvents.forEach(function (redeemedEvent) {
+          console.log("redeemed event is", redeemedEvent)
           if (redeemedEvent.args.recipient == account) {
             liftUpValue.forEach(function (liftUpValueItem) {
               if (liftUpValueItem.cToken.toLowerCase() == redeemedEvent.args.cToken.toLowerCase()) {
                 liftUpValueItem.balance = liftUpValueItem.balance - redeemedEvent.args.cTokenAmount;
-                liftUpValueItem.redeemed = redeemedEvent.args.cTokenAmount;
+                liftUpValueItem.redeemed = liftUpValueItem.redeemed + redeemedEvent.args.cTokenAmount;
               }
             });
           }
@@ -74,7 +76,19 @@ export function RariHackEligibility(props) {
     }
   }
   useEffect(() => {
-    canRedeem();
+    canRedeem()
+    let data = [...redeemable];
+    data.forEach(function (dataInstance, y){
+      props.redeemed.forEach(function (redeemedInstance, i){
+        if(redeemedInstance.cToken == dataInstance.cToken){
+          dataInstance.redeemed = dataInstance.redeemed + redeemedInstance.amount
+        }
+      })
+      setRedeemable(data)
+    });
+    console.log(props.redeemed)
+    console.log("redeemable is now", redeemable)
+    console.log("eligibility useeffect is firing, rerender?")
   }, [props.redeemed]);
 
   // render the data
@@ -148,6 +162,7 @@ export function RariHackEligibility(props) {
           </tbody>
         </table>
       ) : null}
+      <button onClick={()=>console.log(redeemable)}>click</button>
     </div>
   );
 }

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAccount, usePrepareContractWrite, useContractWrite } from 'wagmi';
 import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
 import EventEmitter from '../../../../modules/event-emitter';
 import { formatNumber } from '../../../../modules/utils';
 
 export default function MultiRedeemCall(props) {
+  const [errored, setErrored] = useState(false)
+  const [effect, setEffect] = useState(false)
   const cTokensToRedeem = [];
   const amountsToRedeem = [];
   props.amountsToRedeem.forEach(function (amountToRedeem, i) {
@@ -21,15 +23,32 @@ export default function MultiRedeemCall(props) {
     contractInterface: MultiMerkleRedeemer,
     functionName: 'multiRedeem',
     args: [cTokensToRedeem, amountsToRedeem],
+    onSuccess(){
+      setErrored(false)
+    },
     onError(error) {
-      //console.log('Error prepareContractWrite', error);
+      setErrored(true)
     }
   });
+
+  useEffect(() => {
+    setTimeout(() => {setEffect(!effect);}, "1000")
+    console.log("useeffect is firing, rerender?")
+  }, [props]);
 
   const { write } = useContractWrite({
     ...config,
     onSuccess(data) {
-      props.handleRedeemed();
+      let redeemed = []
+      cTokensToRedeem.forEach(function (cTokensToRedeem, i){
+        const instance = {
+          cToken: cTokensToRedeem,
+          amount: amountsToRedeem[i]
+        }
+        redeemed.push(instance)
+      })
+      console.log("redeemed in multi is", redeemed)
+      props.handleRedeemed(redeemed);
 
       // If broadcasting a new TX, display the toast
       EventEmitter.dispatch('tx', {
@@ -48,7 +67,7 @@ export default function MultiRedeemCall(props) {
   return (
     <div>
       {errorMessage.length ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
-      <button onClick={() => write()} disabled={!write || errorMessage.length != 0}>
+      <button onClick={() => write()} disabled={errored}>
         Redeem
       </button>
     </div>
