@@ -23,10 +23,7 @@ class SidePanel extends Component {
         <a href="#" className={'menu-item' + (document.location.hash == '' ? ' active' : '')}>
           <span className="ml-1">About</span>
         </a>
-        <a
-          href="#/FeiDaiPSM"
-          className={'menu-item' + (document.location.hash == '#/FeiDaiPSM' ? ' active' : '')}
-        >
+        <a href="#/FeiDaiPSM" className={'menu-item' + (document.location.hash == '#/FeiDaiPSM' ? ' active' : '')}>
           <span className="ml-1">FEI-DAI PSM</span>
         </a>
         <a
