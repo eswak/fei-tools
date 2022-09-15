@@ -9,7 +9,7 @@ export default function MultiRedeemCall(props) {
   const [effect, setEffect] = useState(false);
   const cTokensToRedeem = [];
   const amountsToRedeem = [];
-  const [passedAmounts, setPassedAmounts] = useState(props.amountsToRedeem)
+  const [passedAmounts, setPassedAmounts] = useState(props.amountsToRedeem);
   passedAmounts.forEach(function (amountToRedeem, i) {
     const amountToRedeemString = BigInt(amountToRedeem).toString();
     if (amountToRedeemString != '0') {
