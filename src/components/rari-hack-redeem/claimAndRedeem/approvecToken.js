@@ -4,6 +4,7 @@ import { useAccount, useProvider, useContractWrite, usePrepareContractWrite } fr
 import IERC20 from '../../../abi/IERC20.json';
 import EventEmitter from '../../../modules/event-emitter';
 import labels from '../data/labels.json';
+import decimals from '../data/decimals.json';
 import { formatNumber } from '../../../modules/utils';
 
 export default function ApproveCToken(props) {
@@ -71,7 +72,7 @@ export default function ApproveCToken(props) {
       // If broadcasting a new TX, display the toast
       EventEmitter.dispatch('tx', {
         hash: data.hash,
-        label: 'Approve ' + formatNumber(props.eligible) + ' ' + labels[props.cTokenAddress] + ' on Redeemer contract.'
+        label: 'Approve ' + formatNumber(props.eligible, decimals[props.cTokenAddress.toLowerCase()]) + ' ' + labels[props.cTokenAddress] + ' on Redeemer contract.'
       });
     }
   });

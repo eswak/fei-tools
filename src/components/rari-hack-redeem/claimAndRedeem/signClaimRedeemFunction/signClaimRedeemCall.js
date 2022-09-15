@@ -12,7 +12,7 @@ import IERC20 from '../../../../abi/IERC20.json';
 const balances = {};
 
 export default function SignClaimRedeemCall(props) {
-  const [toRedeem, setToRedeem] = useState(props.toRedeem);
+  const [time, setTime] = useState(Date.now());
   const account = useAccount().address;
   const provider = useProvider();
 
@@ -38,7 +38,7 @@ export default function SignClaimRedeemCall(props) {
     });
   }
 
-  toRedeem.forEach(function(toRedeemItem) {
+  props.toRedeem.forEach(function(toRedeemItem) {
     const cToken = new ethers.Contract(toRedeemItem.cToken, IERC20, provider);
     cToken.balanceOf(account).then(function (balance) {
       balances[toRedeemItem.cToken] = balance;
@@ -50,9 +50,14 @@ export default function SignClaimRedeemCall(props) {
     return allApproved && cTokenApproved;
   }, true);
 
+  // refresh component every 3s to re-simulate multiRedeem() static call
   useEffect(() => {
-    setToRedeem(props.toRedeem);
-  }, [props.toRedeem]);
+    const intervalId = setInterval(() => {
+      console.log('setTime', Date.now());
+      setTime(Date.now());
+    }, 3000);
+    return () => clearInterval(intervalId);
+  });
 
   return (
     <div>
@@ -68,7 +73,7 @@ export default function SignClaimRedeemCall(props) {
             </tr>
           </thead>
           <tbody>
-            {toRedeem.map((toRedeem, i) => {
+            {props.toRedeem.map((toRedeem, i) => {
               return (
                 <tr key={i} className={i % 2 ? 'odd' : 'even'}>
                   <td title={toRedeem.cToken}>{toRedeem.cTokenLabel}</td>
@@ -103,8 +108,8 @@ export default function SignClaimRedeemCall(props) {
         </table>
         <MultiRedeemCall
           contractAddress={props.contractAddress}
-          cTokens={_.map(toRedeem, 'cToken')}
-          amountsToRedeem={_.map(toRedeem, 'balance')}
+          cTokens={_.map(props.toRedeem, 'cToken')}
+          amountsToRedeem={_.map(props.toRedeem, 'balance')}
           allApproved={allApproved}
           redeemingTotalFei={redeemingTotalFei}
           handleRedeemed={props.handleRedeemed}

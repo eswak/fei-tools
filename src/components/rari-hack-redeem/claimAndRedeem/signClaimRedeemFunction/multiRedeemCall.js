@@ -4,9 +4,7 @@ import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
 import EventEmitter from '../../../../modules/event-emitter';
 import { formatNumber } from '../../../../modules/utils';
 
-let timeoutRefresh;
 export default function MultiRedeemCall(props) {
-  const [random, setRandom] = useState(Math.random());
   const cTokensToRedeem = [];
   const amountsToRedeem = [];
   props.amountsToRedeem.forEach(function (amountToRedeem, i) {
@@ -18,19 +16,12 @@ export default function MultiRedeemCall(props) {
     }
   });
 
-  // refresh the component every few seconds
-  if (timeoutRefresh) clearTimeout(timeoutRefresh);
-  timeoutRefresh = setTimeout(() => {
-    setRandom(Math.random());
-  }, 3000);
-
   const { config, error } = usePrepareContractWrite({
     addressOrName: props.contractAddress,
     contractInterface: MultiMerkleRedeemer,
     functionName: 'multiRedeem',
     args: [cTokensToRedeem, amountsToRedeem]
   });
-  console.log('usePrepareContractWrite error for multiRedeem', error);
 
   const { write } = useContractWrite({
     ...config,
@@ -58,6 +49,7 @@ export default function MultiRedeemCall(props) {
   else if (!Number(props.redeemingTotalFei)) errorMessage = 'You cannot redeem 0 FEI.';
   else if (error)
     errorMessage = error.reason.replace('execution reverted', 'The transaction will revert with the following error');
+  console.log('errorMessage', errorMessage);
 
   return (
     <div>
