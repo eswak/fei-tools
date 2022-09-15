@@ -32,13 +32,13 @@ export function ClaimAndRedeem(props) {
   return (
     <div>
       <p>How many tokens do you want to redeem?</p>
-      <table className="mb-3" style={{ maxWidth: '800px' }}>
+      <table className="mb-3">
         <thead>
           <tr>
             <th>cToken</th>
-            <th className="text-center">Balance</th>
-            <th>Redeeming</th>
-            <th>Presets</th>
+            <th className="text-right">Balance</th>
+            <th className="text-right">Redeeming</th>
+            <th className="text-center">Presets</th>
           </tr>
         </thead>
         <tbody>

@@ -32,10 +32,8 @@ export default function MultiRedeemCall(props) {
   });
 
   useEffect(() => {
-    console.log("rerendering...")
     setPassedAmounts(props.amountsToRedeem);
     setTimeout(() => {
-      console.log("rerendered")
       setPassedAmounts(props.amountsToRedeem);
       setEffect(!effect);
     }, '6000');

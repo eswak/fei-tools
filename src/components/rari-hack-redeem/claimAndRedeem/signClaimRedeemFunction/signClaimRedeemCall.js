@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import MultiRedeemCall from './multiRedeemCall';
 import rates from '../../data/rates.json';
@@ -42,12 +42,12 @@ export default function SignClaimRedeemCall(props) {
     <div>
       <div>
         <h3>You are redeeming:</h3>
-        <table className="mb-3" style={{ maxWidth: '800px' }}>
+        <table className="mb-3">
           <thead>
             <tr>
               <th>cToken</th>
               <th className="text-right">Redeeming</th>
-              <th>Approve</th>
+              <th className="text-center">Approve</th>
             </tr>
           </thead>
           <tbody>
@@ -55,8 +55,8 @@ export default function SignClaimRedeemCall(props) {
               return (
                 <tr key={i} className={i % 2 ? 'odd' : 'even'}>
                   <td title={toRedeem.cToken}>{toRedeem.cTokenLabel}</td>
-                  <td align="right">{formatNumber((toRedeem.balance * rates[toRedeem.cToken]) / 1e18)} FEI</td>
-                  <td align="center">
+                  <td className="text-right">{formatNumber((toRedeem.balance * rates[toRedeem.cToken]) / 1e18)} FEI</td>
+                  <td className="text-center">
                     <ApproveCToken
                       liftState={handleCTokenApproved}
                       approved={approveStatus[i]}

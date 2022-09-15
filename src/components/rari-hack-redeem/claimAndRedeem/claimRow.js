@@ -93,11 +93,11 @@ export default function ClaimRow(props) {
   return (
     <tr key={props.rowkey} className={props.rowkey % 2 ? 'odd' : 'even'}>
       <td title={props.cToken}>{props.cTokenLabel}</td>
-      <td className="text-center">{formatNumber(props.balance, decimals[props.cToken.toLowerCase()])}</td>
-      <td>
+      <td className="text-right">{formatNumber(props.balance, decimals[props.cToken.toLowerCase()])}</td>
+      <td className="text-right">
         <input type="number" id={props.cToken} value={displayValue} onChange={handleChange} />
       </td>
-      <td>
+      <td className="text-center">
         <button disabled={disable0Button} onClick={() => setPercent(0)}>
           0%
         </button>
