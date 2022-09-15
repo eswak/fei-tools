@@ -1,6 +1,13 @@
 module.exports = {
+  formatNumber,
   copyToClipboard
 };
+
+// format a number to 'XX,XXX,XXX'
+function formatNumber(n, decimals) {
+  decimals = decimals || '18';
+  return String(Math.floor(n / Math.pow(10, decimals))).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+}
 
 function copyToClipboard(arg) {
   var str = arg;

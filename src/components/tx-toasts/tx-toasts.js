@@ -35,6 +35,10 @@ class TxToasts extends Component {
           });
         }, 5000);
         clearInterval(intervalCheckTx);
+
+        EventEmitter.dispatch('TxMined', {
+          hash: tx.hash
+        });
       }
     }, 3000);
   }
