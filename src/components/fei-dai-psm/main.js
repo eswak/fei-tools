@@ -174,7 +174,7 @@ class c extends React.Component {
               <a href={'https://etherscan.io/address/' + psm.address} target="_blank">
                 Peg Stability Module (PSM)
               </a>{' '}
-              allows to mint 1 FEI by providing 1 DAI, and redeem 1 FEI for 1 DAI.
+              allows to mint 1 FEI by providing 1 DAI, and redeem 1 FEI for 1 DAI (0 fees).
             </p>
             <p>This contract is immutable and will have the effect of pegging 1 FEI to the price of 1 DAI forever.</p>
           </div>
