@@ -85,7 +85,8 @@ export function RariHackEligibility(props) {
           let past = BigInt(dataInstance.redeemed);
           let present = BigInt(redeemedInstance.amount);
           let balance = BigInt(dataInstance.balance);
-          dataInstance.redeemed = (past + present).toString();
+          let current = past + present;
+          dataInstance.redeemed = current.toString();
           dataInstance.balance = (balance - present).toString();
         }
       });
