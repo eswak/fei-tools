@@ -4,13 +4,12 @@ import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
 import EventEmitter from '../../../../modules/event-emitter';
 import { formatNumber } from '../../../../modules/utils';
 
+let timeoutRefresh;
 export default function MultiRedeemCall(props) {
-  const [errored, setErrored] = useState(false);
-  const [effect, setEffect] = useState(false);
+  const [random, setRandom] = useState(Math.random());
   const cTokensToRedeem = [];
   const amountsToRedeem = [];
-  const [passedAmounts, setPassedAmounts] = useState(props.amountsToRedeem);
-  passedAmounts.forEach(function (amountToRedeem, i) {
+  props.amountsToRedeem.forEach(function (amountToRedeem, i) {
     const amountToRedeemString = BigInt(amountToRedeem).toString();
     if (amountToRedeemString != '0') {
       // need to filter out 0 values in contract call
@@ -18,26 +17,20 @@ export default function MultiRedeemCall(props) {
       amountsToRedeem.push(amountToRedeemString);
     }
   });
+
+  // refresh the component every few seconds
+  if (timeoutRefresh) clearTimeout(timeoutRefresh);
+  timeoutRefresh = setTimeout(() => {
+    setRandom(Math.random());
+  }, 3000);
+
   const { config, error } = usePrepareContractWrite({
     addressOrName: props.contractAddress,
     contractInterface: MultiMerkleRedeemer,
     functionName: 'multiRedeem',
-    args: [cTokensToRedeem, amountsToRedeem],
-    onSuccess() {
-      setErrored(false);
-    },
-    onError(error) {
-      setErrored(true);
-    }
+    args: [cTokensToRedeem, amountsToRedeem]
   });
-
-  useEffect(() => {
-    setPassedAmounts(props.amountsToRedeem);
-    setTimeout(() => {
-      setPassedAmounts(props.amountsToRedeem);
-      setEffect(!effect);
-    }, '6000');
-  }, [props]);
+  console.log('usePrepareContractWrite error for multiRedeem', error);
 
   const { write } = useContractWrite({
     ...config,
@@ -69,7 +62,7 @@ export default function MultiRedeemCall(props) {
   return (
     <div>
       {errorMessage.length ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
-      <button onClick={() => write()} disabled={errored}>
+      <button onClick={() => write()} disabled={errorMessage.length ? true : false}>
         Redeem
       </button>
     </div>

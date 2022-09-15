@@ -19,7 +19,6 @@ export function PastRedemptions(props) {
 
   useEffect(() => {
     setReload(!reload);
-    setUserData([]);
     if (!userData.length) {
       Promise.all([
         // ask the 3 event types in parallel

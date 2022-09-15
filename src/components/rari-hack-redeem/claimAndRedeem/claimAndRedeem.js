@@ -36,7 +36,7 @@ export function ClaimAndRedeem(props) {
         <thead>
           <tr>
             <th>cToken</th>
-            <th className="text-right">Balance</th>
+            <th className="text-right">Eligible Balance</th>
             <th className="text-right">Redeeming</th>
             <th className="text-center">Presets</th>
           </tr>
