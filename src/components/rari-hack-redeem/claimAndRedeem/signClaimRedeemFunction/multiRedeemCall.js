@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useAccount, usePrepareContractWrite, useContractWrite } from 'wagmi';
+import React, { useState } from 'react';
+import { usePrepareContractWrite, useContractWrite, useBalance } from 'wagmi';
 import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
 import EventEmitter from '../../../../modules/event-emitter';
 import { formatNumber } from '../../../../modules/utils';
@@ -7,6 +7,19 @@ import { formatNumber } from '../../../../modules/utils';
 export default function MultiRedeemCall(props) {
   const cTokensToRedeem = [];
   const amountsToRedeem = [];
+  const [contractBalance, setContractBalance] = useState(0);
+
+
+  /// fetching contract's current balance of FEI
+  const {contractBal} = useBalance({
+    addressOrName: "0xfafc562265a49975e8b20707eac966473795cf90",
+    token: "0x956F47F50A910163D8BF957Cf5846D573E7f87CA",
+    onSuccess(contractBal){
+        setContractBalance(Math.round(contractBal.formatted));
+    }
+})
+
+
   props.amountsToRedeem.forEach(function (amountToRedeem, i) {
     const amountToRedeemString = BigInt(amountToRedeem).toString();
     if (amountToRedeemString != '0') {
@@ -44,6 +57,9 @@ export default function MultiRedeemCall(props) {
     }
   });
 
+
+
+
   let errorMessage = '';
   if (!props.allApproved) errorMessage = 'You must approve all cTokens before redeeming.';
   else if (!Number(props.redeemingTotalFei)) errorMessage = 'You cannot redeem 0 FEI.';
@@ -57,6 +73,9 @@ export default function MultiRedeemCall(props) {
       <button onClick={() => write()} disabled={errorMessage.length ? true : false}>
         Redeem
       </button>
+      <div>
+        <text>The contract currently holds {contractBalance} FEI.</text>
+      </div>
     </div>
   );
 }
