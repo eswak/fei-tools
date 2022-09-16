@@ -134,7 +134,9 @@ export function RariHackEligibility(props) {
                   <td
                     className="text-right"
                     title={
-                      'Eligible cTokens (' + decimals[instance.cToken.toLowerCase()] + ' decimals): ' +
+                      'Eligible cTokens (' +
+                      decimals[instance.cToken.toLowerCase()] +
+                      ' decimals): ' +
                       formatNumber(instance.eligible, decimals[instance.cToken.toLowerCase()]) +
                       '\nEligible cTokens Wei: ' +
                       BigInt(instance.eligible).toString() +
