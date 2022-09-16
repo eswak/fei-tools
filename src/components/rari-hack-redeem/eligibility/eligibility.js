@@ -62,8 +62,12 @@ export function RariHackEligibility(props) {
           if (redeemedEvent.args.recipient == account) {
             liftUpValue.forEach(function (liftUpValueItem) {
               if (liftUpValueItem.cToken.toLowerCase() == redeemedEvent.args.cToken.toLowerCase()) {
-                liftUpValueItem.balance = liftUpValueItem.balance - redeemedEvent.args.cTokenAmount;
-                liftUpValueItem.redeemed = liftUpValueItem.redeemed + redeemedEvent.args.cTokenAmount;
+                liftUpValueItem.balance = (
+                  BigInt(liftUpValueItem.balance) - BigInt(redeemedEvent.args.cTokenAmount.toString())
+                ).toString();
+                liftUpValueItem.redeemed = (
+                  BigInt(liftUpValueItem.redeemed) + BigInt(redeemedEvent.args.cTokenAmount.toString())
+                ).toString();
               }
             });
           }
@@ -137,7 +141,11 @@ export function RariHackEligibility(props) {
                       '\n---------------\nRedeemable FEI: ' +
                       formatNumber(instance.balance) +
                       '\nRedeemable FEI Wei: ' +
-                      BigInt(instance.balance).toString()
+                      BigInt(instance.balance).toString() +
+                      '\nRedeemed FEI: ' +
+                      formatNumber(instance.redeemed) +
+                      '\nRedeemed FEI Wei: ' +
+                      BigInt(instance.redeemed).toString()
                     }
                   >
                     {formatPercent(instance.redeemed / instance.eligible)}

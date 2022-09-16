@@ -1,24 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePrepareContractWrite, useContractWrite, useBalance } from 'wagmi';
 import MultiMerkleRedeemer from '../../../../abi/MultiMerkleRedeemer.json';
 import EventEmitter from '../../../../modules/event-emitter';
 import { formatNumber } from '../../../../modules/utils';
+import imgFei from '../../../collateralization/img/fei.png';
 
 export default function MultiRedeemCall(props) {
   const cTokensToRedeem = [];
   const amountsToRedeem = [];
   const [contractBalance, setContractBalance] = useState(0);
 
-
   /// fetching contract's current balance of FEI
-  const {contractBal} = useBalance({
-    addressOrName: "0xfafc562265a49975e8b20707eac966473795cf90",
-    token: "0x956F47F50A910163D8BF957Cf5846D573E7f87CA",
-    onSuccess(contractBal){
-        setContractBalance(Math.round(contractBal.formatted));
+  useBalance({
+    addressOrName: props.contractAddress,
+    token: '0x956F47F50A910163D8BF957Cf5846D573E7f87CA',
+    onSuccess(balance) {
+      setContractBalance(balance.value.toString());
     }
-})
-
+  });
 
   props.amountsToRedeem.forEach(function (amountToRedeem, i) {
     const amountToRedeemString = BigInt(amountToRedeem).toString();
@@ -29,15 +28,12 @@ export default function MultiRedeemCall(props) {
     }
   });
 
-  const { config, error } = usePrepareContractWrite({
+  const { write } = useContractWrite({
+    mode: 'recklesslyUnprepared',
     addressOrName: props.contractAddress,
     contractInterface: MultiMerkleRedeemer,
     functionName: 'multiRedeem',
-    args: [cTokensToRedeem, amountsToRedeem]
-  });
-
-  const { write } = useContractWrite({
-    ...config,
+    args: [cTokensToRedeem, amountsToRedeem],
     onSuccess(data) {
       let redeemed = [];
       cTokensToRedeem.forEach(function (cTokensToRedeem, i) {
@@ -57,15 +53,9 @@ export default function MultiRedeemCall(props) {
     }
   });
 
-
-
-
   let errorMessage = '';
   if (!props.allApproved) errorMessage = 'You must approve all cTokens before redeeming.';
   else if (!Number(props.redeemingTotalFei)) errorMessage = 'You cannot redeem 0 FEI.';
-  else if (error)
-    errorMessage = error.reason.replace('execution reverted', 'The transaction will revert with the following error');
-  console.log('errorMessage', errorMessage);
 
   return (
     <div>
@@ -73,9 +63,10 @@ export default function MultiRedeemCall(props) {
       <button onClick={() => write()} disabled={errorMessage.length ? true : false}>
         Redeem
       </button>
-      <div>
-        <text>The contract currently holds {contractBalance} FEI.</text>
-      </div>
+      <p className="mt-3">
+        The Redeemer contract currently holds <img src={imgFei} style={{ height: '1em', verticalAlign: '-3px' }} />{' '}
+        {formatNumber(contractBalance)} FEI.
+      </p>
     </div>
   );
 }

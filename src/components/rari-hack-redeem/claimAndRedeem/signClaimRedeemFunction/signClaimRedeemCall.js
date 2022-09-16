@@ -12,7 +12,6 @@ import IERC20 from '../../../../abi/IERC20.json';
 const balances = {};
 
 export default function SignClaimRedeemCall(props) {
-  const [time, setTime] = useState(Date.now());
   const account = useAccount().address;
   const provider = useProvider();
 
@@ -38,7 +37,7 @@ export default function SignClaimRedeemCall(props) {
     });
   }
 
-  props.toRedeem.forEach(function(toRedeemItem) {
+  props.toRedeem.forEach(function (toRedeemItem) {
     const cToken = new ethers.Contract(toRedeemItem.cToken, IERC20, provider);
     cToken.balanceOf(account).then(function (balance) {
       balances[toRedeemItem.cToken] = balance;
@@ -49,15 +48,6 @@ export default function SignClaimRedeemCall(props) {
   const allApproved = approveStatus.reduce(function (allApproved, cTokenApproved) {
     return allApproved && cTokenApproved;
   }, true);
-
-  // refresh component every 3s to re-simulate multiRedeem() static call
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      console.log('setTime', Date.now());
-      setTime(Date.now());
-    }, 3000);
-    return () => clearInterval(intervalId);
-  });
 
   return (
     <div>
@@ -77,7 +67,12 @@ export default function SignClaimRedeemCall(props) {
               return (
                 <tr key={i} className={i % 2 ? 'odd' : 'even'}>
                   <td title={toRedeem.cToken}>{toRedeem.cTokenLabel}</td>
-                  <td className="text-right" style={{'color': (balances[toRedeem.cToken] / 1e18 < toRedeem.balance / 1e18 ? '#D32F2F' : '#388E3C')}}>
+                  <td
+                    className="text-right"
+                    style={{
+                      color: balances[toRedeem.cToken] / 1e18 < toRedeem.balance / 1e18 ? '#D32F2F' : '#388E3C'
+                    }}
+                  >
                     {formatNumber(balances[toRedeem.cToken] || '0', decimals[toRedeem.cToken.toLowerCase()])}
                   </td>
                   <td className="text-right">{formatNumber((toRedeem.balance * rates[toRedeem.cToken]) / 1e18)} FEI</td>
@@ -95,6 +90,7 @@ export default function SignClaimRedeemCall(props) {
               );
             })}
             <tr>
+              <td></td>
               <td></td>
               <td style={{ textAlign: 'right' }}>
                 <span style={{ borderTop: '1px solid' }}>

@@ -72,7 +72,12 @@ export default function ApproveCToken(props) {
       // If broadcasting a new TX, display the toast
       EventEmitter.dispatch('tx', {
         hash: data.hash,
-        label: 'Approve ' + formatNumber(props.eligible, decimals[props.cTokenAddress.toLowerCase()]) + ' ' + labels[props.cTokenAddress] + ' on Redeemer contract.'
+        label:
+          'Approve ' +
+          formatNumber(props.eligible, decimals[props.cTokenAddress.toLowerCase()]) +
+          ' ' +
+          labels[props.cTokenAddress] +
+          ' on Redeemer contract.'
       });
     }
   });

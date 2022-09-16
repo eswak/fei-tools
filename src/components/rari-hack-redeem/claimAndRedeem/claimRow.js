@@ -47,7 +47,7 @@ export default function ClaimRow(props) {
       x = x / 4;
       setDisplayValue(formatDisplayNumber(x, decimals[props.cToken.toLowerCase()]));
       setValue();
-      props.updateNumber(props.cToken, BigInt(x).toString());
+      props.updateNumber(props.cToken, BigInt(Math.floor(x)).toString());
       setDisable0Button(false);
       setDisable25Button(true);
       setDisable50Button(false);
@@ -58,8 +58,8 @@ export default function ClaimRow(props) {
       let x = toNumber(props.balance);
       x = x / 2;
       setDisplayValue(formatDisplayNumber(x, decimals[props.cToken.toLowerCase()]));
-      setValue(BigInt(x).toString());
-      props.updateNumber(props.cToken, BigInt(x).toString());
+      setValue(BigInt(Math.floor(x)).toString());
+      props.updateNumber(props.cToken, BigInt(Math.floor(x)).toString());
       setDisable0Button(false);
       setDisable25Button(false);
       setDisable50Button(true);
@@ -70,8 +70,8 @@ export default function ClaimRow(props) {
       let x = toNumber(props.balance);
       x = (x / 4) * 3;
       setDisplayValue(formatDisplayNumber(x, decimals[props.cToken.toLowerCase()]));
-      setValue(BigInt(x).toString());
-      props.updateNumber(props.cToken, BigInt(x).toString());
+      setValue(BigInt(Math.floor(x)).toString());
+      props.updateNumber(props.cToken, BigInt(Math.floor(x)).toString());
       setDisable0Button(false);
       setDisable25Button(false);
       setDisable50Button(false);

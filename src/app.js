@@ -11,31 +11,22 @@ import MainContent from './components/main-content/main-content';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 ///WAGMI IMPORTS
-import { chain, WagmiConfig, createClient, defaultChains, configureChains } from 'wagmi';
+import { WagmiConfig, createClient, defaultChains, configureChains } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 //IMPORT CONNECTKIT
-import { ConnectKitProvider, ConnectKitButton, getDefaultClient } from 'connectkit';
+import { ConnectKitProvider } from 'connectkit';
 
 //WAGMI CONFIG
 // Configure chains & providers with the Alchemy provider.
-const { chains, provider, webSocketProvider } = configureChains(
-  [chain.localhost],
-  [
-    alchemyProvider({ apiKey: '2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT' }),
-    publicProvider(),
-    jsonRpcProvider({
-      rpc: (chain) => ({
-        http: `http://127.0.0.1:8545`
-      })
-    })
-  ]
-);
+const { chains, provider, webSocketProvider } = configureChains(defaultChains, [
+  alchemyProvider({ apiKey: '2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT' }),
+  publicProvider()
+]);
 
 // Set up client
 const client = createClient({
