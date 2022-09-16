@@ -7,6 +7,7 @@ import FeiProtocolRoles from '../fei-protocol-roles/main';
 import FeiDaiPSM from '../fei-dai-psm/main';
 import TxToasts from '../tx-toasts/tx-toasts';
 import RariHackRedeem from '../rari-hack-redeem/main';
+import TribeRedeemer from '../tribe-redeemer/main';
 import './main-content.css';
 
 class MainContent extends React.Component {
@@ -35,6 +36,8 @@ class MainContent extends React.Component {
         return <FeiProtocolRoles />;
       case '/FeiDaiPSM':
         return <FeiDaiPSM />;
+      case '/TribeRedeemer':
+        return <TribeRedeemer />;
       case '/RariHackRedeem':
         return <RariHackRedeem />;
       default:

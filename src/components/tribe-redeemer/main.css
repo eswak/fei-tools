@@ -1,0 +1,114 @@
+.triberedeemer {
+  
+}
+.triberedeemer .box-wrapper {
+  text-align: center;
+}
+.triberedeemer .box {
+  text-align: left;
+  display: inline-block;
+  width: 400px;
+  user-select: none;
+}
+.triberedeemer .balances {
+  border: 1px solid;
+  text-align: center;
+  margin: 1em;
+  border-radius: 4px;
+}
+.triberedeemer .balances .title {
+  background: #333;
+  color: white;
+}
+.triberedeemer .balances .balance {
+  display: inline-block;
+  margin: 3px 15px;
+  line-height: 20px;
+}
+.triberedeemer .balances .balance img {
+  height: 20px;
+  border-radius: 10px;
+}
+.triberedeemer .tabs {
+  text-align: center;
+}
+.triberedeemer .tab {
+  font-weight: bold;
+  display: inline-block;
+  padding: 5px 20px;
+  cursor: pointer;
+}
+.triberedeemer .tab.active {
+  border-bottom: 4px solid;
+  color: #207a5a;
+}
+.triberedeemer .tab:hover {
+  background: #ccc;
+}
+.triberedeemer .content {
+  padding: 1em;
+}
+.triberedeemer .input-box {
+  position: relative;
+}
+.triberedeemer .input-box input {
+  width: 100%;
+  border: 1px solid;
+  padding: 5px 48px;
+  border-radius: 4px;
+}
+.triberedeemer .input-box .token {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  height: 36px;
+  width: 44px;
+  line-height: 32px;
+  text-align: center;
+  background: #333;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.triberedeemer .input-box .token img {
+  height: 28px;
+  border-radius: 14px;
+}
+.triberedeemer .input-box .all {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-block;
+  height: 36px;
+  line-height: 34px;
+  padding: 0 5px;
+  cursor: pointer;
+  background: #e5e5e5;
+  border: 1px solid;
+  border-left: 0;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+.triberedeemer .output-box {
+  text-align: center;
+}
+.triberedeemer .output-box .arrow {
+  height: 60px;
+  margin: 10px;
+}
+.triberedeemer .output-box .token {
+  height: 60px;
+  border-radius: 30px;
+}
+.triberedeemer .output-box .out {
+  font-size: 22px;
+  font-weight: bold;
+  padding: 5px;
+}
+.triberedeemer .action-box button {
+  width: 100%;
+  padding: 4px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
