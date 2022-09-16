@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useProvider, useAccount, useSigner } from 'wagmi';
 import { ethers } from 'ethers';
 import IERC20 from '../../../abi/IERC20.json';
@@ -10,7 +10,7 @@ import rates from '../data/rates.json';
 import labels from '../data/labels.json';
 import feiImg from '../../collateralization/img/fei.png';
 
-export function ClaimAndRedeem(props) {
+export function Redeem(props) {
   const account = useAccount().address;
   const provider = useProvider();
   const signer = useSigner().data;

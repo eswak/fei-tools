@@ -3,7 +3,7 @@ import { useAccount } from 'wagmi';
 import RariHackEligibility from './eligibility/eligibility';
 import { Signing } from './signing/signing';
 import { PastRedemptions } from './pastRedemptions/pastRedemptions';
-import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
+import { Redeem } from './redeem/redeem';
 import { CheckOpenBorrows } from './checkOpenBorrows/checkOpenBorrows';
 import './main.css';
 
@@ -137,7 +137,7 @@ export default function RariHackRedeem() {
             <CheckOpenBorrows redeemableTokens={redeemable} />
 
             <h2>Step 3: Redeem your cTokens for FEI</h2>
-            <ClaimAndRedeem
+            <Redeem
               redeemableTokens={redeemable}
               alreadySigned={alreadySigned}
               contractAddress={contractAddress}
