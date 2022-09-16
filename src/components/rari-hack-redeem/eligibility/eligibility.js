@@ -134,18 +134,18 @@ export function RariHackEligibility(props) {
                   <td
                     className="text-right"
                     title={
-                      'Eligible: ' +
+                      'Eligible cTokens (' + decimals[instance.cToken.toLowerCase()] + ' decimals): ' +
                       formatNumber(instance.eligible, decimals[instance.cToken.toLowerCase()]) +
-                      '\nRedeemed: -' +
-                      formatNumber(instance.redeemed, decimals[instance.cToken.toLowerCase()]) +
-                      '\n---------------\nRedeemable FEI: ' +
-                      formatNumber(instance.balance) +
-                      '\nRedeemable FEI Wei: ' +
-                      BigInt(instance.balance).toString() +
-                      '\nRedeemed FEI: ' +
+                      '\nEligible cTokens Wei: ' +
+                      BigInt(instance.eligible).toString() +
+                      '\n-----------------------\nRedeemed FEI: ' +
                       formatNumber(instance.redeemed) +
                       '\nRedeemed FEI Wei: ' +
-                      BigInt(instance.redeemed).toString()
+                      BigInt(instance.redeemed).toString() +
+                      '\n-----------------------\nRedeemable FEI: ' +
+                      formatNumber(instance.balance) +
+                      '\nRedeemable FEI Wei: ' +
+                      BigInt(instance.balance).toString()
                     }
                   >
                     {formatPercent(instance.redeemed / instance.eligible)}
