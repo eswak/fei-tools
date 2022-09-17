@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.png';
 import './side-panel.css';
-import Wallet from '../wallet/wallet';
+import { ConnectKitButton } from 'connectkit';
 
 class SidePanel extends Component {
   constructor(props) {
@@ -19,7 +19,11 @@ class SidePanel extends Component {
           <img className="logo" src={logo} />
         </div>
         <div className="version mb-2">Made with 💚 by La Tribu.</div>
-        <Wallet />
+        <hr />
+        <span className="connectbutton">
+          <ConnectKitButton showBalance="true" showAvatar="true" />
+        </span>
+        <hr />
         <a href="#" className={'menu-item' + (document.location.hash == '' ? ' active' : '')}>
           <span className="ml-1">About</span>
         </a>
@@ -46,6 +50,12 @@ class SidePanel extends Component {
           className={'menu-item' + (document.location.hash == '#/FeiProtocolRoles' ? ' active' : '')}
         >
           <span className="ml-1">Fei Protocol Roles</span>
+        </a>
+        <a
+          href="#/RariHackRedeem"
+          className={'menu-item' + (document.location.hash == '#/RariHackRedeem' ? ' active' : '')}
+        >
+          <span className="ml-1">Rari Hack Redeem</span>
         </a>
       </div>
     );
