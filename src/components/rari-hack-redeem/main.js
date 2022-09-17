@@ -113,6 +113,9 @@ export default function RariHackRedeem() {
             <a href={'https://etherscan.io/address/' + contractAddress}>smart contract deployed</a> to process the
             reimbursments.
           </p>
+          <p>
+            If you are eligible (check the table below), you will be able to exchange your cTokens (Fuse pool deposit tokens) in exchange for FEI. Your full cToken balance might not be eligible for exchange to FEI if the Fuse pool where you deposited has "good debt" (tokens owed by other users). In this case, you will be able to withdraw your remaining collateral when other users repay their debt. You will have to close all your outstanding debts in Fuse in order to be able to transfer your cTokens to the redeemer contract.
+          </p>
         </div>
         <h2>Step 1: Check your Eligibility</h2>
         {isConnected == true ? (
@@ -147,7 +150,7 @@ export default function RariHackRedeem() {
           </div>
         ) : null}
 
-        <div>
+        <div className="mt-3">
           <h2>Stats: Full Eligibility List and Redemption Status</h2>
           <PastRedemptions userAddress={address} contractAddress={contractAddress} reloadStats={reloadStats} />
         </div>
