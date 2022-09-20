@@ -1,5 +1,5 @@
 import React from 'react';
-import { ethers } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import IERC20 from '../../abi/IERC20.json';
 import SimpleFeiDaiPSMABI from '../../abi/SimpleFeiDaiPSM.json';
 import feiImg from '../collateralization/img/fei.png';
@@ -9,19 +9,15 @@ import arrow2Img from './img/arrow2.png';
 import './main.css';
 import EventEmitter from '../../modules/event-emitter';
 import { formatNumber } from '../../modules/utils';
-import { getProvider, getSigner, getAccount } from '../wallet/wallet';
+import { withWagmiHooksHOC } from '../../modules/with-wagmi-hooks-hoc';
 
-const psm = new ethers.Contract('0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2', SimpleFeiDaiPSMABI, getSigner());
-const dai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, getSigner());
-const fei = new ethers.Contract('0x956F47F50A910163D8BF957Cf5846D573E7f87CA', IERC20, getSigner());
-
-console.log('provider', getProvider());
-
+let psm, dai, fei;
 class c extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      account: getAccount(),
+      account: props.account,
+      loading: false,
       tab: 'mint',
       input: {
         dai: '',
@@ -37,26 +33,32 @@ class c extends React.Component {
       },
       events: []
     };
+
+    psm = new ethers.Contract('0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2', SimpleFeiDaiPSMABI, props.provider);
+    dai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.provider);
+    fei = new ethers.Contract('0x956F47F50A910163D8BF957Cf5846D573E7f87CA', IERC20, props.provider);
   }
 
-  async componentWillMount() {
+  UNSAFE_componentWillReceiveProps(props) {
+    if (props.signer) {
+      psm = new ethers.Contract('0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2', SimpleFeiDaiPSMABI, props.signer);
+      dai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.signer);
+      fei = new ethers.Contract('0x956F47F50A910163D8BF957Cf5846D573E7f87CA', IERC20, props.signer);
+    }
+  }
+
+  async UNSAFE_componentWillMount() {
     await this.refreshData();
 
-    EventEmitter.on('AccountChange', (data) => {
-      console.log('AccountChange', data.new);
-      this.state.account = data.new;
-      this.setState(this.state);
-      this.refreshData();
-    });
-
     EventEmitter.on('TxMined', (data) => {
-      console.log('TxMined', data.hash);
       this.refreshData();
     });
   }
 
   async refreshData() {
-    console.log('refreshData()');
+    this.state.loading = true;
+    this.setState(this.state);
+
     let newEvents = [];
     // Collect mints
     (await psm.queryFilter(psm.filters.Mint())).forEach(function (mint) {
@@ -90,15 +92,14 @@ class c extends React.Component {
 
     // get user data
     if (this.state.account) {
-      console.log('get user data');
       this.state.allowance.fei = (await fei.allowance(this.state.account, psm.address)).toString();
       this.state.allowance.dai = (await dai.allowance(this.state.account, psm.address)).toString();
       this.state.balance.fei = (await fei.balanceOf(this.state.account)).toString();
       this.state.balance.dai = (await dai.balanceOf(this.state.account)).toString();
-      console.log('FEI balance of', this.state.account, this.state.balance.fei / 1e18);
-    } else console.log('no user data :(');
+    }
 
     // set state & redraw
+    this.state.loading = false;
     this.setState(this.state);
     this.forceUpdate();
   }
@@ -109,22 +110,26 @@ class c extends React.Component {
   }
 
   setInputAmount(token, amount) {
-    const scaledDownAmount = (BigInt(amount) / BigInt(1e18)).toString();
+    const scaledDownAmount = Number(
+      Number(
+        BigNumber.from(amount).mul(100).div(ethers.constants.WeiPerEther).toString()
+      ) / 100
+    ).toString();
     this.state.input[token] = scaledDownAmount;
     this.setState(this.state);
   }
 
   onInputChange(token, e) {
-    this.state.input[token] = e.target.value;
+    this.state.input[token] = ((e.target.value || '').match(/^[0-9]+(\.[0-9]{0,2})?/g) || [])[0] || '';
     this.setState(this.state);
   }
 
   getInputAmountWithDecimals(token) {
     let amount = this.state.input[token];
-    if (amount === Math.round(this.state.balance[token] / 1e18).toString()) {
+    if (Math.round(amount).toString() === Math.round(this.state.balance[token] / 1e18).toString()) {
       amount = this.state.balance[token];
     } else {
-      amount = (BigInt(amount) * BigInt(1e18)).toString();
+      amount = BigNumber.from(Math.round(amount * 100)).mul(ethers.constants.WeiPerEther).div(100).toString();
     }
     return amount;
   }
@@ -176,18 +181,21 @@ class c extends React.Component {
               </a>{' '}
               allows to mint 1 FEI by providing 1 DAI, and redeem 1 FEI for 1 DAI (0 fees).
             </p>
-            <p>This contract is immutable and will have the effect of pegging 1 FEI to the price of 1 DAI forever.</p>
+            <p>This contract is immutable and will have the effect of pegging 1 FEI to 1 DAI forever.</p>
           </div>
           <h2>Exchange {this.state.tab == 'mint' ? 'DAI to FEI' : 'FEI to DAI'}</h2>
           <div className="box-wrapper">
             <div className="box">
               <div className="balances">
-                <div className="title">Your Balances</div>
-                <div className="balance">
-                  <img src={feiImg} /> {formatNumber(this.state.balance.fei)} FEI
+                <div className="title">
+                  Your Balances
+                  { this.state.loading ? <div className="lds-ring"><div></div><div></div><div></div><div></div></div> : null }
                 </div>
                 <div className="balance">
-                  <img src={daiImg} /> {formatNumber(this.state.balance.dai)} DAI
+                  <img src={feiImg} /> {formatNumber(this.state.balance.fei, 18, 2)} FEI
+                </div>
+                <div className="balance">
+                  <img src={daiImg} /> {formatNumber(this.state.balance.dai, 18, 2)} DAI
                 </div>
               </div>
               <div className="tabs">
@@ -249,9 +257,9 @@ class c extends React.Component {
                   <br />
                   <img src={this.state.tab == 'redeem' ? daiImg : feiImg} className="token" />
                   <div className="out">
-                    {this.state.tab == 'mint'
-                      ? formatNumber(this.state.input.dai * 1e18)
-                      : formatNumber(this.state.input.fei * 1e18)}
+                    {(this.state.tab == 'mint'
+                      ? this.state.input.dai
+                      : this.state.input.fei) || '0'}
                   </div>
                 </div>
                 <div className="action-box">
@@ -295,11 +303,12 @@ class c extends React.Component {
           </div>
           <div className="events">
             <h2>Last Mint and Redeem events :</h2>
-            <table style={{ maxWidth: '500px' }}>
+            <table>
               <thead>
                 <tr>
-                  <th>Date</th>
+                  <th>Block</th>
                   <th>Type</th>
+                  <th>Destination</th>
                   <th className="text-right">Amount</th>
                 </tr>
               </thead>
@@ -308,21 +317,25 @@ class c extends React.Component {
                   <tr key={i}>
                     <td>
                       <a href={'https://etherscan.io/tx/' + event.hash}>
-                        {new Date(event.timestamp * 1000).toISOString().split('T')[0]}
+                        {event.block}
                       </a>
                     </td>
                     <td>{event.type == 'mint' ? 'Mint' : 'Redeem'}</td>
-                    <td className="text-right">{formatNumber(event.fei)}</td>
+                    <td style={{'fontFamily':'monospace'}}>
+                      <a href={'https://etherscan.io/address/' + event.to}>
+                        {event.to}
+                      </a>
+                    </td>
+                    <td className="text-right" title={'FEI Wei: ' + event.fei}>{formatNumber(event.fei, 18, 2)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <pre>{JSON.stringify(this.state, null, 2)}</pre>
         </div>
       </div>
     );
   }
 }
 
-export default c;
+export default withWagmiHooksHOC(c);
