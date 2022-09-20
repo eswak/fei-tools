@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import Collateralization from '../collateralization/main';
 import SafeAddresses from '../safeaddresses/main';
 import TimelockTransactions from '../timelock/main';
-import CompoundingStakerOld from '../compounding-staker/old';
 import FeiProtocolRoles from '../fei-protocol-roles/main';
 import FeiDaiPSM from '../fei-dai-psm/main';
 import TxToasts from '../tx-toasts/tx-toasts';
+import RariHackRedeem from '../rari-hack-redeem/main';
 import './main-content.css';
 
-class MainContent extends Component {
+class MainContent extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -25,8 +25,6 @@ class MainContent extends Component {
 
   renderSwitch(props) {
     switch (this.props.content.type) {
-      case '/CompoundingStaker':
-        return <CompoundingStakerOld />;
       case '/CollateralizationOracle':
         return <Collateralization />;
       case '/SafeAddresses':
@@ -37,6 +35,8 @@ class MainContent extends Component {
         return <FeiProtocolRoles />;
       case '/FeiDaiPSM':
         return <FeiDaiPSM />;
+      case '/RariHackRedeem':
+        return <RariHackRedeem />;
       default:
         return (
           <div className="card section">
@@ -67,16 +67,6 @@ class MainContent extends Component {
               </a>
             </p>
             <hr />
-            <p className="mb-0">
-              Deprecated tools :<br />
-              <a className="btn" href="#/CompoundingStaker">
-                CompoundingStaker
-              </a>
-              <br />
-              <span style={{ color: '#D32F2F' }}>
-                DO NOT DEPOSIT FUNDS IN THIS TOOL, REWARDS ARE NOT ACCRUING ANYMORE, USE ONLY FOR WITHDRAWAL.
-              </span>
-            </p>
           </div>
         );
     }

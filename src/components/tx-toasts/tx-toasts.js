@@ -4,6 +4,7 @@ import { getProvider } from '../wallet/wallet';
 import EventEmitter from '../../modules/event-emitter';
 
 var intervalRefresh = null;
+var allTx = {};
 
 class TxToasts extends Component {
   constructor(props) {
@@ -18,6 +19,10 @@ class TxToasts extends Component {
   }
 
   async onTxAdd(tx) {
+    // keep track of all broadcasted tx in the current session to avoid duplicates
+    if (!tx || allTx[tx.hash]) return;
+    allTx[tx.hash] = tx;
+
     const self = this;
     tx.status = 'pending';
     this.state.tx.push(tx);
@@ -33,14 +38,17 @@ class TxToasts extends Component {
             if (stateTx.hash === tx.hash) self.state.tx.splice(i, 1);
             self.setState(self.state);
           });
-        }, 5000);
+        }, 8000); // after mined, keep toast for 8s
+        // stop checking if the tx is mined
         clearInterval(intervalCheckTx);
-
+        // emit TxMined
         EventEmitter.dispatch('TxMined', {
           hash: tx.hash
         });
+        // call callback
+        tx.cb && tx.cb(txReceipt.blockNumber);
       }
-    }, 3000);
+    }, 5000); // every 5s, check for mined status
   }
 
   componentWillUnmount() {
@@ -57,7 +65,7 @@ class TxToasts extends Component {
               <span className={'status status-' + tx.status} title={'Status : ' + status}></span>
               {tx.label}
             </div>
-            <div className="hash">{tx.hash}</div>
+            <div className="hash">Click to see tx on Etherscan: {tx.hash}</div>
           </a>
         ))}
       </div>
