@@ -14,7 +14,7 @@ import { TribeRedeemHooks } from './hook-wrapper';
 import EventEmitter from '../../modules/event-emitter';
 
 const tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
-
+const redeemerContract = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
 
 
 
@@ -26,10 +26,10 @@ class TribeRedeemer extends React.Component {
         tribe: ''
       },
       balance: {
-        tribe: ''
+        tribe: '4234256342634563423'
       },
       output: {
-        dai: '',
+        dai: "",
         stETH: '',
         LQTY: '',
         FOX: '',
@@ -43,7 +43,9 @@ class TribeRedeemer extends React.Component {
 
   async componentDidMount() {
     await this.refreshData();
-    console.log("props are", this.props)
+    console.log("dai is", typeof(this.state.output.dai))
+    console.log("dai is", this.state.output.dai)
+    console.log("dai is", formatNumber(this.state.output.dai))
   };
 
   async refreshData() {
@@ -82,6 +84,25 @@ async approveTx() {
   });
 }
 
+/// REDEEMING TRIBE FOR PCV
+async redeemTx() {
+  let amount = this.getInputAmountWithDecimals();
+  const tx = await redeemerContract.redeem(this.props.account, amount, '0' /*amount*/);
+  EventEmitter.dispatch('tx', {
+    label: 'Redeem ' + formatNumber(amount) + ' TRIBE to get PCV',
+    hash: tx.hash
+  });
+  this.state.input.tribe = '';
+  this.setState(this.state);
+}
+
+// BUTTON TO SET TO 100%
+setInputAmount() {
+  const scaledDownAmount = (BigInt(this.state.balance.tribe) / BigInt(1e18)).toString();
+  this.state.input.tribe = scaledDownAmount;
+  this.setState(this.state);
+}
+
   render() {
     return (
       <div className="triberedeemer">
@@ -114,7 +135,7 @@ async approveTx() {
                       />
                       <span
                         className="all"
-                        onClick={() => console.log('all')}
+                        onClick={() => this.setInputAmount()}
                         title={'Your balance: ' + formatNumber(this.state.balance.tribe) + ' TRIBE'}
                       >
                         100%
@@ -126,19 +147,19 @@ async approveTx() {
                     <div className="outputs">
                       <div className="title">Outputs</div>
                       <div className='output'>
-                        <img src={daiImg} />{formatNumber(this.state.balance.tribe)}
+                        <img src={daiImg} />{formatNumber(this.state.output.dai)}
                         Dai
                       </div>
                       <div className='output'>
-                        <img src={stEthImg} />{formatNumber(this.state.balance.tribe)}
+                        <img src={stEthImg} />{formatNumber(this.state.output.stETH)}
                         stETH
                       </div>
                       <div className='output'>
-                        <img src={lqtyImg} />{formatNumber(this.state.balance.tribe)}
+                        <img src={lqtyImg} />{formatNumber(this.state.output.LQTY)}
                         LQTY
                       </div>
                       <div className='output'>
-                        <img src={foxImg} />{formatNumber(this.state.balance.tribe)}
+                        <img src={foxImg} />{formatNumber(this.state.output.FOX)}
                         FOX
                       </div>
                     </div>
