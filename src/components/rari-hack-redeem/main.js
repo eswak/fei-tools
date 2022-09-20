@@ -101,7 +101,7 @@ export default function RariHackRedeem() {
           <p>
             Pursuant to{' '}
             <a
-              href="https://snapshot.org/#/fei.eth/proposal/0xd5359654b34bba833843fb64ad38e813b4ff6cc21e6f5ea323b704d2ceb25d96"
+              href="https://www.tally.xyz/governance/eip155:1:0x0BEF27FEB58e857046d630B2c03dFb7bae567494/proposal/18409504155893955395764219200342193055990239653098975117323864343432865890837"
               target="_blank"
             >
               TIP-121
