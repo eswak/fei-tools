@@ -11,6 +11,7 @@ import IERC20 from '../../abi/IERC20.json';
 import { ethers } from 'ethers';
 import { getProvider, getSigner, getAccount } from '../wallet/wallet';
 import { TribeRedeemHooks } from './hook-wrapper';
+import EventEmitter from '../../modules/event-emitter';
 
 const tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
 
@@ -58,6 +59,28 @@ class TribeRedeemer extends React.Component {
     this.setState(this.state);
     this.forceUpdate();
   };
+
+
+/// APPROVING TRIBE TRANSFER
+getInputAmountWithDecimals() {
+  let amount = this.state.input.tribe;
+  if (amount === Math.round(this.state.balance.tribe / 1e18).toString()) {
+    amount = this.state.balance.tribe;
+  } else {
+    amount = (BigInt(amount) * BigInt(1e18)).toString();
+  }
+  return amount;
+}
+
+async approveTx() {
+  let amount = this.getInputAmountWithDecimals();
+
+  const tx = await tribe.approve(redeemerContract.address, amount);
+  EventEmitter.dispatch('tx', {
+    label: 'Allow Tribe transfer on Tribe Redeemer',
+    hash: tx.hash
+  });
+}
 
   render() {
     return (
@@ -121,7 +144,7 @@ class TribeRedeemer extends React.Component {
                     </div>
                   </div>
                   <div className="action-box">
-                    <button onClick={() => console.log('approve Tribe transfer')}>Approve TRIBE Transfer</button>
+                    <button onClick={() => this.approveTx()}>Approve TRIBE Transfer</button>
                     <button onClick={() => console.log('Redeem')}>Redeem</button>
                   </div>
                 </div>
