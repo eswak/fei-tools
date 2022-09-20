@@ -116,9 +116,6 @@ class TribeRedeemer extends React.Component {
                     <img src={foxImg} />{formatNumber(this.state.balance.tribe)}
                     FOX
                   </div>
-                  <div className='totalRedeem'>
-                    <div className='title'>Total Redeemed (DAI)</div>
-                  </div>
                 </div>
               </div>
               <div className="action-box">
