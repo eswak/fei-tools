@@ -10,6 +10,7 @@ import { useAccount, useSigner } from 'wagmi';
 import IERC20 from '../../abi/IERC20.json';
 import { ethers } from 'ethers';
 import { getProvider, getSigner, getAccount } from '../wallet/wallet';
+import { TribeRedeemHooks } from './hook-wrapper';
 
 const tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
 
@@ -20,12 +21,11 @@ class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      account: "0xEC5a0Dff55be882FAFe863895ef144b78aaEF097",
       input: {
         tribe: ''
       },
       balance: {
-        tribe: '0'
+        tribe: ''
       },
       output: {
         dai: '',
@@ -35,7 +35,6 @@ class TribeRedeemer extends React.Component {
       }
     };
   };
-
   onInputChange(e) {
     this.state.input.tribe = e.target.value;
     this.setState(this.state);
@@ -43,14 +42,15 @@ class TribeRedeemer extends React.Component {
 
   async componentDidMount() {
     await this.refreshData();
+    console.log("props are", this.props)
   };
 
   async refreshData() {
     // Get user TRIBE balance
-    if (this.state.account) {
+    if (this.props.account) {
       console.log('get user data');
-      this.state.balance.tribe = (await tribe.balanceOf(this.state.account)).toString();
-      console.log('TRIBE balance of', this.state.account, this.state.balance.tribe / 1e18);
+      this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
+      console.log('TRIBE balance of', this.state.props, this.state.balance.tribe / 1e18);
     } else console.log('no user data :(');
 
 
@@ -67,63 +67,67 @@ class TribeRedeemer extends React.Component {
           <div className="info">
             <p>The Tribe Redeemer allows the redeeming of TRIBE tokens for the underlying PCV.</p>
           </div>
-          <h2>Exchange Tribe for PCV</h2>
-          <div className="box-wrapper">
-            <div className="box">
-              <div className="balances">
-                <div className="title">Your Tribe Balance</div>
-                <div className="balance">
-                  <img src={tribeImg} /> {formatNumber(this.state.balance.tribe)} Tribe
+          {this.props.isConnected ?
+            <div>
+              <h2>Exchange Tribe for PCV</h2>
+              <div className="box-wrapper">
+                <div className="box">
+                  <div className="balances">
+                    <div className="title">Your Tribe Balance</div>
+                    <div className="balance">
+                      <img src={tribeImg} /> {formatNumber(this.state.balance.tribe)} Tribe
+                    </div>
+                  </div>
+                  <div className="tabs">
+                    <div className="tab active">Redeem</div>
+                  </div>
+                  <div className="content">
+                    <div className="input-box">
+                      <input
+                        type="text"
+                        placeholder="0"
+                        value={this.state.input.tribe}
+                        onChange={(e) => this.onInputChange(e)}
+                      />
+                      <span
+                        className="all"
+                        onClick={() => console.log('all')}
+                        title={'Your balance: ' + formatNumber(this.state.balance.tribe) + ' TRIBE'}
+                      >
+                        100%
+                      </span>
+                      <span className="token">
+                        <img src={tribeImg} />
+                      </span>
+                    </div>
+                    <div className="outputs">
+                      <div className="title">Outputs</div>
+                      <div className='output'>
+                        <img src={daiImg} />{formatNumber(this.state.balance.tribe)}
+                        Dai
+                      </div>
+                      <div className='output'>
+                        <img src={stEthImg} />{formatNumber(this.state.balance.tribe)}
+                        stETH
+                      </div>
+                      <div className='output'>
+                        <img src={lqtyImg} />{formatNumber(this.state.balance.tribe)}
+                        LQTY
+                      </div>
+                      <div className='output'>
+                        <img src={foxImg} />{formatNumber(this.state.balance.tribe)}
+                        FOX
+                      </div>
+                    </div>
+                  </div>
+                  <div className="action-box">
+                    <button onClick={() => console.log('approve Tribe transfer')}>Approve TRIBE Transfer</button>
+                    <button onClick={() => console.log('Redeem')}>Redeem</button>
+                  </div>
                 </div>
               </div>
-              <div className="tabs">
-                <div className="tab active">Redeem</div>
-              </div>
-              <div className="content">
-                <div className="input-box">
-                  <input
-                    type="text"
-                    placeholder="0"
-                    value={this.state.input.tribe}
-                    onChange={(e) => this.onInputChange(e)}
-                  />
-                  <span
-                    className="all"
-                    onClick={() => console.log('all')}
-                    title={'Your balance: ' + formatNumber(this.state.balance.tribe) + ' TRIBE'}
-                  >
-                    100%
-                  </span>
-                  <span className="token">
-                    <img src={tribeImg} />
-                  </span>
-                </div>
-                <div className="outputs">
-                <div className="title">Outputs</div>
-                  <div className='output'>
-                    <img src={daiImg} />{formatNumber(this.state.balance.tribe)}
-                    Dai
-                  </div>
-                  <div className='output'>
-                    <img src={stEthImg} />{formatNumber(this.state.balance.tribe)}
-                    stETH
-                  </div>
-                  <div className='output'>
-                    <img src={lqtyImg} />{formatNumber(this.state.balance.tribe)}
-                    LQTY
-                  </div>
-                  <div className='output'>
-                    <img src={foxImg} />{formatNumber(this.state.balance.tribe)}
-                    FOX
-                  </div>
-                </div>
-              </div>
-              <div className="action-box">
-                <button onClick={() => console.log('approve Tribe transfer')}>Approve TRIBE Transfer</button>
-                <button onClick={() => console.log('Redeem')}>Redeem</button>
-              </div>
-            </div>
-          </div>
+            </div> : <span>please connect your wallet</span>}
+
         </div>
         <pre>{JSON.stringify(this.state, null, 2)}</pre>
       </div>
@@ -131,4 +135,4 @@ class TribeRedeemer extends React.Component {
   }
 }
 
-export default TribeRedeemer;
+export default TribeRedeemHooks(TribeRedeemer);
