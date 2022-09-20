@@ -53,9 +53,10 @@ export function PastRedemptions(props) {
           for (var userAddress in snapshot[ctokenAddress]) {
             userData[userAddress] = userData[userAddress] || {
               address: userAddress,
+              redeemLabels: [],
               claimableLabels: [],
               claimable: 0,
-              signed: false,
+              signed: 0,
               claimed: 0,
               redeemed: 0
             };
@@ -73,7 +74,7 @@ export function PastRedemptions(props) {
         // for each Signed events, set signed = true in userData
         // event Signed(address indexed signer, bytes signature);
         signedEvents.forEach(function (signedEvent) {
-          userData[signedEvent.args.signer.toLowerCase()].signed = true;
+          userData[signedEvent.args.signer.toLowerCase()].signed = signedEvent.transactionHash;
         });
         // for each Claimed events, increment the amount claimed
         // event Claimed(address indexed claimant, address indexed cToken, uint256 claimAmount);
@@ -88,12 +89,22 @@ export function PastRedemptions(props) {
         // for each Redeemed events, increment the amount redeemed
         // event Redeemed(address indexed recipient, address indexed cToken, uint256 cTokenAmount, uint256 baseTokenAmount);
         redeemedEvents.forEach(function (redeemedEvent) {
-          const amount = (rates[redeemedEvent.args.cToken.toLowerCase()] / 1e18) * redeemedEvent.args.cTokenAmount;
-          userData[redeemedEvent.args.recipient.toLowerCase()].redeemed += amount;
+          const userAddress = redeemedEvent.args.recipient.toLowerCase();
+          const cTokenAddress = redeemedEvent.args.cToken.toLowerCase();
+          const feiAmount = (rates[cTokenAddress] / 1e18) * redeemedEvent.args.cTokenAmount;
+          const cTokenAmount = redeemedEvent.args.cTokenAmount.toString() / 1;
+
+          userData[userAddress].redeemed += feiAmount;
+
+          userData[userAddress].redeemLabels.push(
+            formatNumber(cTokenAmount, decimals[cTokenAddress]) + 
+            ' ' + labels[cTokenAddress] +
+            ' -> ' + formatNumber(feiAmount, 18, 2) + ' FEI'
+          );
             
-          const comptrollerAddress = comptrollers[redeemedEvent.args.cToken.toLowerCase()];
-          poolData[comptrollerAddress].redeemed += amount;
-          poolData[comptrollerAddress].cTokens[redeemedEvent.args.cToken.toLowerCase()].redeemed += amount;
+          const comptrollerAddress = comptrollers[cTokenAddress];
+          poolData[comptrollerAddress].redeemed += feiAmount;
+          poolData[comptrollerAddress].cTokens[cTokenAddress].redeemed += feiAmount;
         });
 
         setPoolData(poolData);
@@ -208,7 +219,7 @@ export function PastRedemptions(props) {
               </td>
               <td className="text-center">{d.signed ? '✅' : '❌'}</td>
               <td className="text-center">{formatPercent(d.claimed / d.claimable)}</td>
-              <td className="text-center">{formatPercent(d.redeemed / d.claimable)}</td>
+              <td className="text-center" title={d.redeemLabels.length ? [...d.redeemLabels, '------------------------\nTotal: ' + formatNumber(d.redeemed) + ' FEI'].join('\n') : ''}>{formatPercent(d.redeemed / d.claimable)}</td>
             </tr>
           ))}
         </tbody>
