@@ -97,6 +97,23 @@ export default function RariHackRedeem() {
     <div className="rarihackredeem">
       <div className="card section">
         <h1 className="mb-3">Rari hack redeem</h1>
+        <p>
+          Please go to <a href="https://fusehacksettlement.com/">fusehacksettlement.com</a> to redeem your cTokens for FEI.
+        </p>
+        <p>
+          <a href="https://fusehacksettlement.com/">
+            <button className="btn btn-primary">Go to fusehacksettlement.com</button>
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+
+  // render the data
+  return (
+    <div className="rarihackredeem">
+      <div className="card section">
+        <h1 className="mb-3">Rari hack redeem</h1>
         <div className="info">
           <p>
             Pursuant to{' '}
