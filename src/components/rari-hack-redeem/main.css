@@ -65,3 +65,44 @@
 .rarihackredeem .fuse-openborrows a {
   color: #FFC107;
 }
+
+.rarihackredeem .percents-box {
+  height: 30px;
+  width: 30px;
+  display: inline-block;
+  vertical-align: -8px;
+  font-size: 10px;
+  text-align: center;
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.rarihackredeem .percents-box .percent {
+  height: 15px;
+  width: 15px;
+  cursor: pointer;
+  background: #218460;
+  overflow: hidden;
+  line-height: 15px;
+  float: left;
+  text-align: center;
+}
+.rarihackredeem .percents-box .percent:hover {
+  opacity: .8;
+}
+.rarihackredeem .percents-box .percent.active {
+  opacity: .8;
+}
+
+.rarihackredeem .poolStats th {
+  background: #333;
+  color: white;
+}
+.rarihackredeem .poolStats .poolTotal {
+  background: #555;
+  color: white;
+}
+.rarihackredeem .poolStats .cToken td:first-child {
+  padding-left: 1em;
+}

@@ -40,10 +40,10 @@ class TxToasts extends Component {
           });
         }, 8000); // after mined, keep for 8s
         clearInterval(intervalCheckTx);
-
         EventEmitter.dispatch('TxMined', {
           hash: tx.hash
         });
+        tx.cb && tx.cb(txReceipt.blockNumber);
       }
     }, 5000); // every 5s, check for mined status
   }
