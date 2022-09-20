@@ -1,22 +1,63 @@
 import React from 'react';
 import './main.css';
 import tribeImg from './img/tribe.png';
+import stEthImg from '../collateralization/img/wsteth.jpg';
+import lqtyImg from './img/lqty.png';
+import foxImg from './img/fox.png';
+import daiImg from '../collateralization/img/dai.jpg';
 import { formatNumber } from '../../modules/utils';
+import { useAccount, useSigner } from 'wagmi';
+import IERC20 from '../../abi/IERC20.json';
+import { ethers } from 'ethers';
+import { getProvider, getSigner, getAccount } from '../wallet/wallet';
+
+const tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
+
+
+
 
 class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      account: "0xEC5a0Dff55be882FAFe863895ef144b78aaEF097",
       input: {
         tribe: ''
       },
       balance: {
         tribe: '0'
+      },
+      output: {
+        dai: '',
+        stETH: '',
+        LQTY: '',
+        FOX: '',
       }
     };
+  };
+
+  onInputChange(e) {
+    this.state.input.tribe = e.target.value;
+    this.setState(this.state);
   }
 
-  async componentWillMount() {}
+  async componentDidMount() {
+    await this.refreshData();
+  };
+
+  async refreshData() {
+    // Get user TRIBE balance
+    if (this.state.account) {
+      console.log('get user data');
+      this.state.balance.tribe = (await tribe.balanceOf(this.state.account)).toString();
+      console.log('TRIBE balance of', this.state.account, this.state.balance.tribe / 1e18);
+    } else console.log('no user data :(');
+
+
+    // set state & redraw
+    this.setState(this.state);
+    this.forceUpdate();
+  };
 
   render() {
     return (
@@ -44,7 +85,7 @@ class TribeRedeemer extends React.Component {
                     type="text"
                     placeholder="0"
                     value={this.state.input.tribe}
-                    onChange={() => console.log('change')}
+                    onChange={(e) => this.onInputChange(e)}
                   />
                   <span
                     className="all"
@@ -57,8 +98,27 @@ class TribeRedeemer extends React.Component {
                     <img src={tribeImg} />
                   </span>
                 </div>
-                <div className="output-box">
-                  <p>Output placeholder</p>
+                <div className="outputs">
+                <div className="title">Outputs</div>
+                  <div className='output'>
+                    <img src={daiImg} />{formatNumber(this.state.balance.tribe)}
+                    Dai
+                  </div>
+                  <div className='output'>
+                    <img src={stEthImg} />{formatNumber(this.state.balance.tribe)}
+                    stETH
+                  </div>
+                  <div className='output'>
+                    <img src={lqtyImg} />{formatNumber(this.state.balance.tribe)}
+                    LQTY
+                  </div>
+                  <div className='output'>
+                    <img src={foxImg} />{formatNumber(this.state.balance.tribe)}
+                    FOX
+                  </div>
+                  <div className='totalRedeem'>
+                    <div className='title'>Total Redeemed (DAI)</div>
+                  </div>
                 </div>
               </div>
               <div className="action-box">

@@ -29,6 +29,37 @@
   height: 20px;
   border-radius: 10px;
 }
+.triberedeemer .outputs {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  border: 1px solid;
+  text-align: center;
+  border-radius: 4px;
+}
+.triberedeemer .outputs .title {
+  background: #22996e;
+  color: white;
+}
+.triberedeemer .outputs .output {
+  display: inline-block;
+  margin: 3px 15px;
+  line-height: 20px;
+}
+.triberedeemer .outputs .output img {
+  height: 20px;
+  border-radius: 10px;
+}
+.triberedeemer .totalRedeem {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  border: 1px solid;
+  text-align: center;
+  border-radius: 4px;
+}
+.triberedeemer .totalRedeem .title {
+  background: #22996e;
+  color: white;
+}
 .triberedeemer .tabs {
   text-align: center;
 }
