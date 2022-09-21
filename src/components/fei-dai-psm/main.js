@@ -111,9 +111,7 @@ class c extends React.Component {
 
   setInputAmount(token, amount) {
     const scaledDownAmount = Number(
-      Number(
-        BigNumber.from(amount).mul(100).div(ethers.constants.WeiPerEther).toString()
-      ) / 100
+      Number(BigNumber.from(amount).mul(100).div(ethers.constants.WeiPerEther).toString()) / 100
     ).toString();
     this.state.input[token] = scaledDownAmount;
     this.setState(this.state);
@@ -129,7 +127,10 @@ class c extends React.Component {
     if (Math.round(amount).toString() === Math.round(this.state.balance[token] / 1e18).toString()) {
       amount = this.state.balance[token];
     } else {
-      amount = BigNumber.from(Math.round(amount * 100)).mul(ethers.constants.WeiPerEther).div(100).toString();
+      amount = BigNumber.from(Math.round(amount * 100))
+        .mul(ethers.constants.WeiPerEther)
+        .div(100)
+        .toString();
     }
     return amount;
   }
@@ -189,7 +190,14 @@ class c extends React.Component {
               <div className="balances">
                 <div className="title">
                   Your Balances
-                  { this.state.loading ? <div className="lds-ring"><div></div><div></div><div></div><div></div></div> : null }
+                  {this.state.loading ? (
+                    <div className="lds-ring">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  ) : null}
                 </div>
                 <div className="balance">
                   <img src={feiImg} /> {formatNumber(this.state.balance.fei, 18, 2)} FEI
@@ -257,9 +265,7 @@ class c extends React.Component {
                   <br />
                   <img src={this.state.tab == 'redeem' ? daiImg : feiImg} className="token" />
                   <div className="out">
-                    {(this.state.tab == 'mint'
-                      ? this.state.input.dai
-                      : this.state.input.fei) || '0'}
+                    {(this.state.tab == 'mint' ? this.state.input.dai : this.state.input.fei) || '0'}
                   </div>
                 </div>
                 <div className="action-box">
@@ -316,17 +322,15 @@ class c extends React.Component {
                 {this.state.events.map((event, i) => (
                   <tr key={i}>
                     <td>
-                      <a href={'https://etherscan.io/tx/' + event.hash}>
-                        {event.block}
-                      </a>
+                      <a href={'https://etherscan.io/tx/' + event.hash}>{event.block}</a>
                     </td>
                     <td>{event.type == 'mint' ? 'Mint' : 'Redeem'}</td>
-                    <td style={{'fontFamily':'monospace'}}>
-                      <a href={'https://etherscan.io/address/' + event.to}>
-                        {event.to}
-                      </a>
+                    <td style={{ fontFamily: 'monospace' }}>
+                      <a href={'https://etherscan.io/address/' + event.to}>{event.to}</a>
                     </td>
-                    <td className="text-right" title={'FEI Wei: ' + event.fei}>{formatNumber(event.fei, 18, 2)}</td>
+                    <td className="text-right" title={'FEI Wei: ' + event.fei}>
+                      {formatNumber(event.fei, 18, 2)}
+                    </td>
                   </tr>
                 ))}
               </tbody>

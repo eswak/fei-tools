@@ -8,7 +8,7 @@ import daiImg from '../collateralization/img/dai.jpg';
 import { formatNumber } from '../../modules/utils';
 import { useAccount, useSigner } from 'wagmi';
 import IERC20 from '../../abi/IERC20.json';
-import redeemerABI from '../../abi/RedeemerContract.json'
+import redeemerABI from '../../abi/RedeemerContract.json';
 import { ethers } from 'ethers';
 import { getProvider, getSigner, getAccount } from '../wallet/wallet';
 import { TribeRedeemHooks } from './hook-wrapper';
@@ -16,8 +16,6 @@ import EventEmitter from '../../modules/event-emitter';
 
 const tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
 const redeemerContract = new ethers.Contract('toBeReplaced', redeemerABI, getSigner());
-
-
 
 class TribeRedeemer extends React.Component {
   constructor(props) {
@@ -33,10 +31,10 @@ class TribeRedeemer extends React.Component {
         dai: '',
         stETH: '',
         LQTY: '',
-        FOX: '',
+        FOX: ''
       }
     };
-  };
+  }
   onInputChange(e) {
     this.state.input.tribe = e.target.value;
     this.setState(this.state);
@@ -44,10 +42,10 @@ class TribeRedeemer extends React.Component {
 
   async componentDidMount() {
     await this.refreshData();
-    console.log("dai is", typeof(this.state.output.dai))
-    console.log("dai is", this.state.output.dai)
-    console.log("dai is", formatNumber(this.state.output.dai))
-  };
+    console.log('dai is', typeof this.state.output.dai);
+    console.log('dai is', this.state.output.dai);
+    console.log('dai is', formatNumber(this.state.output.dai));
+  }
 
   async refreshData() {
     // Get user TRIBE balance
@@ -57,58 +55,56 @@ class TribeRedeemer extends React.Component {
       console.log('TRIBE balance of', this.state.props, this.state.balance.tribe / 1e18);
     } else console.log('no user data :(');
 
-
     // set state & redraw
     this.setState(this.state);
     this.forceUpdate();
-  };
-
-
-/// APPROVING TRIBE TRANSFER
-getInputAmountWithDecimals() {
-  let amount = this.state.input.tribe;
-  if (amount === Math.round(this.state.balance.tribe / 1e18).toString()) {
-    amount = this.state.balance.tribe;
-  } else {
-    amount = (BigInt(amount) * BigInt(1e18)).toString();
   }
-  return amount;
-}
 
-async approveTx() {
-  let amount = this.getInputAmountWithDecimals();
+  /// APPROVING TRIBE TRANSFER
+  getInputAmountWithDecimals() {
+    let amount = this.state.input.tribe;
+    if (amount === Math.round(this.state.balance.tribe / 1e18).toString()) {
+      amount = this.state.balance.tribe;
+    } else {
+      amount = (BigInt(amount) * BigInt(1e18)).toString();
+    }
+    return amount;
+  }
 
-  const tx = await tribe.approve(redeemerContract.address, amount);
-  EventEmitter.dispatch('tx', {
-    label: 'Allow Tribe transfer on Tribe Redeemer',
-    hash: tx.hash
-  });
-}
-/// Getting output values
-async outputValue(){
-  let amount = this.getInputAmountWithDecimals();
-  const tx = await redeemerContract.previewRedeem(amount);
-  console.log('preview returned', tx);
-}
+  async approveTx() {
+    let amount = this.getInputAmountWithDecimals();
 
-/// REDEEMING TRIBE FOR PCV
-async redeemTx() {
-  let amount = this.getInputAmountWithDecimals();
-  const tx = await redeemerContract.redeem(this.props.account, amount);
-  EventEmitter.dispatch('tx', {
-    label: 'Redeem ' + formatNumber(amount) + ' TRIBE to get PCV',
-    hash: tx.hash
-  });
-  this.state.input.tribe = '';
-  this.setState(this.state);
-}
+    const tx = await tribe.approve(redeemerContract.address, amount);
+    EventEmitter.dispatch('tx', {
+      label: 'Allow Tribe transfer on Tribe Redeemer',
+      hash: tx.hash
+    });
+  }
+  /// Getting output values
+  async outputValue() {
+    let amount = this.getInputAmountWithDecimals();
+    const tx = await redeemerContract.previewRedeem(amount);
+    console.log('preview returned', tx);
+  }
 
-// BUTTON TO SET TO 100%
-setInputAmount() {
-  const scaledDownAmount = (BigInt(this.state.balance.tribe) / BigInt(1e18)).toString();
-  this.state.input.tribe = scaledDownAmount;
-  this.setState(this.state);
-}
+  /// REDEEMING TRIBE FOR PCV
+  async redeemTx() {
+    let amount = this.getInputAmountWithDecimals();
+    const tx = await redeemerContract.redeem(this.props.account, amount);
+    EventEmitter.dispatch('tx', {
+      label: 'Redeem ' + formatNumber(amount) + ' TRIBE to get PCV',
+      hash: tx.hash
+    });
+    this.state.input.tribe = '';
+    this.setState(this.state);
+  }
+
+  // BUTTON TO SET TO 100%
+  setInputAmount() {
+    const scaledDownAmount = (BigInt(this.state.balance.tribe) / BigInt(1e18)).toString();
+    this.state.input.tribe = scaledDownAmount;
+    this.setState(this.state);
+  }
 
   render() {
     return (
@@ -118,7 +114,7 @@ setInputAmount() {
           <div className="info">
             <p>The Tribe Redeemer allows the redeeming of TRIBE tokens for the underlying PCV.</p>
           </div>
-          {this.props.isConnected ?
+          {this.props.isConnected ? (
             <div>
               <h2>Exchange Tribe for PCV</h2>
               <div className="box-wrapper">
@@ -153,17 +149,21 @@ setInputAmount() {
                     </div>
                     <div className="outputs">
                       <div className="title">Outputs</div>
-                      <div className='output'>
-                        <img src={daiImg} />{formatNumber(this.state.output.dai)} Dai
+                      <div className="output">
+                        <img src={daiImg} />
+                        {formatNumber(this.state.output.dai)} Dai
                       </div>
-                      <div className='output'>
-                        <img src={stEthImg} />{formatNumber(this.state.output.stETH)} tETH
+                      <div className="output">
+                        <img src={stEthImg} />
+                        {formatNumber(this.state.output.stETH)} tETH
                       </div>
-                      <div className='output'>
-                        <img src={lqtyImg} />{formatNumber(this.state.output.LQTY)} LQTY
+                      <div className="output">
+                        <img src={lqtyImg} />
+                        {formatNumber(this.state.output.LQTY)} LQTY
                       </div>
-                      <div className='output'>
-                        <img src={foxImg} />{formatNumber(this.state.output.FOX)} FOX
+                      <div className="output">
+                        <img src={foxImg} />
+                        {formatNumber(this.state.output.FOX)} FOX
                       </div>
                     </div>
                   </div>
@@ -173,8 +173,10 @@ setInputAmount() {
                   </div>
                 </div>
               </div>
-            </div> : <span>please connect your wallet</span>}
-
+            </div>
+          ) : (
+            <span>please connect your wallet</span>
+          )}
         </div>
         <pre>{JSON.stringify(this.state, null, 2)}</pre>
       </div>

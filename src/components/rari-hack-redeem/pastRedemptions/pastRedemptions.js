@@ -61,13 +61,18 @@ export function PastRedemptions(props) {
             };
             userData[userAddress].claimable += (rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress];
             userData[userAddress].claimableLabels.push(
-              formatNumber(snapshot[ctokenAddress][userAddress], decimals[ctokenAddress]) + 
-              ' ' + labels[ctokenAddress] +
-              ' -> ' + formatNumber((rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress]) + ' FEI'
+              formatNumber(snapshot[ctokenAddress][userAddress], decimals[ctokenAddress]) +
+                ' ' +
+                labels[ctokenAddress] +
+                ' -> ' +
+                formatNumber((rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress]) +
+                ' FEI'
             );
 
-            poolData[comptrollerAddress].claimable += (rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress];
-            poolData[comptrollerAddress].cTokens[ctokenAddress].claimable += (rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress];
+            poolData[comptrollerAddress].claimable +=
+              (rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress];
+            poolData[comptrollerAddress].cTokens[ctokenAddress].claimable +=
+              (rates[ctokenAddress] / 1e18) * snapshot[ctokenAddress][userAddress];
           }
         }
         // for each Signed events, set signed = true in userData
@@ -90,7 +95,7 @@ export function PastRedemptions(props) {
         redeemedEvents.forEach(function (redeemedEvent) {
           const amount = (rates[redeemedEvent.args.cToken.toLowerCase()] / 1e18) * redeemedEvent.args.cTokenAmount;
           userData[redeemedEvent.args.recipient.toLowerCase()].redeemed += amount;
-            
+
           const comptrollerAddress = comptrollers[redeemedEvent.args.cToken.toLowerCase()];
           poolData[comptrollerAddress].redeemed += amount;
           poolData[comptrollerAddress].cTokens[redeemedEvent.args.cToken.toLowerCase()].redeemed += amount;
@@ -147,18 +152,16 @@ export function PastRedemptions(props) {
           </tr>
         </thead>
         <tbody>
-          <tr className="poolTotal" style={{'fontWeight':'bold'}}>
+          <tr className="poolTotal" style={{ fontWeight: 'bold' }}>
             <td>Total for all pools</td>
-            <td>
-              {formatNumber(totalClaimable)}
-            </td>
+            <td>{formatNumber(totalClaimable)}</td>
             <td>
               {formatNumber(totalClaimed)}
-              &nbsp;({formatPercent(totalClaimed/totalClaimable)})
+              &nbsp;({formatPercent(totalClaimed / totalClaimable)})
             </td>
             <td>
               {formatNumber(totalRedeemed)}
-              &nbsp;({formatPercent(totalRedeemed/totalClaimable)})
+              &nbsp;({formatPercent(totalRedeemed / totalClaimable)})
             </td>
           </tr>
           {Object.keys(poolData).map((comptrollerAddress) => [
@@ -177,16 +180,18 @@ export function PastRedemptions(props) {
                 &nbsp;({formatPercent(poolData[comptrollerAddress].redeemed / poolData[comptrollerAddress].claimable)})
               </td>
             </tr>,
-            Object.keys(poolData[comptrollerAddress].cTokens).map((cTokenAddress, i) => <tr key={cTokenAddress} className={'cToken ' + (i%2?'odd':'even')}>
-              <td>{labels[cTokenAddress]}</td>
-              <td>{formatNumber(poolData[comptrollerAddress].cTokens[cTokenAddress].claimable)}</td>
-              <td>{formatNumber(poolData[comptrollerAddress].cTokens[cTokenAddress].claimed)}</td>
-              <td>{formatNumber(poolData[comptrollerAddress].cTokens[cTokenAddress].redeemed)}</td>
-            </tr>)
+            Object.keys(poolData[comptrollerAddress].cTokens).map((cTokenAddress, i) => (
+              <tr key={cTokenAddress} className={'cToken ' + (i % 2 ? 'odd' : 'even')}>
+                <td>{labels[cTokenAddress]}</td>
+                <td>{formatNumber(poolData[comptrollerAddress].cTokens[cTokenAddress].claimable)}</td>
+                <td>{formatNumber(poolData[comptrollerAddress].cTokens[cTokenAddress].claimed)}</td>
+                <td>{formatNumber(poolData[comptrollerAddress].cTokens[cTokenAddress].redeemed)}</td>
+              </tr>
+            ))
           ])}
         </tbody>
       </table>
-  
+
       <table className="mb-3">
         <thead>
           <tr>

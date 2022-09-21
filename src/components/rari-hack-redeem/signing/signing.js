@@ -79,18 +79,18 @@ export function Signing(props) {
     <div>
       {signedMessage || pendingSignedMessage ? (
         <div>
-          <p>
-            Your have signed the waiver :
-          </p>
+          <p>Your have signed the waiver :</p>
           <p style={{ background: '#eee', borderLeft: '5px solid #aaa', padding: '5px', whiteSpace: 'pre-line' }}>
             {message}
           </p>
           <p>
-            Link to the <a href="https://fusehacksettlement.com/waiver.pdf" target="_blank">Fuse Hack Settlement Agreement and Release</a> document.
+            Link to the{' '}
+            <a href="https://fusehacksettlement.com/waiver.pdf" target="_blank">
+              Fuse Hack Settlement Agreement and Release
+            </a>{' '}
+            document.
           </p>
-          <p>
-            Here is your signature :
-          </p>
+          <p>Here is your signature :</p>
           <p
             style={{
               background: '#eee',
@@ -117,7 +117,11 @@ export function Signing(props) {
             {message}
           </p>
           <p>
-            Link to the <a href="https://fusehacksettlement.com/waiver.pdf" target="_blank">Fuse Hack Settlement Agreement and Release</a> document.
+            Link to the{' '}
+            <a href="https://fusehacksettlement.com/waiver.pdf" target="_blank">
+              Fuse Hack Settlement Agreement and Release
+            </a>{' '}
+            document.
           </p>
           <div>
             <button disabled={isLoading || !signMessage} onClick={() => signMessage()}>
