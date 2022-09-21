@@ -7,7 +7,7 @@
 .triberedeemer .box {
   text-align: left;
   display: inline-block;
-  width: 400px;
+  min-width: 400px;
   user-select: none;
 }
 .triberedeemer .balances {
@@ -48,6 +48,7 @@
 .triberedeemer .outputs .output img {
   height: 20px;
   border-radius: 10px;
+  margin: 3px;
 }
 .triberedeemer .tabs {
   text-align: center;

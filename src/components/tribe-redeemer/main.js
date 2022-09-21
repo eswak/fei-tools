@@ -8,13 +8,14 @@ import daiImg from '../collateralization/img/dai.jpg';
 import { formatNumber } from '../../modules/utils';
 import { useAccount, useSigner } from 'wagmi';
 import IERC20 from '../../abi/IERC20.json';
+import redeemerABI from '../../abi/RedeemerContract.json'
 import { ethers } from 'ethers';
 import { getProvider, getSigner, getAccount } from '../wallet/wallet';
 import { TribeRedeemHooks } from './hook-wrapper';
 import EventEmitter from '../../modules/event-emitter';
 
 const tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
-const redeemerContract = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
+const redeemerContract = new ethers.Contract('toBeReplaced', redeemerABI, getSigner());
 
 
 
@@ -26,10 +27,10 @@ class TribeRedeemer extends React.Component {
         tribe: ''
       },
       balance: {
-        tribe: '4234256342634563423'
+        tribe: ''
       },
       output: {
-        dai: "",
+        dai: '',
         stETH: '',
         LQTY: '',
         FOX: '',
@@ -83,11 +84,17 @@ async approveTx() {
     hash: tx.hash
   });
 }
+/// Getting output values
+async outputValue(){
+  let amount = this.getInputAmountWithDecimals();
+  const tx = await redeemerContract.previewRedeem(amount);
+  console.log('preview returned', tx);
+}
 
 /// REDEEMING TRIBE FOR PCV
 async redeemTx() {
   let amount = this.getInputAmountWithDecimals();
-  const tx = await redeemerContract.redeem(this.props.account, amount, '0' /*amount*/);
+  const tx = await redeemerContract.redeem(this.props.account, amount);
   EventEmitter.dispatch('tx', {
     label: 'Redeem ' + formatNumber(amount) + ' TRIBE to get PCV',
     hash: tx.hash
@@ -147,20 +154,16 @@ setInputAmount() {
                     <div className="outputs">
                       <div className="title">Outputs</div>
                       <div className='output'>
-                        <img src={daiImg} />{formatNumber(this.state.output.dai)}
-                        Dai
+                        <img src={daiImg} />{formatNumber(this.state.output.dai)} Dai
                       </div>
                       <div className='output'>
-                        <img src={stEthImg} />{formatNumber(this.state.output.stETH)}
-                        stETH
+                        <img src={stEthImg} />{formatNumber(this.state.output.stETH)} tETH
                       </div>
                       <div className='output'>
-                        <img src={lqtyImg} />{formatNumber(this.state.output.LQTY)}
-                        LQTY
+                        <img src={lqtyImg} />{formatNumber(this.state.output.LQTY)} LQTY
                       </div>
                       <div className='output'>
-                        <img src={foxImg} />{formatNumber(this.state.output.FOX)}
-                        FOX
+                        <img src={foxImg} />{formatNumber(this.state.output.FOX)} FOX
                       </div>
                     </div>
                   </div>
