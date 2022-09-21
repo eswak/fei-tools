@@ -3,7 +3,7 @@ import { useAccount } from 'wagmi';
 import RariHackEligibility from './eligibility/eligibility';
 import { Signing } from './signing/signing';
 import { PastRedemptions } from './pastRedemptions/pastRedemptions';
-import { ClaimAndRedeem } from './claimAndRedeem/claimAndRedeem';
+import { Redeem } from './redeem/redeem';
 import { CheckOpenBorrows } from './checkOpenBorrows/checkOpenBorrows';
 import './main.css';
 
@@ -97,11 +97,28 @@ export default function RariHackRedeem() {
     <div className="rarihackredeem">
       <div className="card section">
         <h1 className="mb-3">Rari hack redeem</h1>
+        <p>
+          Please go to <a href="https://fusehacksettlement.com/">fusehacksettlement.com</a> to redeem your cTokens for FEI.
+        </p>
+        <p>
+          <a href="https://fusehacksettlement.com/">
+            <button className="btn btn-primary">Go to fusehacksettlement.com</button>
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+
+  // render the data
+  return (
+    <div className="rarihackredeem">
+      <div className="card section">
+        <h1 className="mb-3">Rari hack redeem</h1>
         <div className="info">
           <p>
             Pursuant to{' '}
             <a
-              href="https://snapshot.org/#/fei.eth/proposal/0xd5359654b34bba833843fb64ad38e813b4ff6cc21e6f5ea323b704d2ceb25d96"
+              href="https://www.tally.xyz/governance/eip155:1:0x0BEF27FEB58e857046d630B2c03dFb7bae567494/proposal/18409504155893955395764219200342193055990239653098975117323864343432865890837"
               target="_blank"
             >
               TIP-121
@@ -112,6 +129,9 @@ export default function RariHackRedeem() {
             This interface lets you interact with the{' '}
             <a href={'https://etherscan.io/address/' + contractAddress}>smart contract deployed</a> to process the
             reimbursments.
+          </p>
+          <p>
+            If you are eligible (check the table below), you will be able to exchange your cTokens (Fuse pool deposit tokens) in exchange for FEI. Your full cToken balance might not be eligible for exchange to FEI if the Fuse pool where you deposited has "good debt" (tokens owed by other users). In this case, you will be able to withdraw your remaining collateral when other users repay their debt. You will have to close all your outstanding debts in Fuse in order to be able to transfer your cTokens to the redeemer contract.
           </p>
         </div>
         <h2>Step 1: Check your Eligibility</h2>
@@ -137,7 +157,7 @@ export default function RariHackRedeem() {
             <CheckOpenBorrows redeemableTokens={redeemable} />
 
             <h2>Step 3: Redeem your cTokens for FEI</h2>
-            <ClaimAndRedeem
+            <Redeem
               redeemableTokens={redeemable}
               alreadySigned={alreadySigned}
               contractAddress={contractAddress}
@@ -147,7 +167,7 @@ export default function RariHackRedeem() {
           </div>
         ) : null}
 
-        <div>
+        <div className="mt-3">
           <h2>Stats: Full Eligibility List and Redemption Status</h2>
           <PastRedemptions userAddress={address} contractAddress={contractAddress} reloadStats={reloadStats} />
         </div>
