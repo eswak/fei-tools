@@ -55,7 +55,7 @@ class TribeRedeemer extends React.Component {
   }
 
   onInputChange(e) {
-    this.state.input.tribe = e.target.value;
+    this.state.input.tribe = ((e.target.value || '').match(/^[0-9]+(\.[0-9]{0,2})?/g) || [])[0] || '';
     this.setState(this.state);
   }
 
