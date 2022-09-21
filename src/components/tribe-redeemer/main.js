@@ -13,9 +13,7 @@ import { ethers } from 'ethers';
 import { withWagmiHooksHOC } from '../../modules/with-wagmi-hooks-hoc';
 import EventEmitter from '../../modules/event-emitter';
 
-
-let contractTribe, contractDai, contractStEth, contractLqty, contractFox, contractRedeemer;
-const redeemerAddress = '0xF14500d6c06af77a28746C5Bd0F0516414A23E1C'
+let tribe, steth, lqty, fox, dai, redeemerContract;
 class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
@@ -27,25 +25,27 @@ class TribeRedeemer extends React.Component {
         tribe: ''
       },
       output: {
-        dai: '',
         steth: '',
         lqty: '',
-        fox: ''
+        fox: '',
+        dai: ''
       },
       contractBalance: {
-        dai: '',
+        tribe: '',
         steth: '',
         lqty: '',
-        fox: ''
+        fox: '',
+        dai: ''
       }
     };
-    contractTribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.provider);
-    contractDai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.provider);
-    contractStEth = new ethers.Contract('0xDFe66B14D37C77F4E9b180cEb433d1b164f0281D', IERC20, props.provider);
-    contractLqty = new ethers.Contract('0x6DEA81C8171D0bA574754EF6F8b412F2Ed88c54D', IERC20, props.provider);
-    contractFox = new ethers.Contract('0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d', IERC20, props.provider);
-    contractRedeemer = new ethers.Contract(redeemerAddress, redeemerABI, props.provider);
+    tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.provider);
+    steth = new ethers.Contract('0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', IERC20, props.provider);
+    lqty = new ethers.Contract('0x6DEA81C8171D0bA574754EF6F8b412F2Ed88c54D', IERC20, props.provider);
+    fox = new ethers.Contract('0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d', IERC20, props.provider);
+    dai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.provider);
+    redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, props.provider);
   }
+
   UNSAFE_componentWillReceiveProps(props) {
     if (props.signer) {
       contractTribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
@@ -56,7 +56,6 @@ class TribeRedeemer extends React.Component {
       contractRedeemer = new ethers.Contract(redeemerAddress, redeemerABI, props.signer);
     }
   }
-
 
   onInputChange(e) {
     this.state.input.tribe = e.target.value;
@@ -81,8 +80,12 @@ class TribeRedeemer extends React.Component {
     // Get user TRIBE balance
     if (this.props.account) {
       console.log('get user data');
-      this.state.balance.tribe = (await contractTribe.balanceOf(this.props.account)).toString();
-      console.log('TRIBE balance of', this.state.balance.tribe / 1e18);
+      this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
+      this.state.contractBalance.tribe = (await tribe.balanceOf(redeemerContract.address)).toString();
+      this.state.contractBalance.steth = (await steth.balanceOf(redeemerContract.address)).toString();
+      this.state.contractBalance.lqty = (await lqty.balanceOf(redeemerContract.address)).toString();
+      this.state.contractBalance.fox = (await fox.balanceOf(redeemerContract.address)).toString();
+      this.state.contractBalance.dai = (await dai.balanceOf(redeemerContract.address)).toString();
     } else console.log('no user data :(');
 
     // set state & redraw
@@ -152,24 +155,20 @@ class TribeRedeemer extends React.Component {
                   <div className="balances">
                     <div className="title">Your Tribe Balance</div>
                     <div className="balance">
-                      <img src={tribeImg} /> {formatNumber(this.state.balance.tribe)} Tribe
+                      <img src={tribeImg} /> {formatNumber(this.state.balance.tribe, 18, 2)} TRIBE
                     </div>
                     <div className="title">Contract Balances</div>
                     <div className="balance">
-                      <img src={daiImg} />
-                      {formatNumber(this.state.contractBalance.dai)} Dai
+                      <img src={daiImg} /> {formatNumber(this.state.contractBalance.dai)} DAI
                     </div>
                     <div className="balance">
-                      <img src={stEthImg} />
-                      {formatNumber(this.state.contractBalance.steth)} tETH
+                      <img src={stEthImg} /> {formatNumber(this.state.contractBalance.steth)} stETH
                     </div>
                     <div className="balance">
-                      <img src={lqtyImg} />
-                      {formatNumber(this.state.contractBalance.lqty)} LQTY
+                      <img src={lqtyImg} /> {formatNumber(this.state.contractBalance.lqty)} LQTY
                     </div>
                     <div className="balance">
-                      <img src={foxImg} />
-                      {formatNumber(this.state.contractBalance.fox)} FOX
+                      <img src={foxImg} /> {formatNumber(this.state.contractBalance.fox)} FOX
                     </div>
                   </div>
                   <div className="tabs">
@@ -201,20 +200,16 @@ class TribeRedeemer extends React.Component {
 
                       <div className="title">Outputs</div>
                       <div className="output">
-                        <img src={daiImg} />
-                        {formatNumber(this.state.output.dai)} Dai
+                        <img src={daiImg} /> {formatNumber(this.state.output.dai, 18, 2)} DAI
                       </div>
                       <div className="output">
-                        <img src={stEthImg} />
-                        {formatNumber(this.state.output.stETH)} tETH
+                        <img src={stEthImg} /> {formatNumber(this.state.output.steth, 18, 3)} stETH
                       </div>
                       <div className="output">
-                        <img src={lqtyImg} />
-                        {formatNumber(this.state.output.LQTY)} LQTY
+                        <img src={lqtyImg} /> {formatNumber(this.state.output.lqty, 18, 1)} LQTY
                       </div>
                       <div className="output">
-                        <img src={foxImg} />
-                        {formatNumber(this.state.output.FOX)} FOX
+                        <img src={foxImg} /> {formatNumber(this.state.output.fox, 18)} FOX
                       </div>
                     </div>
                   </div>
