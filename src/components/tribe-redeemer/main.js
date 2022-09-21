@@ -4,6 +4,7 @@ import tribeImg from './img/tribe.png';
 import stEthImg from '../collateralization/img/wsteth.jpg';
 import lqtyImg from './img/lqty.png';
 import foxImg from './img/fox.png';
+import arrowImg from './img/arrow.png';
 import daiImg from '../collateralization/img/dai.jpg';
 import { formatNumber } from '../../modules/utils';
 import { useAccount, useSigner } from 'wagmi';
@@ -14,8 +15,7 @@ import { getProvider, getSigner, getAccount } from '../wallet/wallet';
 import { TribeRedeemHooks } from './hook-wrapper';
 import EventEmitter from '../../modules/event-emitter';
 
-const tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
-const redeemerContract = new ethers.Contract('toBeReplaced', redeemerABI, getSigner());
+
 
 class TribeRedeemer extends React.Component {
   constructor(props) {
@@ -32,15 +32,26 @@ class TribeRedeemer extends React.Component {
         stETH: '',
         LQTY: '',
         FOX: ''
+      },
+      contractBalance: {
+        dai: '',
+        stETH: '',
+        LQTY: '',
+        FOX: ''
       }
     };
   }
+
+tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, this.props.signer);
+redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, this.props.signer);
+
   onInputChange(e) {
     this.state.input.tribe = e.target.value;
     this.setState(this.state);
   }
 
   async componentDidMount() {
+    console.log('props signer are', this.props.signer);
     await this.refreshData();
     console.log('dai is', typeof this.state.output.dai);
     console.log('dai is', this.state.output.dai);
@@ -80,7 +91,7 @@ class TribeRedeemer extends React.Component {
       hash: tx.hash
     });
   }
-  /// Getting output values
+  /// Getting output values from preview redeem
   async outputValue() {
     let amount = this.getInputAmountWithDecimals();
     const tx = await redeemerContract.previewRedeem(amount);
@@ -124,6 +135,23 @@ class TribeRedeemer extends React.Component {
                     <div className="balance">
                       <img src={tribeImg} /> {formatNumber(this.state.balance.tribe)} Tribe
                     </div>
+                    <div className="title">Contract Balances</div>
+                    <div className="balance">
+                        <img src={daiImg} />
+                        {formatNumber(this.state.contractBalance.dai)} Dai
+                      </div>
+                      <div className="balance">
+                        <img src={stEthImg} />
+                        {formatNumber(this.state.contractBalance.stETH)} tETH
+                      </div>
+                      <div className="balance">
+                        <img src={lqtyImg} />
+                        {formatNumber(this.state.contractBalance.LQTY)} LQTY
+                      </div>
+                      <div className="balance">
+                        <img src={foxImg} />
+                        {formatNumber(this.state.contractBalance.FOX)} FOX
+                      </div>
                   </div>
                   <div className="tabs">
                     <div className="tab active">Redeem</div>
@@ -147,7 +175,11 @@ class TribeRedeemer extends React.Component {
                         <img src={tribeImg} />
                       </span>
                     </div>
+                    <div className='arrowBox'>
+                    <img src={arrowImg} className="arrow" />
+                    </div>
                     <div className="outputs">
+                    
                       <div className="title">Outputs</div>
                       <div className="output">
                         <img src={daiImg} />
@@ -178,6 +210,7 @@ class TribeRedeemer extends React.Component {
             <span>please connect your wallet</span>
           )}
         </div>
+        <pre>{JSON.stringify(this.props, null, 2)}</pre>
         <pre>{JSON.stringify(this.state, null, 2)}</pre>
       </div>
     );

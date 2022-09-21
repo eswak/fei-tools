@@ -8,3 +8,6 @@ package-lock.json
 # IntelliJ
 *.iml
 /.idea
+src/components/tribe-redeemer/img/tribe.pngZone.Identifier
+src/components/tribe-redeemer/img/lqty.pngZone.Identifier
+src/components/tribe-redeemer/img/fox.pngZone.Identifier

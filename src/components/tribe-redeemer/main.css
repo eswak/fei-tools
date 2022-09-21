@@ -5,7 +5,7 @@
   text-align: center;
 }
 .triberedeemer .box {
-  text-align: left;
+  text-align: center;
   display: inline-block;
   min-width: 400px;
   user-select: none;
@@ -30,7 +30,7 @@
   border-radius: 10px;
 }
 .triberedeemer .outputs {
-  margin-top: 40px;
+  margin-top: 4px;
   margin-bottom: 40px;
   border: 1px solid;
   text-align: center;
@@ -49,6 +49,15 @@
   height: 20px;
   border-radius: 10px;
   margin: 3px;
+}
+.triberedeemer .arrowBox .arrow {
+  display: inline-block;
+  text-align: center;
+}
+.triberedeemer .arrowBox .arrow {
+  height: 60px;
+  margin: 10px;
+  filter: invert(74%) sepia(74%) saturate(3763%) hue-rotate(114deg) brightness(93%) contrast(91%);
 }
 .triberedeemer .tabs {
   text-align: center;
