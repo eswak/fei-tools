@@ -14,7 +14,8 @@ import { withWagmiHooksHOC } from '../../modules/with-wagmi-hooks-hoc';
 import EventEmitter from '../../modules/event-emitter';
 
 
-let tribe, redeemerContract;
+let contractTribe, contractDai, contractStEth, contractLqty, contractFox, contractRedeemer;
+const redeemerAddress = '0xF14500d6c06af77a28746C5Bd0F0516414A23E1C'
 class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
@@ -27,24 +28,32 @@ class TribeRedeemer extends React.Component {
       },
       output: {
         dai: '',
-        stETH: '',
-        LQTY: '',
-        FOX: ''
+        steth: '',
+        lqty: '',
+        fox: ''
       },
       contractBalance: {
         dai: '',
-        stETH: '',
-        LQTY: '',
-        FOX: ''
+        steth: '',
+        lqty: '',
+        fox: ''
       }
     };
-    tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.provider);
-    redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, props.provider);
+    contractTribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.provider);
+    contractDai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.provider);
+    contractStEth = new ethers.Contract('0xDFe66B14D37C77F4E9b180cEb433d1b164f0281D', IERC20, props.provider);
+    contractLqty = new ethers.Contract('0x6DEA81C8171D0bA574754EF6F8b412F2Ed88c54D', IERC20, props.provider);
+    contractFox = new ethers.Contract('0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d', IERC20, props.provider);
+    contractRedeemer = new ethers.Contract(redeemerAddress, redeemerABI, props.provider);
   }
   UNSAFE_componentWillReceiveProps(props) {
     if (props.signer) {
-      tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
-      redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, props.signer);
+      contractTribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
+      contractDai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.signer);
+      contractStEth = new ethers.Contract('0xDFe66B14D37C77F4E9b180cEb433d1b164f0281D', IERC20, props.signer);
+      contractLqty = new ethers.Contract('0x6DEA81C8171D0bA574754EF6F8b412F2Ed88c54D', IERC20, props.signer);
+      contractFox = new ethers.Contract('0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d', IERC20, props.signer);
+      contractRedeemer = new ethers.Contract(redeemerAddress, redeemerABI, props.signer);
     }
   }
 
@@ -56,6 +65,15 @@ class TribeRedeemer extends React.Component {
 
   async componentDidMount() {
     await this.refreshData();
+    await this.redeemerBalances;
+  }
+
+  /// Get redemer balances
+  async redeemerBalances(){
+    this.state.contractBalance.dai = (await contractDai.balanceOf(redeemerAddress)).toString();
+    this.state.contractBalance.steth = (await contractStEth.balanceOf(redeemerAddress)).toString();
+    this.state.contractBalance.lqty = (await contractLqty.balanceOf(redeemerAddress)).toString();
+    this.state.contractBalance.fox = (await contractFox.balanceOf(redeemerAddress)).toString();
   }
 
 
@@ -63,7 +81,7 @@ class TribeRedeemer extends React.Component {
     // Get user TRIBE balance
     if (this.props.account) {
       console.log('get user data');
-      this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
+      this.state.balance.tribe = (await contractTribe.balanceOf(this.props.account)).toString();
       console.log('TRIBE balance of', this.state.balance.tribe / 1e18);
     } else console.log('no user data :(');
 
@@ -86,7 +104,7 @@ class TribeRedeemer extends React.Component {
   async approveTx() {
     let amount = this.getInputAmountWithDecimals();
 
-    const tx = await tribe.approve(redeemerContract.address, amount);
+    const tx = await contractTribe.approve(redeemerContract.address, amount);
     EventEmitter.dispatch('tx', {
       label: 'Allow Tribe transfer on Tribe Redeemer',
       hash: tx.hash
@@ -143,15 +161,15 @@ class TribeRedeemer extends React.Component {
                     </div>
                     <div className="balance">
                       <img src={stEthImg} />
-                      {formatNumber(this.state.contractBalance.stETH)} tETH
+                      {formatNumber(this.state.contractBalance.steth)} tETH
                     </div>
                     <div className="balance">
                       <img src={lqtyImg} />
-                      {formatNumber(this.state.contractBalance.LQTY)} LQTY
+                      {formatNumber(this.state.contractBalance.lqty)} LQTY
                     </div>
                     <div className="balance">
                       <img src={foxImg} />
-                      {formatNumber(this.state.contractBalance.FOX)} FOX
+                      {formatNumber(this.state.contractBalance.fox)} FOX
                     </div>
                   </div>
                   <div className="tabs">
