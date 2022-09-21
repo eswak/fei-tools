@@ -4,18 +4,16 @@ import tribeImg from './img/tribe.png';
 import stEthImg from '../collateralization/img/wsteth.jpg';
 import lqtyImg from './img/lqty.png';
 import foxImg from './img/fox.png';
+import arrowImg from './img/arrow.png';
 import daiImg from '../collateralization/img/dai.jpg';
 import { formatNumber } from '../../modules/utils';
 import IERC20 from '../../abi/IERC20.json';
 import redeemerABI from '../../abi/RedeemerContract.json';
 import { ethers } from 'ethers';
-import { getProvider, getSigner, getAccount } from '../wallet/wallet';
-import { TribeRedeemHooks } from './hook-wrapper';
+import { withWagmiHooksHOC } from '../../modules/with-wagmi-hooks-hoc';
 import EventEmitter from '../../modules/event-emitter';
 
-const tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
-const redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, getSigner());
-
+let tribe, redeemerContract;
 class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
@@ -31,9 +29,25 @@ class TribeRedeemer extends React.Component {
         stETH: '',
         LQTY: '',
         FOX: ''
+      },
+      contractBalance: {
+        dai: '',
+        stETH: '',
+        LQTY: '',
+        FOX: ''
       }
     };
+    tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.provider);
+    redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, props.provider);
   }
+  UNSAFE_componentWillReceiveProps(props) {
+    if (props.signer) {
+      tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
+      redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, props.signer);
+    }
+  }
+
+
   onInputChange(e) {
     this.state.input.tribe = e.target.value;
     this.setState(this.state);
@@ -41,17 +55,15 @@ class TribeRedeemer extends React.Component {
 
   async componentDidMount() {
     await this.refreshData();
-    console.log('dai is', typeof this.state.output.dai);
-    console.log('dai is', this.state.output.dai);
-    console.log('dai is', formatNumber(this.state.output.dai));
   }
+
 
   async refreshData() {
     // Get user TRIBE balance
     if (this.props.account) {
       console.log('get user data');
       this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
-      console.log('TRIBE balance of', this.state.props, this.state.balance.tribe / 1e18);
+      console.log('TRIBE balance of', this.state.balance.tribe / 1e18);
     } else console.log('no user data :(');
 
     // set state & redraw
@@ -79,7 +91,7 @@ class TribeRedeemer extends React.Component {
       hash: tx.hash
     });
   }
-  /// Getting output values
+  /// Getting output values from preview redeem
   async outputValue() {
     let amount = this.getInputAmountWithDecimals();
     const tx = await redeemerContract.previewRedeem(amount);
@@ -123,6 +135,23 @@ class TribeRedeemer extends React.Component {
                     <div className="balance">
                       <img src={tribeImg} /> {formatNumber(this.state.balance.tribe)} Tribe
                     </div>
+                    <div className="title">Contract Balances</div>
+                    <div className="balance">
+                      <img src={daiImg} />
+                      {formatNumber(this.state.contractBalance.dai)} Dai
+                    </div>
+                    <div className="balance">
+                      <img src={stEthImg} />
+                      {formatNumber(this.state.contractBalance.stETH)} tETH
+                    </div>
+                    <div className="balance">
+                      <img src={lqtyImg} />
+                      {formatNumber(this.state.contractBalance.LQTY)} LQTY
+                    </div>
+                    <div className="balance">
+                      <img src={foxImg} />
+                      {formatNumber(this.state.contractBalance.FOX)} FOX
+                    </div>
                   </div>
                   <div className="tabs">
                     <div className="tab active">Redeem</div>
@@ -146,7 +175,11 @@ class TribeRedeemer extends React.Component {
                         <img src={tribeImg} />
                       </span>
                     </div>
+                    <div className='arrowBox'>
+                      <img src={arrowImg} className="arrow" />
+                    </div>
                     <div className="outputs">
+
                       <div className="title">Outputs</div>
                       <div className="output">
                         <img src={daiImg} />
@@ -168,7 +201,7 @@ class TribeRedeemer extends React.Component {
                   </div>
                   <div className="action-box">
                     <button onClick={() => this.approveTx()}>Approve TRIBE Transfer</button>
-                    <button onClick={() => console.log('Redeem')}>Redeem</button>
+                    <button onClick={() => this.redeemTx()}>Redeem</button>
                   </div>
                 </div>
               </div>
@@ -183,4 +216,4 @@ class TribeRedeemer extends React.Component {
   }
 }
 
-export default TribeRedeemHooks(TribeRedeemer);
+export default withWagmiHooksHOC(TribeRedeemer);
