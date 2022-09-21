@@ -6,7 +6,6 @@ import lqtyImg from './img/lqty.png';
 import foxImg from './img/fox.png';
 import daiImg from '../collateralization/img/dai.jpg';
 import { formatNumber } from '../../modules/utils';
-import { useAccount, useSigner } from 'wagmi';
 import IERC20 from '../../abi/IERC20.json';
 import redeemerABI from '../../abi/RedeemerContract.json';
 import { ethers } from 'ethers';
@@ -15,7 +14,7 @@ import { TribeRedeemHooks } from './hook-wrapper';
 import EventEmitter from '../../modules/event-emitter';
 
 const tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, getSigner());
-const redeemerContract = new ethers.Contract('toBeReplaced', redeemerABI, getSigner());
+const redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, getSigner());
 
 class TribeRedeemer extends React.Component {
   constructor(props) {
