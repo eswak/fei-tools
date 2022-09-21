@@ -14,6 +14,7 @@ import { withWagmiHooksHOC } from '../../modules/with-wagmi-hooks-hoc';
 import EventEmitter from '../../modules/event-emitter';
 
 let tribe, steth, lqty, fox, dai, redeemerContract;
+const redeemerAddress = '0xF14500d6c06af77a28746C5Bd0F0516414A23E1C';
 class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
@@ -43,17 +44,12 @@ class TribeRedeemer extends React.Component {
     lqty = new ethers.Contract('0x6DEA81C8171D0bA574754EF6F8b412F2Ed88c54D', IERC20, props.provider);
     fox = new ethers.Contract('0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d', IERC20, props.provider);
     dai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.provider);
-    redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, props.provider);
+    redeemerContract = new ethers.Contract(redeemerAddress, redeemerABI, props.provider);
   }
 
   UNSAFE_componentWillReceiveProps(props) {
     if (props.signer) {
-      contractTribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
-      contractDai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.signer);
-      contractStEth = new ethers.Contract('0xDFe66B14D37C77F4E9b180cEb433d1b164f0281D', IERC20, props.signer);
-      contractLqty = new ethers.Contract('0x6DEA81C8171D0bA574754EF6F8b412F2Ed88c54D', IERC20, props.signer);
-      contractFox = new ethers.Contract('0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d', IERC20, props.signer);
-      contractRedeemer = new ethers.Contract(redeemerAddress, redeemerABI, props.signer);
+      redeemerContract = new ethers.Contract(redeemerAddress, redeemerABI, props.signer);
     }
   }
 
