@@ -50,6 +50,7 @@ class TribeRedeemer extends React.Component {
   UNSAFE_componentWillReceiveProps(props) {
     if (props.signer) {
       redeemerContract = new ethers.Contract(redeemerAddress, redeemerABI, props.signer);
+      tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
     }
   }
 
@@ -103,7 +104,7 @@ class TribeRedeemer extends React.Component {
   async approveTx() {
     let amount = this.getInputAmountWithDecimals();
 
-    const tx = await contractTribe.approve(redeemerContract.address, amount);
+    const tx = await tribe.approve(redeemerContract.address, amount);
     EventEmitter.dispatch('tx', {
       label: 'Allow Tribe transfer on Tribe Redeemer',
       hash: tx.hash
