@@ -13,8 +13,13 @@ import { ethers } from 'ethers';
 import { withWagmiHooksHOC } from '../../modules/with-wagmi-hooks-hoc';
 import EventEmitter from '../../modules/event-emitter';
 
+// contracts used on this page
 let tribe, steth, lqty, fox, dai, redeemerContract;
 let timeoutFetchPreview;
+
+// address of the TribeRedeemer
+const redeemerAddress = '0xF14500d6c06af77a28746C5Bd0F0516414A23E1C';
+
 class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
@@ -44,13 +49,12 @@ class TribeRedeemer extends React.Component {
     lqty = new ethers.Contract('0x6DEA81C8171D0bA574754EF6F8b412F2Ed88c54D', IERC20, props.provider);
     fox = new ethers.Contract('0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d', IERC20, props.provider);
     dai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.provider);
-    redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, props.provider);
+    redeemerContract = new ethers.Contract(redeemerAddress, redeemerABI, props.provider);
   }
 
   UNSAFE_componentWillReceiveProps(props) {
     if (props.signer) {
-      tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
-      redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, props.signer);
+      redeemerContract = new ethers.Contract(redeemerAddress, redeemerABI, props.signer);
     }
   }
 
@@ -62,6 +66,15 @@ class TribeRedeemer extends React.Component {
 
   async componentDidMount() {
     await this.refreshData();
+    await this.redeemerBalances;
+  }
+
+  /// Get redemer balances
+  async redeemerBalances(){
+    this.state.contractBalance.dai = (await contractDai.balanceOf(redeemerAddress)).toString();
+    this.state.contractBalance.steth = (await contractStEth.balanceOf(redeemerAddress)).toString();
+    this.state.contractBalance.lqty = (await contractLqty.balanceOf(redeemerAddress)).toString();
+    this.state.contractBalance.fox = (await contractFox.balanceOf(redeemerAddress)).toString();
   }
 
   async refreshData() {
@@ -69,11 +82,11 @@ class TribeRedeemer extends React.Component {
     if (this.props.account) {
       console.log('get user data');
       this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
-      this.state.contractBalance.tribe = (await tribe.balanceOf(redeemerContract.address)).toString();
-      this.state.contractBalance.steth = (await steth.balanceOf(redeemerContract.address)).toString();
-      this.state.contractBalance.lqty = (await lqty.balanceOf(redeemerContract.address)).toString();
-      this.state.contractBalance.fox = (await fox.balanceOf(redeemerContract.address)).toString();
-      this.state.contractBalance.dai = (await dai.balanceOf(redeemerContract.address)).toString();
+      this.state.contractBalance.tribe = (await tribe.balanceOf(redeemerAddress)).toString();
+      this.state.contractBalance.steth = (await steth.balanceOf(redeemerAddress)).toString();
+      this.state.contractBalance.lqty = (await lqty.balanceOf(redeemerAddress)).toString();
+      this.state.contractBalance.fox = (await fox.balanceOf(redeemerAddress)).toString();
+      this.state.contractBalance.dai = (await dai.balanceOf(redeemerAddress)).toString();
     } else console.log('no user data :(');
 
     // set state & redraw
@@ -95,7 +108,7 @@ class TribeRedeemer extends React.Component {
   async approveTx() {
     let amount = this.getInputAmountWithDecimals();
 
-    const tx = await tribe.approve(redeemerContract.address, amount);
+    const tx = await contractTribe.approve(redeemerAddress, amount);
     EventEmitter.dispatch('tx', {
       label: 'Allow Tribe transfer on Tribe Redeemer',
       hash: tx.hash
