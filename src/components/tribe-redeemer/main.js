@@ -7,16 +7,14 @@ import foxImg from './img/fox.png';
 import arrowImg from './img/arrow.png';
 import daiImg from '../collateralization/img/dai.jpg';
 import { formatNumber } from '../../modules/utils';
-import { useAccount, useSigner } from 'wagmi';
 import IERC20 from '../../abi/IERC20.json';
 import redeemerABI from '../../abi/RedeemerContract.json';
 import { ethers } from 'ethers';
-import { getProvider, getSigner, getAccount } from '../wallet/wallet';
-import { TribeRedeemHooks } from './hook-wrapper';
+import { withWagmiHooksHOC } from '../../modules/with-wagmi-hooks-hoc';
 import EventEmitter from '../../modules/event-emitter';
 
 
-
+let tribe, redeemerContract;
 class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
@@ -40,10 +38,16 @@ class TribeRedeemer extends React.Component {
         FOX: ''
       }
     };
+    tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.provider);
+    redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, props.provider);
+  }
+  UNSAFE_componentWillReceiveProps(props) {
+    if (props.signer) {
+      tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
+      redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, props.signer);
+    }
   }
 
-tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, this.props.signer);
-redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E1C', redeemerABI, this.props.signer);
 
   onInputChange(e) {
     this.state.input.tribe = e.target.value;
@@ -51,19 +55,16 @@ redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E
   }
 
   async componentDidMount() {
-    console.log('props signer are', this.props.signer);
     await this.refreshData();
-    console.log('dai is', typeof this.state.output.dai);
-    console.log('dai is', this.state.output.dai);
-    console.log('dai is', formatNumber(this.state.output.dai));
   }
+
 
   async refreshData() {
     // Get user TRIBE balance
     if (this.props.account) {
       console.log('get user data');
       this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
-      console.log('TRIBE balance of', this.state.props, this.state.balance.tribe / 1e18);
+      console.log('TRIBE balance of', this.state.balance.tribe / 1e18);
     } else console.log('no user data :(');
 
     // set state & redraw
@@ -137,21 +138,21 @@ redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E
                     </div>
                     <div className="title">Contract Balances</div>
                     <div className="balance">
-                        <img src={daiImg} />
-                        {formatNumber(this.state.contractBalance.dai)} Dai
-                      </div>
-                      <div className="balance">
-                        <img src={stEthImg} />
-                        {formatNumber(this.state.contractBalance.stETH)} tETH
-                      </div>
-                      <div className="balance">
-                        <img src={lqtyImg} />
-                        {formatNumber(this.state.contractBalance.LQTY)} LQTY
-                      </div>
-                      <div className="balance">
-                        <img src={foxImg} />
-                        {formatNumber(this.state.contractBalance.FOX)} FOX
-                      </div>
+                      <img src={daiImg} />
+                      {formatNumber(this.state.contractBalance.dai)} Dai
+                    </div>
+                    <div className="balance">
+                      <img src={stEthImg} />
+                      {formatNumber(this.state.contractBalance.stETH)} tETH
+                    </div>
+                    <div className="balance">
+                      <img src={lqtyImg} />
+                      {formatNumber(this.state.contractBalance.LQTY)} LQTY
+                    </div>
+                    <div className="balance">
+                      <img src={foxImg} />
+                      {formatNumber(this.state.contractBalance.FOX)} FOX
+                    </div>
                   </div>
                   <div className="tabs">
                     <div className="tab active">Redeem</div>
@@ -176,10 +177,10 @@ redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E
                       </span>
                     </div>
                     <div className='arrowBox'>
-                    <img src={arrowImg} className="arrow" />
+                      <img src={arrowImg} className="arrow" />
                     </div>
                     <div className="outputs">
-                    
+
                       <div className="title">Outputs</div>
                       <div className="output">
                         <img src={daiImg} />
@@ -201,7 +202,7 @@ redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E
                   </div>
                   <div className="action-box">
                     <button onClick={() => this.approveTx()}>Approve TRIBE Transfer</button>
-                    <button onClick={() => console.log('Redeem')}>Redeem</button>
+                    <button onClick={() => this.redeemTx()}>Redeem</button>
                   </div>
                 </div>
               </div>
@@ -210,11 +211,10 @@ redeemerContract = new ethers.Contract('0xF14500d6c06af77a28746C5Bd0F0516414A23E
             <span>please connect your wallet</span>
           )}
         </div>
-        <pre>{JSON.stringify(this.props, null, 2)}</pre>
         <pre>{JSON.stringify(this.state, null, 2)}</pre>
       </div>
     );
   }
 }
 
-export default TribeRedeemHooks(TribeRedeemer);
+export default withWagmiHooksHOC(TribeRedeemer);
