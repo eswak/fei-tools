@@ -282,7 +282,6 @@ class TribeRedeemer extends React.Component {
             <span>please connect your wallet</span>
           )}
         </div>
-        <pre>{JSON.stringify(this.state, null, 2)}</pre>
       </div>
     );
   }
