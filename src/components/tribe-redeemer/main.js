@@ -23,7 +23,14 @@ class TribeRedeemer extends React.Component {
         tribe: ''
       },
       balance: {
-        tribe: ''
+        tribe: '',
+        steth: '',
+        lqty: '',
+        fox:'',
+        dai:''
+      },
+      allowance:{
+        tribe:''
       },
       output: {
         steth: '',
@@ -73,11 +80,15 @@ class TribeRedeemer extends React.Component {
   }
 
 
+
   async refreshData() {
-    // Get user TRIBE balance
+    // Get user balances
     if (this.props.account) {
       console.log('get user data');
       this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
+      this.state.allowance.tribe = (await tribe.allowance(this.state.account, redeemerContract.address)).toString();
+
+      // Get contract balances
       this.state.contractBalance.tribe = (await tribe.balanceOf(redeemerContract.address)).toString();
       this.state.contractBalance.steth = (await steth.balanceOf(redeemerContract.address)).toString();
       this.state.contractBalance.lqty = (await lqty.balanceOf(redeemerContract.address)).toString();
@@ -211,8 +222,11 @@ class TribeRedeemer extends React.Component {
                     </div>
                   </div>
                   <div className="action-box">
-                    <button onClick={() => this.approveTx()}>Approve TRIBE Transfer</button>
-                    <button onClick={() => this.redeemTx()}>Redeem</button>
+                    <button disabled={this.state.allowance.tribe / 1e18 >= this.state.input.tribe}
+                    onClick={() => this.approveTx()}>Approve TRIBE Transfer</button>
+                    <button disabled={
+                        Number(this.state.input.tribe) == 0 || this.state.allowance.tribe / 1e18 < this.state.input.tribe
+                      } onClick={() => this.redeemTx()}>Redeem</button>
                   </div>
                 </div>
               </div>
