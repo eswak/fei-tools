@@ -76,6 +76,10 @@ class TribeRedeemer extends React.Component {
     await this.refreshData();
   }
 
+  async componentDidUpdate(){
+    await this.refreshData();
+  }
+
 
 
   async refreshData() {
@@ -150,6 +154,10 @@ class TribeRedeemer extends React.Component {
       hash: tx.hash
     });
     this.state.input.tribe = '';
+    this.state.output.dai= '';
+    this.state.output.steth= '';
+    this.state.output.lqty= '';
+    this.state.output.fox= '';
     this.setState(this.state);
   }
 
