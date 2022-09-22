@@ -74,23 +74,22 @@ class TribeRedeemer extends React.Component {
 
   async componentDidMount() {
     await this.refreshData();
-    await this.redeemerBalances;
   }
 
-  /// Get redemer balances
-  async redeemerBalances(){
-    this.state.contractBalance.dai = (await contractDai.balanceOf(redeemerAddress)).toString();
-    this.state.contractBalance.steth = (await contractStEth.balanceOf(redeemerAddress)).toString();
-    this.state.contractBalance.lqty = (await contractLqty.balanceOf(redeemerAddress)).toString();
-    this.state.contractBalance.fox = (await contractFox.balanceOf(redeemerAddress)).toString();
-  }
+
 
   async refreshData() {
     // Get user balances
     if (this.props.account) {
       console.log('get user data');
       this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
-      this.state.allowance.tribe = (await tribe.allowance(this.state.account, redeemerContract.address)).toString();
+      this.state.balance.dai = (await dai.balanceOf(this.props.account)).toString();
+      this.state.balance.steth = (await steth.balanceOf(this.props.account)).toString();
+      this.state.balance.lqty = (await lqty.balanceOf(this.props.account)).toString();
+      this.state.balance.fox = (await fox.balanceOf(this.props.account)).toString();
+      this.state.allowance.tribe = (await tribe.allowance(this.props.account, redeemerAddress)).toString();
+ 
+  
 
       // Get contract balances
       this.state.contractBalance.tribe = (await tribe.balanceOf(redeemerContract.address)).toString();
