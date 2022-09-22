@@ -66,6 +66,13 @@ class TribeRedeemer extends React.Component {
       tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
     }
   }
+  async UNSAFE_componentWillMount() {
+    await this.refreshData();
+
+    EventEmitter.on('TxMined', (data) => {
+      this.refreshData();
+    });
+  }
 
   onInputChange(e) {
     this.state.input.tribe = ((e.target.value || '').match(/^[0-9]+(\.[0-9]{0,2})?/g) || [])[0] || '';
@@ -87,8 +94,6 @@ class TribeRedeemer extends React.Component {
       this.state.balance.fox = (await fox.balanceOf(this.props.account)).toString();
       this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
       this.state.allowance.tribe = (await tribe.allowance(this.props.account, redeemerAddress)).toString();
-
-
 
       // Get contract balances
       this.state.contractBalance.tribe = (await tribe.balanceOf(redeemerContract.address)).toString();
@@ -122,8 +127,6 @@ class TribeRedeemer extends React.Component {
       label: 'Allow Tribe transfer on Tribe Redeemer',
       hash: tx.hash
     });
-    this.state.allowance = amount.toString();
-    this.setState(this.state);
   }
   /// Getting output values from preview redeem
   async updateOutputValue() {
@@ -199,7 +202,7 @@ class TribeRedeemer extends React.Component {
                       <img src={foxImg} /> {formatNumber(this.state.balance.fox)} FOX
                     </div>
                   </div>
-                  <div className='contractbalances'>
+                  <div className="contractbalances">
                     <div className="title">Contract Balances</div>
                     <div className="balance">
                       <img src={daiImg} /> {formatNumber(this.state.contractBalance.dai)} DAI
@@ -236,11 +239,10 @@ class TribeRedeemer extends React.Component {
                         <img src={tribeImg} />
                       </span>
                     </div>
-                    <div className='arrowBox'>
+                    <div className="arrowBox">
                       <img src={arrowImg} className="arrow" />
                     </div>
                     <div className="outputs">
-
                       <div className="title">Outputs</div>
                       <div className="output" title={'Wei: ' + this.state.output.dai}>
                         <img src={daiImg} /> {formatNumber(this.state.output.dai, 18, 2)} DAI
@@ -257,11 +259,21 @@ class TribeRedeemer extends React.Component {
                     </div>
                   </div>
                   <div className="action-box">
-                    <button disabled={this.state.allowance.tribe / 1e18 >= this.state.input.tribe}
-                      onClick={() => this.approveTx()}>Approve TRIBE Transfer</button>
-                    <button disabled={
-                      Number(this.state.input.tribe) == 0 || this.state.allowance.tribe / 1e18 < this.state.input.tribe
-                    } onClick={() => this.redeemTx()}>Redeem</button>
+                    <button
+                      disabled={this.state.allowance.tribe / 1e18 >= this.state.input.tribe}
+                      onClick={() => this.approveTx()}
+                    >
+                      Approve TRIBE Transfer
+                    </button>
+                    <button
+                      disabled={
+                        Number(this.state.input.tribe) == 0 ||
+                        this.state.allowance.tribe / 1e18 < this.state.input.tribe
+                      }
+                      onClick={() => this.redeemTx()}
+                    >
+                      Redeem
+                    </button>
                   </div>
                 </div>
               </div>

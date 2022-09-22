@@ -14,7 +14,7 @@ import './app.css';
 import { chain, WagmiConfig, createClient, defaultChains, configureChains } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
@@ -35,16 +35,15 @@ const localAnvilChain = {
 };
 const { chains, provider, webSocketProvider } = configureChains(
   [isLocal ? localAnvilChain : chain.mainnet],
-  isLocal ? [
-    jsonRpcProvider({
-      rpc: (chain) => ({
-        http: `http://127.0.0.1:8545`,
-      }),
-    }),
-  ] : [
-    alchemyProvider({ apiKey: '2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT' }),
-    publicProvider()
-  ]
+  isLocal
+    ? [
+        jsonRpcProvider({
+          rpc: (chain) => ({
+            http: `http://127.0.0.1:8545`
+          })
+        })
+      ]
+    : [alchemyProvider({ apiKey: '2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT' }), publicProvider()]
 );
 
 // Set up client
