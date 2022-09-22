@@ -13,9 +13,11 @@ function formatNumber(n, decimals, decimalsAfterZero) {
   const nWithCommas = String(nRoundedDown).replace(/(.)(?=(\d{3})+$)/g, '$1,');
   let decimalsAfterZeroStr = '';
   if (decimalsAfterZero) {
-    const decimals = Math.pow(10, decimalsAfterZero) * (nNormalized - nRoundedDown);
-    decimalsAfterZeroStr = '.' + Math.floor(decimals);
-    while (decimalsAfterZeroStr.length < decimalsAfterZero + 1) decimalsAfterZeroStr = decimalsAfterZeroStr + '0';
+    const decimalPoints = nNormalized - nRoundedDown;
+    const decimals = Math.pow(10, decimalsAfterZero) * decimalPoints;
+    decimalsAfterZeroStr = Math.floor(decimals).toString();
+    while (decimalsAfterZeroStr.length < decimalsAfterZero) decimalsAfterZeroStr = '0' + decimalsAfterZeroStr;
+    decimalsAfterZeroStr = '.' + decimalsAfterZeroStr;
   }
   return nWithCommas + decimalsAfterZeroStr;
 }

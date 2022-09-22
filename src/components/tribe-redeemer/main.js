@@ -13,8 +13,13 @@ import { ethers } from 'ethers';
 import { withWagmiHooksHOC } from '../../modules/with-wagmi-hooks-hoc';
 import EventEmitter from '../../modules/event-emitter';
 
+// contracts used on this page
 let tribe, steth, lqty, fox, dai, redeemerContract;
+let timeoutFetchPreview;
+
+// address of the TribeRedeemer
 const redeemerAddress = '0xF14500d6c06af77a28746C5Bd0F0516414A23E1C';
+
 class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
@@ -64,6 +69,7 @@ class TribeRedeemer extends React.Component {
   onInputChange(e) {
     this.state.input.tribe = ((e.target.value || '').match(/^[0-9]+(\.[0-9]{0,2})?/g) || [])[0] || '';
     this.setState(this.state);
+    this.updateOutputValue();
   }
 
   async componentDidMount() {
@@ -78,8 +84,6 @@ class TribeRedeemer extends React.Component {
     this.state.contractBalance.lqty = (await contractLqty.balanceOf(redeemerAddress)).toString();
     this.state.contractBalance.fox = (await contractFox.balanceOf(redeemerAddress)).toString();
   }
-
-
 
   async refreshData() {
     // Get user balances
@@ -122,10 +126,20 @@ class TribeRedeemer extends React.Component {
     });
   }
   /// Getting output values from preview redeem
-  async outputValue() {
+  async updateOutputValue() {
+    const that = this;
     let amount = this.getInputAmountWithDecimals();
-    const tx = await redeemerContract.previewRedeem(amount);
-    console.log('preview returned', tx);
+
+    // after 500ms, fetch the previewRedeem
+    clearTimeout(timeoutFetchPreview);
+    timeoutFetchPreview = setTimeout(async function() {
+      const previewedAmounts = await redeemerContract.previewRedeem(amount);
+      that.state.output.steth = previewedAmounts.amountsOut[0].toString();
+      that.state.output.lqty = previewedAmounts.amountsOut[1].toString();
+      that.state.output.fox = previewedAmounts.amountsOut[2].toString();
+      that.state.output.dai = previewedAmounts.amountsOut[3].toString();
+      that.setState(that.state);
+    }, 500);
   }
 
   /// REDEEMING TRIBE FOR PCV
@@ -145,6 +159,7 @@ class TribeRedeemer extends React.Component {
     const scaledDownAmount = (BigInt(this.state.balance.tribe) / BigInt(1e18)).toString();
     this.state.input.tribe = scaledDownAmount;
     this.setState(this.state);
+    this.updateOutputValue();
   }
 
   render() {
@@ -207,17 +222,17 @@ class TribeRedeemer extends React.Component {
                     <div className="outputs">
 
                       <div className="title">Outputs</div>
-                      <div className="output">
+                      <div className="output" title={'Wei: ' + this.state.output.dai}>
                         <img src={daiImg} /> {formatNumber(this.state.output.dai, 18, 2)} DAI
                       </div>
-                      <div className="output">
-                        <img src={stEthImg} /> {formatNumber(this.state.output.steth, 18, 3)} stETH
+                      <div className="output" title={'Wei: ' + this.state.output.steth}>
+                        <img src={stEthImg} /> {formatNumber(this.state.output.steth, 18, 4)} stETH
                       </div>
-                      <div className="output">
-                        <img src={lqtyImg} /> {formatNumber(this.state.output.lqty, 18, 1)} LQTY
+                      <div className="output" title={'Wei: ' + this.state.output.lqty}>
+                        <img src={lqtyImg} /> {formatNumber(this.state.output.lqty, 18, 2)} LQTY
                       </div>
-                      <div className="output">
-                        <img src={foxImg} /> {formatNumber(this.state.output.fox, 18)} FOX
+                      <div className="output" title={'Wei: ' + this.state.output.fox}>
+                        <img src={foxImg} /> {formatNumber(this.state.output.fox, 18, 2)} FOX
                       </div>
                     </div>
                   </div>
