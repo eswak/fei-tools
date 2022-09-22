@@ -176,7 +176,8 @@ class TribeRedeemer extends React.Component {
         <div className="card section">
           <h1 className="mb-3">Tribe Redeemer</h1>
           <div className="info">
-            <p>The Tribe Redeemer allows the redeeming of TRIBE tokens for the underlying PCV.</p>
+            <p>The Tribe Redeemer enables the redeeming of TRIBE tokens for the underlying PCV.</p>
+            <hr/>
           </div>
           {this.props.isConnected ? (
             <div>
@@ -279,7 +280,26 @@ class TribeRedeemer extends React.Component {
               </div>
             </div>
           ) : (
-            <span>please connect your wallet</span>
+            <div className='unconnectedwrapper'>
+              <div className='unconnected'>
+              <text className='text'>Please connect your wallet to interact with the Tribe Redeemer contract.</text>
+              <div className="contractbalances">
+                    <div className="title">PCV Redeemer Contract Remaining Balances</div>
+                    <div className="balance">
+                      <img src={daiImg} /> {formatNumber(this.state.contractBalance.dai)} DAI
+                    </div>
+                    <div className="balance">
+                      <img src={stEthImg} /> {formatNumber(this.state.contractBalance.steth)} stETH
+                    </div>
+                    <div className="balance">
+                      <img src={lqtyImg} /> {formatNumber(this.state.contractBalance.lqty)} LQTY
+                    </div>
+                    <div className="balance">
+                      <img src={foxImg} /> {formatNumber(this.state.contractBalance.fox)} FOX
+                    </div>
+                  </div>
+                  </div>
+            </div>
           )}
         </div>
       </div>

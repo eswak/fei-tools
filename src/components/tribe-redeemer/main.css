@@ -165,3 +165,16 @@
   margin-bottom: 5px;
 }
 
+.triberedeemer .unconnectedwrapper {
+  text-align: center;
+  display: inline-block;
+  min-width: 400px;
+  user-select: none;
+}
+.triberedeemer .unconnected {
+  display: inline-block;
+
+}
+.triberedeemer .unconnected .text {
+color:red;
+}
