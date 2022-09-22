@@ -62,6 +62,7 @@ class TribeRedeemer extends React.Component {
 
   UNSAFE_componentWillReceiveProps(props) {
     if (props.signer) {
+      tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
       redeemerContract = new ethers.Contract(redeemerAddress, redeemerABI, props.signer);
       tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
     }
@@ -122,7 +123,7 @@ class TribeRedeemer extends React.Component {
   async approveTx() {
     let amount = this.getInputAmountWithDecimals();
 
-    const tx = await tribe.approve(redeemerContract.address, amount);
+    const tx = await tribe.approve(redeemerAddress, amount);
     EventEmitter.dispatch('tx', {
       label: 'Allow Tribe transfer on Tribe Redeemer',
       hash: tx.hash
@@ -191,16 +192,16 @@ class TribeRedeemer extends React.Component {
                     </div>
                     <div className="title">Your Tokens Balances</div>
                     <div className="balance">
-                      <img src={daiImg} /> {formatNumber(this.state.balance.dai)} DAI
+                      <img src={daiImg} /> {formatNumber(this.state.balance.dai, 18, 2)} DAI
                     </div>
                     <div className="balance">
-                      <img src={stEthImg} /> {formatNumber(this.state.balance.steth)} stETH
+                      <img src={stEthImg} /> {formatNumber(this.state.balance.steth, 18, 4)} stETH
                     </div>
                     <div className="balance">
-                      <img src={lqtyImg} /> {formatNumber(this.state.balance.lqty)} LQTY
+                      <img src={lqtyImg} /> {formatNumber(this.state.balance.lqty, 18, 2)} LQTY
                     </div>
                     <div className="balance">
-                      <img src={foxImg} /> {formatNumber(this.state.balance.fox)} FOX
+                      <img src={foxImg} /> {formatNumber(this.state.balance.fox, 18, 2)} FOX
                     </div>
                   </div>
                   <div className="contractbalances">
