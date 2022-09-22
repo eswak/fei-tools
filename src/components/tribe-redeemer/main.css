@@ -155,6 +155,9 @@
   font-weight: bold;
   padding: 5px;
 }
+.triberedeemer .action-box {
+  margin: 1em;
+}
 .triberedeemer .action-box button {
   width: 100%;
   padding: 4px;
