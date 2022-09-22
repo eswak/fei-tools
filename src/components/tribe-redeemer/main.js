@@ -24,10 +24,18 @@ class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      redeemed: false,
       input: {
         tribe: ''
       },
       balance: {
+        tribe: '',
+        steth: '',
+        lqty: '',
+        fox: '',
+        dai: ''
+      },
+      allowance: {
         tribe: ''
       },
       output: {
@@ -56,38 +64,44 @@ class TribeRedeemer extends React.Component {
     if (props.signer) {
       tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
       redeemerContract = new ethers.Contract(redeemerAddress, redeemerABI, props.signer);
+      tribe = new ethers.Contract('0xc7283b66Eb1EB5FB86327f08e1B5816b0720212B', IERC20, props.signer);
     }
+  }
+  async UNSAFE_componentWillMount() {
+    await this.refreshData();
+
+    EventEmitter.on('TxMined', (data) => {
+      this.refreshData();
+    });
   }
 
   onInputChange(e) {
-    this.state.input.tribe = e.target.value;
+    this.state.input.tribe = ((e.target.value || '').match(/^[0-9]+(\.[0-9]{0,2})?/g) || [])[0] || '';
     this.setState(this.state);
     this.updateOutputValue();
   }
 
   async componentDidMount() {
     await this.refreshData();
-    await this.redeemerBalances;
-  }
-
-  /// Get redemer balances
-  async redeemerBalances(){
-    this.state.contractBalance.dai = (await contractDai.balanceOf(redeemerAddress)).toString();
-    this.state.contractBalance.steth = (await contractStEth.balanceOf(redeemerAddress)).toString();
-    this.state.contractBalance.lqty = (await contractLqty.balanceOf(redeemerAddress)).toString();
-    this.state.contractBalance.fox = (await contractFox.balanceOf(redeemerAddress)).toString();
   }
 
   async refreshData() {
-    // Get user TRIBE balance
+    // Get user balances
     if (this.props.account) {
       console.log('get user data');
+      this.state.balance.dai = (await dai.balanceOf(this.props.account)).toString();
+      this.state.balance.steth = (await steth.balanceOf(this.props.account)).toString();
+      this.state.balance.lqty = (await lqty.balanceOf(this.props.account)).toString();
+      this.state.balance.fox = (await fox.balanceOf(this.props.account)).toString();
       this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
-      this.state.contractBalance.tribe = (await tribe.balanceOf(redeemerAddress)).toString();
-      this.state.contractBalance.steth = (await steth.balanceOf(redeemerAddress)).toString();
-      this.state.contractBalance.lqty = (await lqty.balanceOf(redeemerAddress)).toString();
-      this.state.contractBalance.fox = (await fox.balanceOf(redeemerAddress)).toString();
-      this.state.contractBalance.dai = (await dai.balanceOf(redeemerAddress)).toString();
+      this.state.allowance.tribe = (await tribe.allowance(this.props.account, redeemerAddress)).toString();
+
+      // Get contract balances
+      this.state.contractBalance.tribe = (await tribe.balanceOf(redeemerContract.address)).toString();
+      this.state.contractBalance.steth = (await steth.balanceOf(redeemerContract.address)).toString();
+      this.state.contractBalance.lqty = (await lqty.balanceOf(redeemerContract.address)).toString();
+      this.state.contractBalance.fox = (await fox.balanceOf(redeemerContract.address)).toString();
+      this.state.contractBalance.dai = (await dai.balanceOf(redeemerContract.address)).toString();
     } else console.log('no user data :(');
 
     // set state & redraw
@@ -122,7 +136,7 @@ class TribeRedeemer extends React.Component {
 
     // after 500ms, fetch the previewRedeem
     clearTimeout(timeoutFetchPreview);
-    timeoutFetchPreview = setTimeout(async function() {
+    timeoutFetchPreview = setTimeout(async function () {
       const previewedAmounts = await redeemerContract.previewRedeem(amount);
       that.state.output.steth = previewedAmounts.amountsOut[0].toString();
       that.state.output.lqty = previewedAmounts.amountsOut[1].toString();
@@ -141,6 +155,11 @@ class TribeRedeemer extends React.Component {
       hash: tx.hash
     });
     this.state.input.tribe = '';
+    this.state.output.dai = '';
+    this.state.output.steth = '';
+    this.state.output.lqty = '';
+    this.state.output.fox = '';
+    await this.refreshData();
     this.setState(this.state);
   }
 
@@ -170,6 +189,21 @@ class TribeRedeemer extends React.Component {
                     <div className="balance">
                       <img src={tribeImg} /> {formatNumber(this.state.balance.tribe, 18, 2)} TRIBE
                     </div>
+                    <div className="title">Your Tokens Balances</div>
+                    <div className="balance">
+                      <img src={daiImg} /> {formatNumber(this.state.balance.dai)} DAI
+                    </div>
+                    <div className="balance">
+                      <img src={stEthImg} /> {formatNumber(this.state.balance.steth)} stETH
+                    </div>
+                    <div className="balance">
+                      <img src={lqtyImg} /> {formatNumber(this.state.balance.lqty)} LQTY
+                    </div>
+                    <div className="balance">
+                      <img src={foxImg} /> {formatNumber(this.state.balance.fox)} FOX
+                    </div>
+                  </div>
+                  <div className="contractbalances">
                     <div className="title">Contract Balances</div>
                     <div className="balance">
                       <img src={daiImg} /> {formatNumber(this.state.contractBalance.dai)} DAI
@@ -206,11 +240,10 @@ class TribeRedeemer extends React.Component {
                         <img src={tribeImg} />
                       </span>
                     </div>
-                    <div className='arrowBox'>
+                    <div className="arrowBox">
                       <img src={arrowImg} className="arrow" />
                     </div>
                     <div className="outputs">
-
                       <div className="title">Outputs</div>
                       <div className="output" title={'Wei: ' + this.state.output.dai}>
                         <img src={daiImg} /> {formatNumber(this.state.output.dai, 18, 2)} DAI
@@ -227,8 +260,21 @@ class TribeRedeemer extends React.Component {
                     </div>
                   </div>
                   <div className="action-box">
-                    <button onClick={() => this.approveTx()}>Approve TRIBE Transfer</button>
-                    <button onClick={() => this.redeemTx()}>Redeem</button>
+                    <button
+                      disabled={this.state.allowance.tribe / 1e18 >= this.state.input.tribe}
+                      onClick={() => this.approveTx()}
+                    >
+                      Approve TRIBE Transfer
+                    </button>
+                    <button
+                      disabled={
+                        Number(this.state.input.tribe) == 0 ||
+                        this.state.allowance.tribe / 1e18 < this.state.input.tribe
+                      }
+                      onClick={() => this.redeemTx()}
+                    >
+                      Redeem
+                    </button>
                   </div>
                 </div>
               </div>
@@ -237,7 +283,6 @@ class TribeRedeemer extends React.Component {
             <span>please connect your wallet</span>
           )}
         </div>
-        <pre>{JSON.stringify(this.state, null, 2)}</pre>
       </div>
     );
   }
