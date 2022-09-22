@@ -32,11 +32,11 @@ class TribeRedeemer extends React.Component {
         tribe: '',
         steth: '',
         lqty: '',
-        fox:'',
-        dai:''
+        fox: '',
+        dai: ''
       },
-      allowance:{
-        tribe:''
+      allowance: {
+        tribe: ''
       },
       output: {
         steth: '',
@@ -87,8 +87,8 @@ class TribeRedeemer extends React.Component {
       this.state.balance.fox = (await fox.balanceOf(this.props.account)).toString();
       this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
       this.state.allowance.tribe = (await tribe.allowance(this.props.account, redeemerAddress)).toString();
- 
-  
+
+
 
       // Get contract balances
       this.state.contractBalance.tribe = (await tribe.balanceOf(redeemerContract.address)).toString();
@@ -132,7 +132,7 @@ class TribeRedeemer extends React.Component {
 
     // after 500ms, fetch the previewRedeem
     clearTimeout(timeoutFetchPreview);
-    timeoutFetchPreview = setTimeout(async function() {
+    timeoutFetchPreview = setTimeout(async function () {
       const previewedAmounts = await redeemerContract.previewRedeem(amount);
       that.state.output.steth = previewedAmounts.amountsOut[0].toString();
       that.state.output.lqty = previewedAmounts.amountsOut[1].toString();
@@ -151,10 +151,10 @@ class TribeRedeemer extends React.Component {
       hash: tx.hash
     });
     this.state.input.tribe = '';
-    this.state.output.dai= '';
-    this.state.output.steth= '';
-    this.state.output.lqty= '';
-    this.state.output.fox= '';
+    this.state.output.dai = '';
+    this.state.output.steth = '';
+    this.state.output.lqty = '';
+    this.state.output.fox = '';
     await this.refreshData();
     this.setState(this.state);
   }
@@ -185,6 +185,21 @@ class TribeRedeemer extends React.Component {
                     <div className="balance">
                       <img src={tribeImg} /> {formatNumber(this.state.balance.tribe, 18, 2)} TRIBE
                     </div>
+                    <div className="title">Your Tokens Balances</div>
+                    <div className="balance">
+                      <img src={daiImg} /> {formatNumber(this.state.balance.dai)} DAI
+                    </div>
+                    <div className="balance">
+                      <img src={stEthImg} /> {formatNumber(this.state.balance.steth)} stETH
+                    </div>
+                    <div className="balance">
+                      <img src={lqtyImg} /> {formatNumber(this.state.balance.lqty)} LQTY
+                    </div>
+                    <div className="balance">
+                      <img src={foxImg} /> {formatNumber(this.state.balance.fox)} FOX
+                    </div>
+                  </div>
+                  <div className='contractbalances'>
                     <div className="title">Contract Balances</div>
                     <div className="balance">
                       <img src={daiImg} /> {formatNumber(this.state.contractBalance.dai)} DAI
@@ -243,10 +258,10 @@ class TribeRedeemer extends React.Component {
                   </div>
                   <div className="action-box">
                     <button disabled={this.state.allowance.tribe / 1e18 >= this.state.input.tribe}
-                    onClick={() => this.approveTx()}>Approve TRIBE Transfer</button>
+                      onClick={() => this.approveTx()}>Approve TRIBE Transfer</button>
                     <button disabled={
-                        Number(this.state.input.tribe) == 0 || this.state.allowance.tribe / 1e18 < this.state.input.tribe
-                      } onClick={() => this.redeemTx()}>Redeem</button>
+                      Number(this.state.input.tribe) == 0 || this.state.allowance.tribe / 1e18 < this.state.input.tribe
+                    } onClick={() => this.redeemTx()}>Redeem</button>
                   </div>
                 </div>
               </div>

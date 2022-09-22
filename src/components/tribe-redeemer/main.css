@@ -17,7 +17,7 @@
   border-radius: 4px;
 }
 .triberedeemer .balances .title {
-  background: #333;
+  background: #22996e;
   color: white;
 }
 .triberedeemer .balances .balance {
@@ -26,6 +26,26 @@
   line-height: 20px;
 }
 .triberedeemer .balances .balance img {
+  height: 20px;
+  border-radius: 10px;
+}
+.triberedeemer .contractbalances {
+  border: 1px solid;
+  text-align: center;
+  margin: 1em;
+  border-radius: 4px;
+  margin-bottom:30px;
+}
+.triberedeemer .contractbalances .title {
+  background: #000000;
+  color: white;
+}
+.triberedeemer .contractbalances .balance {
+  display: inline-block;
+  margin: 3px 15px;
+  line-height: 20px;
+}
+.triberedeemer .contractbalances .balance img {
   height: 20px;
   border-radius: 10px;
 }
