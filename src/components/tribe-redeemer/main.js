@@ -24,6 +24,7 @@ class TribeRedeemer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      redeemed: false,
       input: {
         tribe: ''
       },
@@ -76,21 +77,15 @@ class TribeRedeemer extends React.Component {
     await this.refreshData();
   }
 
-  async componentDidUpdate(){
-    await this.refreshData();
-  }
-
-
-
   async refreshData() {
     // Get user balances
     if (this.props.account) {
       console.log('get user data');
-      this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
       this.state.balance.dai = (await dai.balanceOf(this.props.account)).toString();
       this.state.balance.steth = (await steth.balanceOf(this.props.account)).toString();
       this.state.balance.lqty = (await lqty.balanceOf(this.props.account)).toString();
       this.state.balance.fox = (await fox.balanceOf(this.props.account)).toString();
+      this.state.balance.tribe = (await tribe.balanceOf(this.props.account)).toString();
       this.state.allowance.tribe = (await tribe.allowance(this.props.account, redeemerAddress)).toString();
  
   
@@ -127,6 +122,8 @@ class TribeRedeemer extends React.Component {
       label: 'Allow Tribe transfer on Tribe Redeemer',
       hash: tx.hash
     });
+    this.state.allowance = amount.toString();
+    this.setState(this.state);
   }
   /// Getting output values from preview redeem
   async updateOutputValue() {
@@ -158,6 +155,7 @@ class TribeRedeemer extends React.Component {
     this.state.output.steth= '';
     this.state.output.lqty= '';
     this.state.output.fox= '';
+    await this.refreshData();
     this.setState(this.state);
   }
 
