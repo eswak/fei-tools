@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { createRoot } from 'react-dom/client';
 import SidePanel from './components/side-panel/side-panel';
 import MainContent from './components/main-content/main-content';
+import TxToasts from './components/tx-toasts/tx-toasts';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 ///WAGMI IMPORTS
@@ -113,7 +114,9 @@ class App extends Component {
     return (
       <WagmiConfig client={client}>
         <ConnectKitProvider theme="retro">
-          <SidePanel /> <MainContent content={this.state.content} key={window.location.hash} />
+          <SidePanel />
+          <MainContent content={this.state.content} key={window.location.hash} /> 
+          <TxToasts />
         </ConnectKitProvider>
       </WagmiConfig>
     );

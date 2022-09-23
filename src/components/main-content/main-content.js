@@ -5,7 +5,6 @@ import SafeAddresses from '../safeaddresses/main';
 import TimelockTransactions from '../timelock/main';
 import FeiProtocolRoles from '../fei-protocol-roles/main';
 import FeiDaiPSM from '../fei-dai-psm/main';
-import TxToasts from '../tx-toasts/tx-toasts';
 import RariHackRedeem from '../rari-hack-redeem/main';
 import TribeRedeemer from '../tribe-redeemer/main';
 import './main-content.css';
@@ -19,7 +18,6 @@ class MainContent extends React.Component {
     return (
       <div className="main-content">
         {this.renderSwitch()}
-        <TxToasts />
       </div>
     );
   }
