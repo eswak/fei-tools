@@ -14,8 +14,13 @@ class TxToasts extends Component {
     };
   }
 
-  async componentDidMount() {
-    EventEmitter.on('tx', this.onTxAdd.bind(this));
+  componentDidMount() {
+    EventEmitter.on('tx', this.onTxAdd.bind(this), 'toasts');
+  }
+
+  componentWillUnmount() {
+    EventEmitter.off('tx', 'toasts');
+    clearInterval(intervalRefresh);
   }
 
   async onTxAdd(tx) {
@@ -49,11 +54,6 @@ class TxToasts extends Component {
         tx.cb && tx.cb(txReceipt.blockNumber);
       }
     }, 5000); // every 5s, check for mined status
-  }
-
-  componentWillUnmount() {
-    clearInterval(intervalRefresh);
-    TxToasts;
   }
 
   render() {
