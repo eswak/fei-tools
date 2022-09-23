@@ -24,16 +24,18 @@ class SidePanel extends Component {
           <ConnectKitButton showBalance="true" showAvatar="true" />
         </span>
         <hr />
-        <a href="#/FeiDaiPSM" className={'menu-item' + (document.location.hash == '#/FeiDaiPSM' ? ' active' : '')}>
-          <span className="ml-1">FEI-DAI PSM</span>
-        </a>
-        <hr />
-        <a
-          href="#/TribeRedeemer"
-          className={'menu-item' + (document.location.hash == '#/TribeRedeemer' ? ' active' : '')}
-        >
-          <span className="ml-1">Tribe Redeemer</span>
-        </a>
+        { Date.now() < 1664150400000 ? <div>
+          <a href="#/FeiDaiPSM" className={'menu-item' + (document.location.hash == '#/FeiDaiPSM' ? ' active' : '')}>
+            <span className="ml-1">FEI-DAI PSM</span>
+          </a>
+          <hr />
+          <a
+            href="#/TribeRedeemer"
+            className={'menu-item' + (document.location.hash == '#/TribeRedeemer' ? ' active' : '')}
+          >
+            <span className="ml-1">Tribe Redeemer</span>
+          </a>
+        </div> : null }
         <a
           href="#/RariHackRedeem"
           className={'menu-item' + (document.location.hash == '#/RariHackRedeem' ? ' active' : '')}
