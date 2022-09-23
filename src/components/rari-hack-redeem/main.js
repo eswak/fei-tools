@@ -106,6 +106,9 @@ export default function RariHackRedeem() {
             <button className="btn btn-primary">Go to fusehacksettlement.com</button>
           </a>
         </p>
+        
+        <h2>Stats: Full Eligibility List and Redemption Status</h2>
+        <PastRedemptions userAddress={address} contractAddress={contractAddress} reloadStats={reloadStats} />
       </div>
     </div>
   );
