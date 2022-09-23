@@ -31,17 +31,21 @@ class c extends React.Component {
         dai: '0',
         fei: '0'
       },
+      psmBalance: {
+        dai: '0',
+        fei: '0'
+      },
       events: []
     };
 
-    psm = new ethers.Contract('0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2', SimpleFeiDaiPSMABI, props.provider);
+    psm = new ethers.Contract('0x7842186CDd11270C4Af8C0A99A5E0589c7F249ce', SimpleFeiDaiPSMABI, props.provider);
     dai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.provider);
     fei = new ethers.Contract('0x956F47F50A910163D8BF957Cf5846D573E7f87CA', IERC20, props.provider);
   }
 
   UNSAFE_componentWillReceiveProps(props) {
     if (props.signer) {
-      psm = new ethers.Contract('0x2A188F9EB761F70ECEa083bA6c2A40145078dfc2', SimpleFeiDaiPSMABI, props.signer);
+      psm = new ethers.Contract('0x7842186CDd11270C4Af8C0A99A5E0589c7F249ce', SimpleFeiDaiPSMABI, props.signer);
       dai = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', IERC20, props.signer);
       fei = new ethers.Contract('0x956F47F50A910163D8BF957Cf5846D573E7f87CA', IERC20, props.signer);
     }
@@ -61,6 +65,7 @@ class c extends React.Component {
 
     let newEvents = [];
     // Collect mints
+    // event Mint(address indexed to, uint256 amountIn, uint256 amountFeiOut);
     (await psm.queryFilter(psm.filters.Mint())).forEach(function (mint) {
       newEvents.push({
         hash: mint.transactionHash,
@@ -68,10 +73,11 @@ class c extends React.Component {
         block: mint.blockNumber,
         to: mint.args.to,
         type: 'mint',
-        fei: mint.args.amountIn.toString()
+        fei: mint.args.amountFeiOut.toString()
       });
     });
     // Collect redeems
+    // event Redeem(address indexed to, uint256 amountFeiIn, uint256 amountAssetOut);
     (await psm.queryFilter(psm.filters.Redeem())).forEach(function (redeem) {
       newEvents.push({
         hash: redeem.transactionHash,
@@ -96,6 +102,8 @@ class c extends React.Component {
       this.state.allowance.dai = (await dai.allowance(this.state.account, psm.address)).toString();
       this.state.balance.fei = (await fei.balanceOf(this.state.account)).toString();
       this.state.balance.dai = (await dai.balanceOf(this.state.account)).toString();
+      this.state.psmBalance.fei = (await fei.balanceOf(psm.address)).toString();
+      this.state.psmBalance.dai = (await dai.balanceOf(psm.address)).toString();
     }
 
     // set state & redraw
@@ -139,6 +147,7 @@ class c extends React.Component {
     let amount = this.getInputAmountWithDecimals(token);
 
     const tx = await (token == 'dai' ? dai : fei).approve(psm.address, amount);
+    console.log('dispatch approve tx', tx);
     EventEmitter.dispatch('tx', {
       label: 'Allow ' + token.toUpperCase() + ' on PSM',
       hash: tx.hash
@@ -149,6 +158,7 @@ class c extends React.Component {
     let amount = this.getInputAmountWithDecimals('fei');
 
     const tx = await psm.redeem(this.state.account, amount, '0' /*amount*/);
+    console.log('dispatch redeem tx', tx);
     EventEmitter.dispatch('tx', {
       label: 'Redeem ' + formatNumber(amount) + ' FEI to get DAI',
       hash: tx.hash
@@ -161,6 +171,7 @@ class c extends React.Component {
     let amount = this.getInputAmountWithDecimals('dai');
 
     const tx = await psm.mint(this.state.account, amount, '0' /*amount*/);
+    console.log('dispatch mint tx', tx);
     EventEmitter.dispatch('tx', {
       label: 'Mint ' + formatNumber(amount) + ' FEI by spending DAI',
       hash: tx.hash
@@ -189,7 +200,7 @@ class c extends React.Component {
             <div className="box">
               <div className="balances">
                 <div className="title">
-                  Your Balances
+                  PSM Balances
                   {this.state.loading ? (
                     <div className="lds-ring">
                       <div></div>
@@ -198,6 +209,15 @@ class c extends React.Component {
                       <div></div>
                     </div>
                   ) : null}
+                </div>
+                <div className="balance">
+                  <img src={feiImg} /> {formatNumber(this.state.psmBalance.fei, 18, 2)} FEI
+                </div>
+                <div className="balance">
+                  <img src={daiImg} /> {formatNumber(this.state.psmBalance.dai, 18, 2)} DAI
+                </div>
+                <div className="title">
+                  Your Balances
                 </div>
                 <div className="balance">
                   <img src={feiImg} /> {formatNumber(this.state.balance.fei, 18, 2)} FEI
