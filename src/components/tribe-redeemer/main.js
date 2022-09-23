@@ -18,7 +18,7 @@ let tribe, steth, lqty, fox, dai, redeemerContract;
 let timeoutFetchPreview;
 
 // address of the TribeRedeemer
-const redeemerAddress = '0xF14500d6c06af77a28746C5Bd0F0516414A23E1C';
+const redeemerAddress = '0x4d9629e80118082b939e3d59e69c82a2ec08b4d5';
 
 class TribeRedeemer extends React.Component {
   constructor(props) {
@@ -124,6 +124,7 @@ class TribeRedeemer extends React.Component {
     let amount = this.getInputAmountWithDecimals();
 
     const tx = await tribe.approve(redeemerAddress, amount);
+    console.log('dispatch approve tx', tx);
     EventEmitter.dispatch('tx', {
       label: 'Allow Tribe transfer on Tribe Redeemer',
       hash: tx.hash
@@ -150,6 +151,7 @@ class TribeRedeemer extends React.Component {
   async redeemTx() {
     let amount = this.getInputAmountWithDecimals();
     const tx = await redeemerContract.redeem(this.props.account, amount);
+    console.log('dispatch redeem tx', tx);
     EventEmitter.dispatch('tx', {
       label: 'Redeem ' + formatNumber(amount) + ' TRIBE to get PCV',
       hash: tx.hash
