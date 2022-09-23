@@ -98,7 +98,8 @@ export default function RariHackRedeem() {
       <div className="card section">
         <h1 className="mb-3">Rari hack redeem</h1>
         <p>
-          Please go to <a href="https://fusehacksettlement.com/">fusehacksettlement.com</a> to redeem your cTokens for FEI.
+          Please go to <a href="https://fusehacksettlement.com/">fusehacksettlement.com</a> to redeem your cTokens for
+          FEI.
         </p>
         <p>
           <a href="https://fusehacksettlement.com/">
@@ -134,7 +135,11 @@ export default function RariHackRedeem() {
             reimbursments.
           </p>
           <p>
-            If you are eligible (check the table below), you will be able to exchange your cTokens (Fuse pool deposit tokens) in exchange for FEI. Your full cToken balance might not be eligible for exchange to FEI if the Fuse pool where you deposited has "good debt" (tokens owed by other users). In this case, you will be able to withdraw your remaining collateral when other users repay their debt. You will have to close all your outstanding debts in Fuse in order to be able to transfer your cTokens to the redeemer contract.
+            If you are eligible (check the table below), you will be able to exchange your cTokens (Fuse pool deposit
+            tokens) in exchange for FEI. Your full cToken balance might not be eligible for exchange to FEI if the Fuse
+            pool where you deposited has "good debt" (tokens owed by other users). In this case, you will be able to
+            withdraw your remaining collateral when other users repay their debt. You will have to close all your
+            outstanding debts in Fuse in order to be able to transfer your cTokens to the redeemer contract.
           </p>
         </div>
         <h2>Step 1: Check your Eligibility</h2>

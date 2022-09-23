@@ -6,9 +6,20 @@ module.exports = {
 };
 
 // format a number to 'XX,XXX,XXX'
-function formatNumber(n, decimals) {
+function formatNumber(n, decimals, decimalsAfterZero) {
   decimals = decimals || '18';
-  return String(Math.floor(n / Math.pow(10, decimals))).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+  const nNormalized = n / Math.pow(10, decimals);
+  const nRoundedDown = Math.floor(nNormalized);
+  const nWithCommas = String(nRoundedDown).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+  let decimalsAfterZeroStr = '';
+  if (decimalsAfterZero) {
+    const decimalPoints = nNormalized - nRoundedDown;
+    const decimals = Math.pow(10, decimalsAfterZero) * decimalPoints;
+    decimalsAfterZeroStr = Math.floor(decimals).toString();
+    while (decimalsAfterZeroStr.length < decimalsAfterZero) decimalsAfterZeroStr = '0' + decimalsAfterZeroStr;
+    decimalsAfterZeroStr = '.' + decimalsAfterZeroStr;
+  }
+  return nWithCommas + decimalsAfterZeroStr;
 }
 
 // format a number to 'XXXXXXXX'

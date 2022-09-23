@@ -8,12 +8,14 @@ import React, { Component } from 'react';
 import { createRoot } from 'react-dom/client';
 import SidePanel from './components/side-panel/side-panel';
 import MainContent from './components/main-content/main-content';
+import TxToasts from './components/tx-toasts/tx-toasts';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 ///WAGMI IMPORTS
-import { WagmiConfig, createClient, defaultChains, configureChains } from 'wagmi';
+import { chain, WagmiConfig, createClient, defaultChains, configureChains } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
@@ -23,10 +25,27 @@ import { ConnectKitProvider } from 'connectkit';
 
 //WAGMI CONFIG
 // Configure chains & providers with the Alchemy provider.
-const { chains, provider, webSocketProvider } = configureChains(defaultChains, [
-  alchemyProvider({ apiKey: '2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT' }),
-  publicProvider()
-]);
+const isLocal = window.location.host == 'localhost:8080';
+const localAnvilChain = {
+  id: 1,
+  name: 'Anvil Local Fork',
+  network: 'localhost',
+  rpcUrls: {
+    default: 'http://127.0.0.1:8545'
+  }
+};
+const { chains, provider, webSocketProvider } = configureChains(
+  [isLocal ? localAnvilChain : chain.mainnet],
+  isLocal
+    ? [
+        jsonRpcProvider({
+          rpc: (chain) => ({
+            http: `http://127.0.0.1:8545`
+          })
+        })
+      ]
+    : [alchemyProvider({ apiKey: '2I4l_G0EvVf0ORh6X7n67AoH1xevt9PT' }), publicProvider()]
+);
 
 // Set up client
 const client = createClient({
@@ -95,7 +114,9 @@ class App extends Component {
     return (
       <WagmiConfig client={client}>
         <ConnectKitProvider theme="retro">
-          <SidePanel /> <MainContent content={this.state.content} key={window.location.hash} />
+          <SidePanel />
+          <MainContent content={this.state.content} key={window.location.hash} /> 
+          <TxToasts />
         </ConnectKitProvider>
       </WagmiConfig>
     );

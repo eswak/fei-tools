@@ -14,8 +14,13 @@ class TxToasts extends Component {
     };
   }
 
-  async componentDidMount() {
-    EventEmitter.on('tx', this.onTxAdd.bind(this));
+  componentDidMount() {
+    EventEmitter.on('tx', this.onTxAdd.bind(this), 'toasts');
+  }
+
+  componentWillUnmount() {
+    EventEmitter.off('tx', 'toasts');
+    clearInterval(intervalRefresh);
   }
 
   async onTxAdd(tx) {
@@ -38,16 +43,17 @@ class TxToasts extends Component {
             if (stateTx.hash === tx.hash) self.state.tx.splice(i, 1);
             self.setState(self.state);
           });
-        }, 8000); // after mined, keep for 8s
+        }, 8000); // after mined, keep toast for 8s
+        // stop checking if the tx is mined
         clearInterval(intervalCheckTx);
+        // emit TxMined
+        EventEmitter.dispatch('TxMined', {
+          hash: tx.hash
+        });
+        // call callback
         tx.cb && tx.cb(txReceipt.blockNumber);
       }
     }, 5000); // every 5s, check for mined status
-  }
-
-  componentWillUnmount() {
-    clearInterval(intervalRefresh);
-    TxToasts;
   }
 
   render() {
