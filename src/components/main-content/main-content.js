@@ -49,27 +49,16 @@ class MainContent extends React.Component {
               more broadly the Tribe DAO products.
             </p>
             <p>
-              These tools are created by TRIBE community members, get in touch with Eswak if you want to suggest changes
-              or add a tool to this website.
+              These tools are created by <a target="_blank" href="https://tribedao.xyz/governance/proposals/FIP-83">
+                La Tribu
+              </a>, a collective of developers working for the Tribe DAO.
             </p>
-            <p className="mb-0">
-              <a className="btn" href="#/CollateralizationOracle">
-                Fei Collateralization Oracle
-              </a>
-              &nbsp;
-              <a className="btn" href="#/SafeAddresses">
-                Fei Safe Addresses
-              </a>
-              &nbsp;
-              <a className="btn" href="#/TimelockTransactions">
-                Tribe DAO Timelocks
-              </a>
-              &nbsp;
-              <a className="btn" href="#/FeiProtocolRoles">
-                Fei Protocol Roles
-              </a>
+            <p>
+              Get in touch with Eswak if you want to suggest changes or add a tool to this website.
             </p>
-            <hr />
+            <p>
+              Navigate to the various tools by using the left menu.
+            </p>
           </div>
         );
     }
